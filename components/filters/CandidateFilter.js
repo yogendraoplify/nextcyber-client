@@ -29,15 +29,10 @@ export default function CandidateFilter({
   const dispatch = useDispatch();
   const { skillsDropdown = [] } = useSelector((state) => state.dropdown);
 
-  const [formState, setFormState] = useState(DEFAULT_FILTERS);
   const [loading, setLocalLoading] = useState({
     apply: false,
     reset: false,
   });
-
-  useEffect(() => {
-    setFormState({ ...DEFAULT_FILTERS, ...filterData });
-  }, [filterData]);
 
   useEffect(() => {
     if (!skillsDropdown.length) {
@@ -46,7 +41,6 @@ export default function CandidateFilter({
   }, [dispatch, skillsDropdown.length]);
 
   const updateField = useCallback((key, value) => {
-    setFormState((prev) => ({ ...prev, [key]: value }));
     setFilterData((prev) => ({ ...prev, [key]: value }));
   }, []);
 
@@ -54,7 +48,6 @@ export default function CandidateFilter({
     setLocalLoading({ reset: true, apply: false });
     setLoading(true);
 
-    setFormState(DEFAULT_FILTERS);
     setFilterData(DEFAULT_FILTERS);
 
     try {
@@ -69,17 +62,16 @@ export default function CandidateFilter({
     setLocalLoading({ apply: true, reset: false });
     setLoading(true);
 
-    setFilterData(formState);
 
     const params = {
-      contractType: formState.contractType,
-      remotePolicy: formState.remotePolicy,
+      contractType: filterData.contractType,
+      remotePolicy: filterData.remotePolicy,
       salary:
-        formState.salaryRange.min && formState.salaryRange.max
-          ? `${formState.salaryRange.min}-${formState.salaryRange.max}`
+        filterData.salaryRange.min && filterData.salaryRange.max
+          ? `${filterData.salaryRange.min}-${filterData.salaryRange.max}`
           : null,
-      experience: `${formState.experienceRange.min}-${formState.experienceRange.max}`,
-      skills: formState.skills.join(","),
+      experience: `${filterData.experienceRange.min}-${filterData.experienceRange.max}`,
+      skills: filterData.skills.join(","),
     };
 
     try {
@@ -107,7 +99,7 @@ export default function CandidateFilter({
           {["TEMPORARY", "PERMANENT", "FREELANCE", "INTERNSHIP"].map((type) => (
             <RadioItem
               key={type}
-              checked={formState.contractType === type}
+              checked={filterData.contractType === type}
               label={type}
               onChange={() => updateField("contractType", type)}
             />
@@ -118,7 +110,7 @@ export default function CandidateFilter({
           {["onsite", "hybrid", "remote"].map((policy) => (
             <RadioItem
               key={policy}
-              checked={formState.remotePolicy === policy}
+              checked={filterData.remotePolicy === policy}
               label={policy}
               onChange={() => updateField("remotePolicy", policy)}
             />
@@ -140,11 +132,11 @@ export default function CandidateFilter({
                 </label>
                 <input
                   key={label.label}
-                  value={i === 0 ? formState.salaryRange.min : formState.salaryRange.max || ""}
+                  value={i === 0 ? filterData.salaryRange.min || "" : filterData.salaryRange.max || ""}
                   placeholder={label.placeholder}
                   onChange={(e) =>
                     updateField("salaryRange", {
-                      ...formState.salaryRange,
+                      ...filterData.salaryRange,
                       [i === 0 ? "min" : "max"]: +e.target.value,
                     })
                   }
@@ -160,7 +152,7 @@ export default function CandidateFilter({
             min={0}
             max={10}
             step={1}
-            value={formState.experienceRange}
+            value={filterData.experienceRange}
             onChange={(value) => updateField("experienceRange", value)}
           />
         </FilterGroup>
@@ -168,7 +160,7 @@ export default function CandidateFilter({
         <SelectField
           label="Skills"
           options={skillsDropdown}
-          value={formState.skills}
+          value={filterData.skills}
           onChange={(value) => updateField("skills", value)}
           multiple
           isCreatable
