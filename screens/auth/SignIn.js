@@ -1,0 +1,372 @@
+"use client";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
+import { useForm } from "react-hook-form";
+import {
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Star,
+  Briefcase,
+  User,
+  Loader2,
+} from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
+import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+import { FaLinkedin } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { asyncSigninUser } from "@/store/actions/authActions";
+import Link from "next/link";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import toast from "react-hot-toast";
+import { createSocket } from "@/utils/socket";
+import { setUser } from "@/store/slices/authSlice";
+import { getErrorMessage } from "@/utils/errMessage";
+import axios from "axios";
+
+const hasUpper = (s) => /[A-Z]/.test(s);
+const hasLower = (s) => /[a-z]/.test(s);
+const hasDigit = (s) => /[0-9]/.test(s);
+const hasSpecial = (s) => /[!@#$%^&*(),.?":{}|<>]/.test(s);
+
+const COMMON_PASSWORDS = [
+  "password",
+  "12345678",
+  "qwerty",
+  "letmein",
+  "admin",
+  "welcome",
+  "iloveyou",
+];
+
+const isCommonPassword = (s) => COMMON_PASSWORDS.includes(s.toLowerCase());
+
+const hasRepeatedChars = (s) => /(.)\1\1\1/.test(s);
+
+const hasSequentialChars = (s) => {
+  const sequences = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const lower = s.toLowerCase();
+  for (let i = 0; i < lower.length - 3; i++) {
+    const sub = lower.slice(i, i + 4);
+    if (sequences.includes(sub)) return true;
+    if (sequences.split("").reverse().join("").includes(sub)) return true;
+  }
+  return false;
+};
+
+const SignInForm = () => {
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("STUDENT");
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
+  const urlTab = searchParams.get("role") || "STUDENT";
+  const [activeTab, setActiveTab] = useState(urlTab);
+  const googleLoginRef = useRef(null);
+
+  useEffect(() => setActiveTab(urlTab), [urlTab]);
+
+  const changeTab = useCallback(
+    (tab) => {
+      startTransition(() => {
+        document.startViewTransition?.(() => setActiveTab(tab));
+        router.replace(`?role=${tab}`, { scroll: false });
+      });
+      setSelectedRole(tab);
+    },
+    [router]
+  );
+
+  const tabs = [
+    { id: "COMPANY", label: "Recruiter", icon: Briefcase },
+    { id: "STUDENT", label: "Candidate", icon: User },
+  ];
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm();
+
+  const onSubmit = (data) => {
+    const user = {
+      ...data,
+      role: selectedRole,
+    };
+
+    dispatch(asyncSigninUser(data, setLoading, router));
+  };
+
+  const validatePassword = (password) => {
+    if (password.length < 8)
+      return "Password must be at least 8 characters long.";
+    if (password.length > 100) return "Password is too long.";
+    if (!hasUpper(password))
+      return "Password must include at least one uppercase letter.";
+    if (!hasLower(password))
+      return "Password must include at least one lowercase letter.";
+    if (!hasDigit(password))
+      return "Password must include at least one number.";
+    if (!hasSpecial(password))
+      return "Password must include at least one special character.";
+    if (isCommonPassword(password)) return "Password is too common.";
+    if (hasRepeatedChars(password))
+      return "Password must not contain 4 or more repeated characters.";
+    if (hasSequentialChars(password))
+      return "Password must not contain sequential characters like '1234' or 'abcd'.";
+    return true; // valid
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const backendURL = process.env.NEXT_PUBLIC_API_URL;
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        `${backendURL}/auth/google`,
+        { token: credentialResponse.credential, role: selectedRole },
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+      dispatch(setUser(data.user));
+      createSocket();
+      router.push("/dashboard");
+      toast.success(data.message || "Signed in");
+    } catch (err) {
+      toast.error(getErrorMessage(err, "Signed failed"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const triggerGoogleLogin = () => {
+    // clearErrors();
+    if (googleLoginRef.current) {
+      googleLoginRef.current.querySelector("div[role='button']")?.click();
+    }
+  };
+
+  return (
+    <>
+      <section className="bg-g-900 ">
+        <div className="min-h-screen flex max-w-[1440px] mx-auto py-20 sm:py-10">
+          <div className=" w-full lg:w-1/2 flex items-center justify-center px-5 sm:px-10">
+            <div className="w-full max-w-sm">
+              <Image
+                src="/logo.png"
+                className=" h-9 w-auto mb-10"
+                height={72}
+                width={329}
+                alt="nextcybr-logo"
+              />
+
+              <div className="space-y-1 mb-7.5">
+                <h1 className="text-g-100 text-2xl font-medium leading-tight">
+                  {"Sign In with your\nsocial account"}
+                </h1>
+              </div>
+
+              {
+                <div className="border border-g-500 rounded-lg p-2 gap-1 flex w-full bg-g-700 mb-8">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => changeTab(tab.id)}
+                      className={`py-2 px-4 rounded-md text-sm flex-1 gap-2.5 flex items-center justify-center font-medium transition-all cursor-pointer ${
+                        activeTab === tab.id
+                          ? "bg-primary text-g-50 shadow"
+                          : "text-g-200"
+                      }`}
+                    >
+                      <tab.icon size={20} />
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+              }
+
+              <div className="space-y-3">
+                <div>
+                  <input
+                    {...register("email", {
+                      required: "Email is required",
+                      pattern: {
+                        value: /^\S+@\S+$/i,
+                        message: "Invalid email address",
+                      },
+                    })}
+                    type="email"
+                    placeholder="Email"
+                    className="w-full bg-[#111214] border border-[#1B1C1E] rounded-lg px-5 py-4 text-white outline-none text-sm"
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-xs text-red-400">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+                <div className="relative">
+                  <input
+                    {...register("password", { validate: validatePassword })}
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    className="w-full bg-[#111214] border border-[#1B1C1E] rounded-lg px-5 py-4 text-white outline-none text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-300 cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                  {errors.password && (
+                    <p className="mt-1 text-xs text-red-400">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className=" text-end text-g-200 font-medium text-xs leading-4 cursor-pointer">
+                  <Link
+                    href={"/forgot-password"}
+                    className=" border-b border-dotted"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+              </div>
+
+              <button
+                onClick={handleSubmit(onSubmit)}
+                disabled={loading}
+                className="w-full disabled:bg-primary/50 mt-6 disabled:text-g-200 bg-primary cursor-pointer disabled:cursor-not-allowed text-white py-3 px-6 rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors mb-8"
+              >
+                {loading && (
+                  <Loader2 className=" animate-spin text-g-200" size={18} />
+                )}
+                <span>Continue</span>
+                <ArrowRight size={20} />
+              </button>
+
+              {selectedRole == "STUDENT" && (
+                <div className="space-y-8 mb-10">
+                  <div className=" flex gap-2.5 items-center">
+                    <div className=" bg-g-300 h-0.5 flex-1"></div>
+                    <div className=" text-g-200 text-base leading-6 font-semibold">
+                      Or Sign with
+                    </div>
+                    <div className=" bg-g-300 h-0.5 flex-1"></div>
+                  </div>
+                  <div ref={googleLoginRef} className="hidden">
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      useOneTap
+                      auto_select={false}
+                    />
+                  </div>
+                  <div className="flex gap-4">
+                    <button className="flex-1 bg-[#1B1C1E] cursor-pointer text-[#9C9C9D] py-2 px-4 border border-[#2F3031] rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors">
+                      <FaLinkedin size={20} className="text-white" />
+                      LinkedIn
+                    </button>
+                    <button
+                      className="flex-1 bg-[#1B1C1E] text-[#9C9C9D] py-2 cursor-pointer px-4 border border-[#2F3031] rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+                      onClick={triggerGoogleLogin}
+                    >
+                      <FcGoogle size={20} />
+                      Google
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <p className="text-[#6A6B6C] text-sm">
+                Don't have an account?
+                <Link
+                  href={`/auth/signup?role=${activeTab}`}
+                  className="text-[#9C9C9D] font-medium cursor-pointer"
+                >
+                  Sign Up
+                </Link>
+              </p>
+            </div>
+          </div>
+
+          <div className="w-1/2 pr-10 lg:flex hidden flex-col justify-center items-start">
+            <div className="min-w-lg space-y-10">
+              <div className="space-y-6 text-start">
+                <h2 className="text-2xl  font-bold text-[#69EDFE] leading-tight max-w-sm">
+                  The World&apos;s ⚡ Leading Platform for Cyber Professionals
+                </h2>
+                <div
+                  className="inline-blockborder w-fit border-transparent bg-gradient-to-r from-[#111214] to-[#2F3031] bg-clip-border
+ text-[#69EDFE] px-3 py-2 rounded-full text-sm font-medium"
+                >
+                  #1 Highest Rated Hiring Agency in New Zealand
+                </div>
+              </div>
+
+              <div className="relative bg-[#111214] w-[93%] xl:w-full  rounded-[10px]  overflow-hidden">
+                <div className="absolute inset-0 p-10 text-white blur-[0.8px] text-right text-sm leading-relaxed z-0 pt-19">
+                  <p className="text-lg text-[#6A6B6C]">HR Manager Google</p>
+                  <div className=" pt-28">
+                    <p>ad a reason</p>
+                    <p>d in the</p>
+                    <p>e engagement</p>
+                  </div>
+                </div>
+
+                <div className="bg-[#111214] rounded-[10px] p-10 text-white relative z-10 border border-[#434345] max-w-sm">
+                  <div className="flex items-center gap-5 mb-15">
+                    <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-400 to-pink-500 flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">JB</span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-white font-medium text-base">
+                        Jcob B.
+                      </h3>
+                      <p className="text-[#9C9C9D] mt-1 text-sm">
+                        HR Manager Google
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-1 mb-5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="w-8 h-8 fill-[#D9A61C] text-[#D9A61C]"
+                      />
+                    ))}
+                  </div>
+
+                  <blockquote className="text-white text-sm leading-relaxed">
+                    &quot;What impressed me most was their strategic approach.
+                    Every design choice had a reason behind it&quot;
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default function SignUp() {
+  return (
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
+      <SignInForm />
+    </GoogleOAuthProvider>
+  );
+}

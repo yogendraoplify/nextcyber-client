@@ -1,0 +1,28 @@
+<svg width="1440" height="225" viewBox="0 0 1440 225" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_f_923_1746)">
+<path d="M719.5 40C1014.98 40 1289.27 90.0362 1515.77 175.595L1512.23 184.95C1286.98 99.8598 1013.9 50 719.5 50C425.102 50 152.024 99.8598 -73.2334 184.95L-76.7666 175.595C149.73 90.0363 424.018 40 719.5 40Z" fill="#025BCF"/>
+</g>
+<g filter="url(#filter1_f_923_1746)">
+<path d="M719.5 30C1014.98 30 1289.27 80.0362 1515.77 165.595L1512.23 174.95C1286.98 89.8598 1013.9 40 719.5 40C425.102 40 152.024 89.8598 -73.2334 174.95L-76.7666 165.595C149.73 80.0363 424.018 30 719.5 30Z" fill="#025BCF"/>
+</g>
+<g filter="url(#filter2_f_923_1746)">
+<path d="M719.5 25C1014.98 25 1289.27 75.0362 1515.77 160.595L1512.23 169.95C1286.98 84.8598 1013.9 35 719.5 35C425.102 35 152.024 84.8598 -73.2334 169.95L-76.7666 160.595C149.73 75.0363 424.018 25 719.5 25Z" fill="#025BCF"/>
+</g>
+<defs>
+<filter id="filter0_f_923_1746" x="-116.767" y="0" width="1672.53" height="224.95" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="20" result="effect1_foregroundBlur_923_1746"/>
+</filter>
+<filter id="filter1_f_923_1746" x="-91.7666" y="15" width="1622.53" height="174.95" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="7.5" result="effect1_foregroundBlur_923_1746"/>
+</filter>
+<filter id="filter2_f_923_1746" x="-81.7666" y="20" width="1602.53" height="154.95" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="2.5" result="effect1_foregroundBlur_923_1746"/>
+</filter>
+</defs>
+</svg>
