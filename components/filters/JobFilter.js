@@ -184,7 +184,7 @@ export default function JobFilter({
               <label className="block text-xs text-gray-400 mb-2">Min.</label>
               <input
                 type="text"
-                value={filterData.salaryRange.min}
+                value={filterData.salaryRange.min || ""}
                 onChange={(e) =>
                   setFilterData((prev) => ({
                     ...prev,
@@ -199,7 +199,7 @@ export default function JobFilter({
               <label className="block text-xs text-gray-400 mb-2">Max.</label>
               <input
                 type="text"
-                value={filterData.salaryRange.max}
+                value={filterData.salaryRange.max || ""}
                 onChange={(e) =>
                   setFilterData((prev) => ({
                     ...prev,
