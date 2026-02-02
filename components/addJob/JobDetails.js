@@ -14,6 +14,7 @@ export default function JobDetails({ form, showErrors }) {
   } = form;
 
   const additionalBenefits = watch("additionalBenefits") || [];
+  const jobLocation = watch("jobLocation") || "";
 
   const errorClass = (field) =>
     showErrors && errors[field] ? "border-dark-red/80" : "border-g-600";
@@ -28,7 +29,7 @@ export default function JobDetails({ form, showErrors }) {
           {...register("jobTitle", { required: "Job title is required" })}
           placeholder="e.g. Penetration tester"
           className={`w-full py-4 px-5 rounded-lg border text-g-300 outline-none bg-g-700 ${errorClass(
-            "jobTitle"
+            "jobTitle",
           )}`}
         />
 
@@ -45,10 +46,15 @@ export default function JobDetails({ form, showErrors }) {
           Job location
         </label>
         <LocationSearchInput
-          value={getValues("jobLocation") || ""}
-          onSelect={(location) =>
-            setValue("jobLocation", location, { shouldDirty: true })
-          }
+          onPlaceSelected={(locationData) => {
+            console.log(locationData);
+            setValue(
+              "jobLocation",
+              `${locationData?.city}, ${locationData?.state}, ${locationData?.country}`,
+              { shouldDirty: true },
+            );
+          }}
+          value={jobLocation}
           className={errorClass("jobLocation")}
         />
 
@@ -98,7 +104,7 @@ export default function JobDetails({ form, showErrors }) {
                   setValue(
                     "additionalBenefits",
                     cur.filter((_, idx) => idx !== i),
-                    { shouldDirty: true }
+                    { shouldDirty: true },
                   );
                 }}
                 type="button"
