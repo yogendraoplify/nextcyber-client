@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 function JobsPage() {
   const [jobOpen, setJobOpen] = useState(false);
   const [jobId, setJobId] = useState(null);
-  const { jobs, currentJobPage } = useSelector((state) => state.jobs);
+  const { jobs, currentJobPage, totalJobsPages } = useSelector((state) => state.jobs);
   const [selectedJob, setSelectedJob] = useState(null);
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
@@ -243,7 +243,7 @@ function JobsPage() {
                   <div className="sticky z-60 bottom-0 flex justify-center mt-5">
                     <AdvancePagination
                       currentPage={page}
-                      totalPages={Math.ceil(jobs?.length / 10)}
+                      totalPages={totalJobsPages}
                       onPageChange={(newPage) => setPage(newPage)}
                     />
                   </div>
