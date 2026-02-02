@@ -16,32 +16,13 @@ export default function JobFilter({
   isFilterApplied,
 }) {
   if (!isOpen) return null;
-  // Local state
-  const [FormData, setFormData] = useState({
-    contractType: filterData.contractType || "",
-    remotePolicy: filterData.remotePolicy || "",
-    minSalary: "",
-    maxSalary: "",
-    experienceRange: filterData.experienceRange || { min: 0, max: 10 },
-    skills: filterData.skills || [],
-  });
+
   const dispatch = useDispatch();
   const [loadingLocal, setLoadingLocal] = useState({
     resetLoading: false,
     applyLoading: false,
   });
   const { skillsDropdown } = useSelector((state) => state.dropdown);
-  // Sync with external filterData
-  useEffect(() => {
-    if (filterData) {
-      setFormData({
-        contractType: filterData.contractType || "",
-        remotePolicy: filterData.remotePolicy || "",
-        experienceRange: filterData.experienceRange,
-        skills: filterData.skills,
-      });
-    }
-  }, [filterData]);
 
   const fetchDropdowns = useCallback(() => {
     if (skillsDropdown?.length === 0)
@@ -49,12 +30,10 @@ export default function JobFilter({
   }, [skillsDropdown, dispatch]);
 
   const handleContractTypeChange = (type) => {
-    setFormData((prev) => ({ ...prev, contractType: type }));
     setFilterData((prev) => ({ ...prev, contractType: type }));
   };
 
   const handleRemotePolicyChange = (policy) => {
-    setFormData((prev) => ({ ...prev, remotePolicy: policy }));
     setFilterData((prev) => ({ ...prev, remotePolicy: policy }));
   };
 
@@ -75,11 +54,10 @@ export default function JobFilter({
   const handleReset = () => {
     setLoadingLocal((prev) => ({ ...prev, resetLoading: true }));
     setLoading(true);
-    setFormData({
-      contractType: "TEMPORARY",
-      remotePolicy: "onsite",
-      minSalary: "",
-      maxSalary: "",
+    setFilterData({
+      contractType: "",
+      remotePolicy: "",
+      salaryRange: { min: 0, max: 0 },
       experienceRange: { min: 0, max: 10 },
       skills: [],
     });
@@ -88,7 +66,7 @@ export default function JobFilter({
       contractType: "",
       remotePolicy: "",
       skills: [],
-      salaryRange: [],
+      salaryRange: { min: 0, max: 0 },
       experienceRange: { min: 0, max: 10 },
     });
     dispatch(asyncGetJobs())
@@ -105,22 +83,15 @@ export default function JobFilter({
   const handleApply = () => {
     setLoadingLocal((prev) => ({ ...prev, applyLoading: true }));
     setLoading(true);
-    setFilterData({
-      ...filterData,
-      contractType: FormData.contractType,
-      remotePolicy: FormData.remotePolicy,
-      salaryRange: [FormData.minSalary, FormData.maxSalary],
-      experienceRange: FormData.experienceRange,
-      skills: FormData.skills,
-    });
+
     const params = {
-      contractType: FormData.contractType?.toUpperCase(),
-      remotePolicy: FormData.remotePolicy?.toUpperCase(),
+      contractType: filterData.contractType?.toUpperCase(),
+      remotePolicy: filterData.remotePolicy?.toUpperCase(),
       salary:
-        FormData.minSalary && FormData.maxSalary
-          ? `${FormData.minSalary}-${FormData.maxSalary}`
+        filterData.salaryRange.min && filterData.salaryRange.max
+          ? `${filterData.salaryRange.min}-${filterData.salaryRange.max}`
           : null,
-      experience: `${FormData.experienceRange.min}-${FormData.experienceRange.max}`,
+      experience: `${filterData.experienceRange.min}-${filterData.experienceRange.max}`,
       skills: filterData.skills.join(",") || [],
     };
     dispatch(asyncGetJobs(params))
@@ -166,7 +137,7 @@ export default function JobFilter({
               >
                 <input
                   type="checkbox"
-                  checked={FormData.contractType === value}
+                  checked={filterData.contractType === value}
                   onChange={() => handleContractTypeChange(value)}
                   className="w-4 h-4 rounded border-2 border-gray-600 checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary cursor-pointer"
                 />
@@ -193,7 +164,7 @@ export default function JobFilter({
               >
                 <input
                   type="checkbox"
-                  checked={FormData.remotePolicy === value}
+                  checked={filterData.remotePolicy === value}
                   onChange={() => handleRemotePolicyChange(value)}
                   className="w-4 h-4 rounded border-2 border-gray-600 checked:bg-primary checked:border-blue-600 focus:ring-2 focus:ring-primaborder-primary cursor-pointer"
                 />
@@ -213,11 +184,11 @@ export default function JobFilter({
               <label className="block text-xs text-gray-400 mb-2">Min.</label>
               <input
                 type="text"
-                value={FormData.minSalary}
+                value={filterData.salaryRange.min}
                 onChange={(e) =>
-                  setFormData((prev) => ({
+                  setFilterData((prev) => ({
                     ...prev,
-                    minSalary: e.target.value,
+                    salaryRange: { ...prev.salaryRange, min: e.target.value },
                   }))
                 }
                 placeholder="e.g. 50,000"
@@ -228,11 +199,11 @@ export default function JobFilter({
               <label className="block text-xs text-gray-400 mb-2">Max.</label>
               <input
                 type="text"
-                value={FormData.maxSalary}
+                value={filterData.salaryRange.max}
                 onChange={(e) =>
-                  setFormData((prev) => ({
+                  setFilterData((prev) => ({
                     ...prev,
-                    maxSalary: e.target.value,
+                    salaryRange: { ...prev.salaryRange, max: e.target.value },
                   }))
                 }
                 placeholder="e.g. 150,000"
@@ -249,9 +220,9 @@ export default function JobFilter({
             min={0}
             max={10}
             step={1}
-            value={FormData.experienceRange}
+            value={filterData.experienceRange}
             onChange={(newRange) => {
-              setFormData((prev) => ({ ...prev, experienceRange: newRange }));
+              setFilterData((prev) => ({ ...prev, experienceRange: newRange }));
             }}
           />
         </div>
@@ -261,15 +232,15 @@ export default function JobFilter({
           <SelectField
             label="Skills"
             options={skillsDropdown}
-            value={FormData?.skills}
+            value={filterData?.skills}
             onChange={(value) =>
               console.log(value) ||
-              setFormData((prev) => ({ ...prev, skills: value }))
+              setFilterData((prev) => ({ ...prev, skills: value }))
             }
             multiple
             onAdd={handleAddSkill}
             placeholder="Type a skill and press Add"
-            selectedOptions={FormData?.skills || []}
+            selectedOptions={filterData?.skills || []}
             onRemove={handleRemoveSkill}
             isCreatable={true}
           />

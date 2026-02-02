@@ -10,7 +10,6 @@ import {
 } from "@/store/actions/candidateAction";
 import { useDispatch, useSelector } from "react-redux";
 import CandidateFilter from "@/components/filters/CandidateFilter";
-import toast from "react-hot-toast";
 import AdvancePagination from "@/components/ui/AdvancePagination";
 import Search from "@/components/ui/Search";
 import { removeCandidates } from "@/store/slices/candidateSlice";
@@ -110,7 +109,6 @@ export default function CandidatesPage() {
   };
 
   const isFilterApplied = () => {
-    console.log("Checking if filters are applied:", filterData);
     return (
       filterData.contractType ||
       filterData.remotePolicy ||
