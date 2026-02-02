@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   companies: [],
   currentPage: 1,
+  totalPages: null,
 };
 
 export const companyReducer = createSlice({
@@ -11,9 +12,12 @@ export const companyReducer = createSlice({
     setCompany: (state, action) => {
       state.companies = action.payload.companies;
       state.currentPage = action.payload.page;
+      state.totalPages = action.payload.totalPages;
     },
     removeCompanies: (state) => {
       state.companies = [];
+      state.currentPage = 1;
+      state.totalPages = null;
     },
   },
 });
