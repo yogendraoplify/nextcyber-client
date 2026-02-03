@@ -22,7 +22,7 @@ const StudentCard = ({
     <>
       <div
         key={candidate.id}
-        className={`flex flex-col justify-between bg-g-600 border border-g-800 rounded-xl p-5 hover:border-g-400 transition-all ${className}`}
+        className={`flex flex-col justify-between bg-g-600 border border-g-800 rounded-xl p-4 hover:border-g-400 transition-all ${className}`}
         style={style}
       >
         <div className="mb-4">

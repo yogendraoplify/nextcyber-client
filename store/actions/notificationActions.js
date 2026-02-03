@@ -2,7 +2,7 @@
 import toast from "react-hot-toast";
 import { getErrorMessage } from "@/utils/errMessage";
 import { getCompanyNotificationsApi, getStudentNotificationsApi, markCompanyNotificationAsReadApi, markStudentNotificationAsReadApi } from "@/services/notificationApi";
-import { setLoading, setNotifications } from "../slices/notificationSlice";
+import { removeNotifications, setLoading, setNotifications } from "../slices/notificationSlice";
 export const asyncGetStudentNotifications = (query) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
@@ -27,6 +27,7 @@ export const asyncGetCompanyNotifications = (query) => async (dispatch) => {
 export const asyncMarkStudentNotificationAsRead = (notificationId) => async (dispatch) => {
   try {
     await markStudentNotificationAsReadApi(notificationId);
+    dispatch(removeNotifications());
   } catch (error) {
     toast.error(getErrorMessage(error, "Failed to mark notification as read"));
   }
@@ -36,6 +37,7 @@ export const asyncMarkStudentNotificationAsRead = (notificationId) => async (dis
 export const asyncMarkCompanyNotificationAsRead = (notificationId) => async (dispatch) => {
     try {
      await markCompanyNotificationAsReadApi(notificationId);
+      dispatch(removeNotifications());
     } catch (error) {
         toast.error(getErrorMessage(error, "Failed to mark notification as read"));
     }

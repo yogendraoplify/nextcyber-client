@@ -9,6 +9,7 @@ import {
 } from "@/store/actions/notificationActions";
 import { Loader2 } from "lucide-react";
 import { use, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function NotificationsPanel() {
@@ -20,10 +21,14 @@ export default function NotificationsPanel() {
   const [selectedTab, setSelectedTab] = useState("ALL");
 
   const handleMarkAllAsRead = () => {
+    if (notifications.length === 0) {
+      toast.error("No notifications to mark as read");
+      return;
+    }
+
     if (user?.role === "STUDENT") {
       dispatch(asyncMarkStudentNotificationAsRead());
     }
-
     // Add logic for COMPANY role if needed
     if (user?.role === "COMPANY") {
       dispatch(asyncMarkCompanyNotificationAsRead());
