@@ -15,7 +15,7 @@ function ProtectedLayout({ children }) {
   const router = useRouter();
   const { user, isLoading } = useSelector((state) => state.auth);
   const { notifications, notificationCount } = useSelector(
-    (state) => state.appSettings
+    (state) => state.appSettings,
   );
   const [notificationModal, setNotificationModal] = useState(false);
   const [profileSettingOpen, setProfileSettingOpen] = useState(false);
@@ -33,7 +33,7 @@ function ProtectedLayout({ children }) {
 
   function isUUID(segment) {
     return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      segment
+      segment,
     );
   }
 
@@ -211,9 +211,11 @@ function ProtectedLayout({ children }) {
                 }
               >
                 <Bell size={20} />
-                <span className="absolute -top-1 -right-1 bg-dark-red text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {notificationCount}
-                </span>
+                {notificationCount?.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-dark-red text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {notificationCount}
+                  </span>
+                )}
               </button>
 
               <div
