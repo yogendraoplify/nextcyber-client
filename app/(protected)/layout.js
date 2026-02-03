@@ -156,7 +156,7 @@ function ProtectedLayout({ children }) {
                         key={i}
                         className="w-full p-3 mb-3 bg-g-100 rounded-md"
                       >
-                        <p className="text-sm">{notification?.data}</p>
+                        <p className="text-sm">{notification?.data?.message}</p>
                         <span className="text-xs text-g-400">
                           {new Date(notification?.createdAt)?.toLocaleString()}
                         </span>
