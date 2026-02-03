@@ -211,7 +211,7 @@ function ProtectedLayout({ children }) {
                 }
               >
                 <Bell size={20} />
-                {notificationCount?.length > 0 && (
+                {notificationCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-dark-red text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {notificationCount}
                   </span>
