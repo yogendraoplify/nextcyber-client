@@ -18,7 +18,9 @@ import { useDispatch, useSelector } from "react-redux";
 function JobsPage() {
   const [jobOpen, setJobOpen] = useState(false);
   const [jobId, setJobId] = useState(null);
-  const { jobs, currentJobPage, totalJobsPages } = useSelector((state) => state.jobs);
+  const { jobs, currentJobPage, totalJobsPages } = useSelector(
+    (state) => state.jobs,
+  );
   const [selectedJob, setSelectedJob] = useState(null);
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
@@ -63,7 +65,7 @@ function JobsPage() {
   }, [buildParams]);
 
   useEffect(() => {
-    console.log("Jobs updated:", jobs.length);
+    console.log("Jobs updated:", jobs?.length);
     if (jobs?.length === 0) fetchJobs();
   }, []);
 
@@ -105,17 +107,16 @@ function JobsPage() {
   useEffect(() => {
     return () => {
       const filters = filterRef.current;
-      if (
+      const isApplied =
         filters.contractType ||
         filters.remotePolicy ||
         (filters.skills && filters.skills.length > 0) ||
         (filters.salaryRange &&
-        (filters.salaryRange.min >= 0 || filters.salaryRange.max > 0)) ||
+          (filters.salaryRange.min > 0 || filters.salaryRange.max > 0)) ||
         (filters.experienceRange &&
-          (filters.experienceRange.min > 0 || filters.experienceRange.max < 10))
-      ) {
-        clearOnUnmount();
-      }
+          (filters.experienceRange.min > 0 ||
+            filters.experienceRange.max < 10));
+      isApplied && clearOnUnmount();
     };
   }, []);
 
@@ -264,7 +265,7 @@ function JobsPage() {
           isFilterApplied={isFilterApplied}
         />
       )}
-      
+
       {jobOpen && (
         <JobApplyModel
           isOpen={jobOpen}
