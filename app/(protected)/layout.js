@@ -156,7 +156,7 @@ function ProtectedLayout({ children }) {
                         key={i}
                         className="w-full p-3 mb-3 bg-g-100 rounded-md"
                       >
-                        <p className="text-sm">{notification?.data}</p>
+                        <p className="text-sm">{notification?.data?.message}</p>
                         <span className="text-xs text-g-400">
                           {new Date(notification?.createdAt)?.toLocaleString()}
                         </span>
@@ -211,7 +211,7 @@ function ProtectedLayout({ children }) {
                 }
               >
                 <Bell size={20} />
-                {notificationCount?.length > 0 && (
+                {notificationCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-dark-red text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {notificationCount}
                   </span>
