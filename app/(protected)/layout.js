@@ -150,15 +150,15 @@ function ProtectedLayout({ children }) {
                   />
                 </div>
                 <div>
-                  {notifications && notifications.length > 0 ? (
+                  {notifications && notifications?.length > 0 ? (
                     notifications.map((notification, i) => (
                       <div
                         key={i}
                         className="w-full p-3 mb-3 bg-g-100 rounded-md"
                       >
-                        <p className="text-sm">{notification.data}</p>
+                        <p className="text-sm">{notification?.data}</p>
                         <span className="text-xs text-g-400">
-                          {new Date(notification.createdAt).toLocaleString()}
+                          {new Date(notification?.createdAt)?.toLocaleString()}
                         </span>
                       </div>
                     ))
