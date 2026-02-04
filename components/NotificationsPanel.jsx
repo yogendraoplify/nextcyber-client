@@ -11,12 +11,14 @@ import { Loader2 } from "lucide-react";
 import { use, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
+import Pagination from "./Pagination";
 
 export default function NotificationsPanel() {
   const { user } = useSelector((state) => state.auth);
-  const { notifications, isLoading } = useSelector(
+  const { notifications, isLoading, totalPages } = useSelector(
     (state) => state.notification,
   );
+  const [currentPage, setCurrentPage] = useState(1);
   const dispatch = useDispatch();
   const [selectedTab, setSelectedTab] = useState("ALL");
 
@@ -37,11 +39,17 @@ export default function NotificationsPanel() {
 
   const fetchNotifications = () => {
     if (user?.role === "STUDENT") {
-     if (notifications.length === 0) dispatch(asyncGetStudentNotifications({ limit: 10 }));
+      if (notifications.length === 0)
+        dispatch(
+          asyncGetStudentNotifications({ limit: 10, page: currentPage }),
+        );
     }
 
     if (user?.role === "COMPANY") {
-     if (notifications.length === 0) dispatch(asyncGetCompanyNotifications({ limit: 10 }));
+      if (notifications.length === 0)
+        dispatch(
+          asyncGetCompanyNotifications({ limit: 10, page: currentPage }),
+        );
     }
   };
 
@@ -50,9 +58,10 @@ export default function NotificationsPanel() {
     fetchNotifications();
   }, []);
 
-  useDidChange(selectedTab, () => {
+  useDidChange([currentPage, selectedTab], () => {
     const query = {
       limit: 10,
+      page: currentPage,
       type: selectedTab === "ALL" ? undefined : selectedTab,
     };
     if (user?.role === "STUDENT") {
@@ -69,7 +78,10 @@ export default function NotificationsPanel() {
       <div className="p-5 border-b border-g-700 space-y-4">
         <div className="flex justify-between items-center">
           <h2 className="text-g-100 text-xl font-medium">Your Notifications</h2>
-          <button onClick={handleMarkAllAsRead} className="text-sm font-medium text-dark-green underline cursor-pointer">
+          <button
+            onClick={handleMarkAllAsRead}
+            className="text-sm font-medium text-dark-green underline cursor-pointer"
+          >
             Mark all as read
           </button>
         </div>
@@ -147,24 +159,15 @@ export default function NotificationsPanel() {
         ) : (
           <p className="text-center text-g-200">No notifications found.</p>
         )}
-        {/* <div className="flex gap-5 p-5 bg-g-700 rounded-lg shadow-[0_0_4px_#2F3031]">
-          <div className="w-12 h-12 rounded bg-primary flex items-center justify-center text-basewhite font-bold shrink-0">
-            M
-          </div>
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-g-100">
-              Job Posted Successfully
-            </p>
-            <p className="text-sm text-g-200">
-              Your job listing is live and visible to job seekers.{" "}
-              <span className=" text-primary-2 underline cursor-pointer">
-                JOB-ID
-              </span>
-            </p>
-            <p className="text-xs text-g-300">July 16, 2024 | 09:23 PM</p>
-          </div>
-        </div> */}
       </div>
+      {/* Pagination */}
+      {notifications.length > 0 && (
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          setPage={(page) => setCurrentPage(page)}
+        />
+      )}
     </div>
   );
 }

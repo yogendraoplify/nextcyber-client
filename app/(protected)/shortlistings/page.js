@@ -1,6 +1,6 @@
 "use client";
-import { use, useCallback, useEffect, useRef, useState } from "react";
-import { ChevronDown, SlidersHorizontal, Loader2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SlidersHorizontal, Loader2 } from "lucide-react";
 import LocationSearchInput from "@/components/helper/LocationSearchInput";
 import StudentCard from "@/components/cards/StudentCard";
 import {
@@ -37,8 +37,8 @@ export default function ShortlistingsPage() {
       min: 0,
       max: 0,
     },
-    contractType: "",
-    remotePolicy: "",
+    contractType: [],
+    remotePolicy: [],
     experienceRange: { min: 0, max: 10 },
   });
 
@@ -75,7 +75,6 @@ export default function ShortlistingsPage() {
   }, [buildParams]);
 
   const handleFavoriteToggle = async (candidate) => {
-    console.log("Toggling favorite for candidate:", candidate);
     candidate?.favoritedBy
       ?.map(({ company }) => company.id)
       .includes(user?.companyProfile.id)
@@ -116,8 +115,8 @@ export default function ShortlistingsPage() {
 
   const isFilterApplied = () => {
     return (
-      filterData.contractType ||
-      filterData.remotePolicy ||
+      (filterData.contractType && filterData.contractType.length > 0) ||
+      (filterData.remotePolicy && filterData.remotePolicy.length > 0) ||
       (filterData.skills && filterData.skills.length > 0) ||
       (filterData.salaryRange &&
         (filterData.salaryRange.min > 0 || filterData.salaryRange.max > 0)) ||
@@ -137,8 +136,8 @@ export default function ShortlistingsPage() {
     return () => {
       const filters = filterDataRef.current;
       if (
-        filters.contractType ||
-        filters.remotePolicy ||
+        filters.contractType.length > 0 ||
+        filters.remotePolicy.length > 0 ||
         (filters.skills && filters.skills.length > 0) ||
         (filters.salaryRange &&
           (filters.salaryRange.min > 0 || filters.salaryRange.max > 0)) ||

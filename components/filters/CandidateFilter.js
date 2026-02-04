@@ -11,8 +11,8 @@ const DEFAULT_FILTERS = {
   experience: "",
   skills: [],
   salaryRange: { min: 0, max: 0 },
-  contractType: "",
-  remotePolicy: "",
+  contractType: [],
+  remotePolicy: [],
   experienceRange: { min: 0, max: 10 },
 };
 
@@ -62,10 +62,11 @@ export default function CandidateFilter({
     setLocalLoading({ apply: true, reset: false });
     setLoading(true);
 
-
     const params = {
-      contractType: filterData.contractType,
-      remotePolicy: filterData.remotePolicy,
+      contractType: filterData.contractType.map((type) => type.toUpperCase()),
+      remotePolicy: filterData.remotePolicy.map((policy) =>
+        policy.toUpperCase(),
+      ),
       salary:
         filterData.salaryRange.min && filterData.salaryRange.max
           ? `${filterData.salaryRange.min}-${filterData.salaryRange.max}`
@@ -99,9 +100,18 @@ export default function CandidateFilter({
           {["TEMPORARY", "PERMANENT", "FREELANCE", "INTERNSHIP"].map((type) => (
             <RadioItem
               key={type}
-              checked={filterData.contractType === type}
+              checked={filterData.contractType.includes(type)}
               label={type}
-              onChange={() => updateField("contractType", type)}
+              onChange={() => {
+                const isAlreadySelected =
+                  filterData.contractType.includes(type);
+                setFilterData((prev) => ({
+                  ...prev,
+                  contractType: isAlreadySelected
+                    ? prev.contractType.filter((t) => t !== type)
+                    : [...prev.contractType, type],
+                }));
+              }}
             />
           ))}
         </FilterGroup>
@@ -110,9 +120,18 @@ export default function CandidateFilter({
           {["onsite", "hybrid", "remote"].map((policy) => (
             <RadioItem
               key={policy}
-              checked={filterData.remotePolicy === policy}
+              checked={filterData.remotePolicy.includes(policy)}
               label={policy}
-              onChange={() => updateField("remotePolicy", policy)}
+              onChange={() => {
+                const isAlreadySelected =
+                  filterData.remotePolicy.includes(policy);
+                setFilterData((prev) => ({
+                  ...prev,
+                  remotePolicy: isAlreadySelected
+                    ? prev.remotePolicy.filter((p) => p !== policy)
+                    : [...prev.remotePolicy, policy],
+                }));
+              }}
             />
           ))}
         </FilterGroup>
@@ -132,7 +151,11 @@ export default function CandidateFilter({
                 </label>
                 <input
                   key={label.label}
-                  value={i === 0 ? filterData.salaryRange.min || "" : filterData.salaryRange.max || ""}
+                  value={
+                    i === 0
+                      ? filterData.salaryRange.min || ""
+                      : filterData.salaryRange.max || ""
+                  }
                   placeholder={label.placeholder}
                   onChange={(e) =>
                     updateField("salaryRange", {
@@ -209,7 +232,14 @@ const RadioItem = ({ checked, label, onChange }) => (
   </label>
 );
 
-const ActionButton = ({ loading, text, onClick, icon, variant, isFilterApplied }) => (
+const ActionButton = ({
+  loading,
+  text,
+  onClick,
+  icon,
+  variant,
+  isFilterApplied,
+}) => (
   <button
     disabled={loading || !isFilterApplied()}
     onClick={onClick}

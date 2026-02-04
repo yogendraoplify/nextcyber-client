@@ -69,7 +69,7 @@ function JobDetailsHeader({ status, setStatus }) {
             onClick={() => setStatus(tab.value)}
           >
             <span className="text-sm font-medium">{tab.label}</span>
-            <span
+            {/* <span
               className={`flex items-center justify-center w-8 h-6 rounded-full text-xs font-semibold ${
                 tab.value === status
                   ? "bg-light-blue text-primary"
@@ -77,7 +77,7 @@ function JobDetailsHeader({ status, setStatus }) {
               }`}
             >
               {tab.count}
-            </span>
+            </span> */}
             {tab.value === status && (
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
             )}

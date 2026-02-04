@@ -34,8 +34,8 @@ export default function CandidatesPage() {
     experience: "",
     skills: [],
     salaryRange: { min: 0, max: 0 },
-    contractType: "",
-    remotePolicy: "",
+    contractType: [],
+    remotePolicy: [],
     experienceRange: { min: 0, max: 10 },
   });
 
@@ -110,8 +110,8 @@ export default function CandidatesPage() {
 
   const isFilterApplied = () => {
     return (
-      filterData.contractType ||
-      filterData.remotePolicy ||
+      (filterData.contractType && filterData.contractType.length > 0) ||
+      (filterData.remotePolicy && filterData.remotePolicy.length > 0) ||
       (filterData.skills && filterData.skills.length > 0) ||
       (filterData.salaryRange &&
         (filterData.salaryRange.min > 0 || filterData.salaryRange.max > 0)) ||
@@ -131,8 +131,8 @@ export default function CandidatesPage() {
     return () => {
       const filters = filterDataRef.current;
       if (
-        filters.contractType ||
-        filters.remotePolicy ||
+        (filters.contractType && filters.contractType.length > 0) ||
+        (filters.remotePolicy && filters.remotePolicy.length > 0) ||
         (filters.skills && filters.skills.length > 0) ||
         (filters.salaryRange &&
           (filters.salaryRange.min > 0 || filters.salaryRange.max > 0)) ||

@@ -30,11 +30,23 @@ export default function JobFilter({
   }, [skillsDropdown, dispatch]);
 
   const handleContractTypeChange = (type) => {
-    setFilterData((prev) => ({ ...prev, contractType: type }));
+    const isAlreadySelected = filterData.contractType.includes(type);
+    setFilterData((prev) => ({
+      ...prev,
+      contractType: isAlreadySelected
+        ? prev.contractType.filter((t) => t !== type)
+        : [...prev.contractType, type],
+    }));
   };
 
   const handleRemotePolicyChange = (policy) => {
-    setFilterData((prev) => ({ ...prev, remotePolicy: policy }));
+    const isAlreadySelected = filterData.remotePolicy.includes(policy);
+    setFilterData((prev) => ({
+      ...prev,
+      remotePolicy: isAlreadySelected
+        ? prev.remotePolicy.filter((p) => p !== policy)
+        : [...prev.remotePolicy, policy],
+    }));
   };
 
   const handleAddSkill = () => {
@@ -55,16 +67,16 @@ export default function JobFilter({
     setLoadingLocal((prev) => ({ ...prev, resetLoading: true }));
     setLoading(true);
     setFilterData({
-      contractType: "",
-      remotePolicy: "",
+      contractType: [],
+      remotePolicy: [],
       salaryRange: { min: 0, max: 0 },
       experienceRange: { min: 0, max: 10 },
       skills: [],
     });
 
     setFilterData({
-      contractType: "",
-      remotePolicy: "",
+      contractType: [],
+      remotePolicy: [],
       skills: [],
       salaryRange: { min: 0, max: 0 },
       experienceRange: { min: 0, max: 10 },
@@ -85,8 +97,10 @@ export default function JobFilter({
     setLoading(true);
 
     const params = {
-      contractType: filterData.contractType?.toUpperCase(),
-      remotePolicy: filterData.remotePolicy?.toUpperCase(),
+      contractType: filterData.contractType?.map((type) => type.toUpperCase()),
+      remotePolicy: filterData.remotePolicy?.map((policy) =>
+        policy.toUpperCase(),
+      ),
       salary:
         filterData.salaryRange.min && filterData.salaryRange.max
           ? `${filterData.salaryRange.min}-${filterData.salaryRange.max}`
@@ -137,7 +151,7 @@ export default function JobFilter({
               >
                 <input
                   type="checkbox"
-                  checked={filterData.contractType === value}
+                  checked={filterData.contractType.includes(value)}
                   onChange={() => handleContractTypeChange(value)}
                   className="w-4 h-4 rounded border-2 border-gray-600 checked:bg-primary checked:border-primary focus:ring-2 focus:ring-primary cursor-pointer"
                 />
@@ -164,7 +178,7 @@ export default function JobFilter({
               >
                 <input
                   type="checkbox"
-                  checked={filterData.remotePolicy === value}
+                  checked={filterData.remotePolicy.includes(value)}
                   onChange={() => handleRemotePolicyChange(value)}
                   className="w-4 h-4 rounded border-2 border-gray-600 checked:bg-primary checked:border-blue-600 focus:ring-2 focus:ring-primaborder-primary cursor-pointer"
                 />

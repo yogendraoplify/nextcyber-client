@@ -28,8 +28,8 @@ function JobsPage() {
   const [locationSearch, setLocationSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [filterData, setFilterData] = useState({
-    contractType: "",
-    remotePolicy: "",
+    contractType: [],
+    remotePolicy: [],
     skills: [],
     salaryRange: { min: 0, max: 0 },
     experienceRange: { min: 0, max: 10 },
@@ -88,8 +88,8 @@ function JobsPage() {
 
   const isFilterApplied = () => {
     return (
-      filterData.contractType ||
-      filterData.remotePolicy ||
+      filterData.contractType.length > 0 ||
+      filterData.remotePolicy.length > 0 ||
       (filterData.skills && filterData.skills.length > 0) ||
       (filterData.salaryRange &&
         (filterData.salaryRange.min > 0 || filterData.salaryRange.max > 0)) ||
@@ -108,8 +108,8 @@ function JobsPage() {
     return () => {
       const filters = filterRef.current;
       const isApplied =
-        filters.contractType ||
-        filters.remotePolicy ||
+        filters.contractType.length > 0 ||
+        filters.remotePolicy.length > 0 ||
         (filters.skills && filters.skills.length > 0) ||
         (filters.salaryRange &&
           (filters.salaryRange.min > 0 || filters.salaryRange.max > 0)) ||

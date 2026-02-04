@@ -7,7 +7,7 @@ export const asyncGetStudentNotifications = (query) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     const { data } = await getStudentNotificationsApi(query);
-    dispatch(setNotifications(data.data));
+    dispatch(setNotifications(data));
   } catch (error) {
     toast.error(getErrorMessage(error, "Failed to fetch Notifications"));
   } 
@@ -18,7 +18,7 @@ export const asyncGetCompanyNotifications = (query) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     const { data } = await getCompanyNotificationsApi(query);
-    dispatch(setNotifications(data.data));
+    dispatch(setNotifications(data));
   } catch (error) {
     toast.error(getErrorMessage(error, "Failed to fetch Notifications"));
   }
