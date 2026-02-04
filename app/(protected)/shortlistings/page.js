@@ -17,7 +17,7 @@ import useDidChange from "@/hooks/useDidChange";
 
 export default function ShortlistingsPage() {
   const { user } = useSelector((state) => state.auth);
-  const { shortlistedCandidates, totalPages, shortlistingCurrentPage } =
+  const { shortlistedCandidates, shortListingTotalPages, shortlistingCurrentPage } =
     useSelector((state) => state.candidate);
   const [page, setPage] = useState(shortlistingCurrentPage || 1);
   const [pageLimit, setPageLimit] = useState(10);
@@ -246,7 +246,7 @@ export default function ShortlistingsPage() {
           <div className="sticky bottom-0 flex justify-center mt-5">
             <AdvancePagination
               currentPage={page}
-              totalPages={totalPages}
+              totalPages={shortListingTotalPages}
               onPageChange={(page) => setPage(page)}
             />
           </div>
