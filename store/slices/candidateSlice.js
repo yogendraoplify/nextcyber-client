@@ -3,6 +3,7 @@ const initialState = {
   candidates: [],
   shortlistedCandidates: [],
   totalPages: 0,
+  shortListingTotalPages: 0,
   candidateCurrentPage: 1,
   shortlistingCurrentPage: 1,
 };
@@ -22,26 +23,29 @@ export const candidateReducer = createSlice({
     },
     setShortlistedCandidates: (state, action) => {
       state.shortlistedCandidates = action.payload.students;
-      state.totalPages = action.payload?.pagination?.totalPages || 1;
+      state.shortListingTotalPages = action.payload?.pagination?.totalPages || 1;
       state.shortlistingCurrentPage = action.payload?.pagination?.page || 1;
     },
     removeShortlistedCandidates: (state) => {
       state.shortlistedCandidates = [];
-      state.totalPages = 0;
+      state.shortListingTotalPages = 0;
     },
     addToFavorite: (state, action) => {
-      const { companyId, candidateId } = action.payload;
-      state.candidates = state.candidates.map((candidate) =>
-        candidate.id === candidateId
+      const { companyId, candidate } = action.payload;
+      state.candidates = state.candidates.map((c) =>
+        c.id === candidate.id
           ? {
-              ...candidate,
+              ...c,
               favoritedBy: [
-                ...candidate.favoritedBy,
+                ...c.favoritedBy,
                 { company: { id: companyId } },
               ],
             }
-          : candidate
+          : c
       );
+
+      state.shortlistedCandidates = [...state.shortlistedCandidates, {...candidate, favoritedBy: [...(candidate.favoritedBy || []), { company: { id: companyId } }]}];
+
     },
     removeFromFavorite: (state, action) => {
       const { companyId, candidateId } = action.payload;

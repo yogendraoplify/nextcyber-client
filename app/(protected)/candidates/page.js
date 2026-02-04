@@ -88,7 +88,7 @@ export default function CandidatesPage() {
           ),
         )
       : dispatch(
-          asyncAddCandidateToFavorite(candidate.id, user?.companyProfile.id),
+          asyncAddCandidateToFavorite(candidate, user?.companyProfile.id),
         );
   };
 

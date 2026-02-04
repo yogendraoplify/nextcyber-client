@@ -42,17 +42,19 @@ export const asyncShortlistedCandidates =
   };
 
 export const asyncAddCandidateToFavorite =
-  (candidateId, companyId, setIsLoading) => async (dispatch) => {
+  (candidate, companyId, setIsLoading) => async (dispatch) => {
     setIsLoading?.(true);
     try {
-      const { data } = await addCandidateToFavoriteApi(candidateId);
+      const toastId = toast.loading("Adding candidate to favorites...");
+      const { data } = await addCandidateToFavoriteApi(candidate.id);
       toast.success(
-        data.message || "Candidate added to favorites successfully!"
+        data.message || "Candidate added to favorites successfully!",
+        { id: toastId },
       );
-      dispatch(addToFavorite({ companyId, candidateId }));
+      dispatch(addToFavorite({ companyId, candidate }));
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Failed to add candidate to favorites")
+        getErrorMessage(error, "Failed to add candidate to favorites"),
       );
     } finally {
       setIsLoading?.(false);
@@ -63,15 +65,17 @@ export const asyncRemoveCandidateFromFavorite =
   (candidateId, companyId, setIsLoading) => async (dispatch) => {
     setIsLoading?.(true);
     try {
+      const toastId = toast.loading("Removing candidate from favorites...");
       const { data } = await removeCandidateFromFavoriteApi(candidateId);
       dispatch(asyncShortlistedCandidates({ companyId }));
       toast.success(
-        data.message || "Candidate removed from favorites successfully!"
+        data.message || "Candidate removed from favorites successfully!",
+        { id: toastId },
       );
       dispatch(removeFromFavorite({ companyId, candidateId }));
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Failed to remove candidate from favorites")
+        getErrorMessage(error, "Failed to remove candidate from favorites"),
       );
     } finally {
       setIsLoading?.(false);
