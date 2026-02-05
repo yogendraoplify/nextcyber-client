@@ -9,6 +9,7 @@ import Pagination from "../Pagination";
 import { useDispatch, useSelector } from "react-redux";
 import { asyncGetCreatedJobs } from "@/store/actions/jobActions";
 import Link from "next/link";
+import useDidChange from "@/hooks/useDidChange";
 
 const STATUS_STYLES = {
   ACTIVE: "bg-[#16A600]",
@@ -39,6 +40,22 @@ export default function JobsTable() {
       if (jobs.length > 0) return;
     }
 
+    if (jobs?.length === 0) {
+      dispatch(
+        asyncGetCreatedJobs(
+          {
+            page,
+            limit: pageSize,
+            status,
+            search,
+          },
+          setLoading,
+        ),
+      );
+    }
+  }, [dispatch]);
+
+  useDidChange([page, pageSize, status, search], () => {
     dispatch(
       asyncGetCreatedJobs(
         {
@@ -47,10 +64,10 @@ export default function JobsTable() {
           status,
           search,
         },
-        setLoading
-      )
+        setLoading,
+      ),
     );
-  }, [page, pageSize, status, search, dispatch]);
+  });
 
   const formatDate = (isoDate) => {
     const date = new Date(isoDate);
@@ -107,8 +124,12 @@ export default function JobsTable() {
     {
       label: "Applicants",
       key: "applicantCount",
-      render: (row) => <Link href={`/jobs/${row.id}`}><EyeIcon /></Link>,
-    }
+      render: (row) => (
+        <Link href={`/jobs/${row.id}`}>
+          <EyeIcon />
+        </Link>
+      ),
+    },
   ];
 
   const NotFound = () => (
