@@ -123,6 +123,8 @@ export default function Pricing() {
     dispatch(buySubscriptionAPIHandler(payload, setLoading));
   };
 
+  const userSubscriptionType = user?.subscription?.type;
+
   return (
     <section className="bg-g-900">
       <div className="text-center max-w-xl mx-auto">
@@ -165,14 +167,15 @@ export default function Pricing() {
         {filteredPlans.map((plan, index) => {
           const currentSubs =
             user?.subscription &&
-            user?.subscription.type ===
-              plan.name.split(" ").join("_").toUpperCase() &&
-            user?.subscription.billingCycle === plan.billingCycle;
+            userSubscriptionType ===
+              plan.name.split(" ").join("_").toUpperCase()
+            // user?.subscription.billingCycle === plan.billingCycle;
+            console.log("currentSubs", userSubscriptionType, plan.name.split(" ").join("_").toUpperCase());
           return (
             <div key={plan.id}>
               <div className=" border border-g-500 rounded-[20px] p-5">
                 <div className="mb-5 flex items-center justify-between">
-                  {plan.name == "Basic" ? (
+                  {plan.name == "Free" ? (
                     <Atom size={32} className=" text-light-yellow" />
                   ) : plan.name == "Pro" ? (
                     <Rocket size={32} className=" text-light-green" />

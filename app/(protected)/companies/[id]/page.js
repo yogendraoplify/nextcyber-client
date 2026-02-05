@@ -14,7 +14,6 @@ function CompanyDetailPage({ params }) {
   const [company, setCompany] = useState(null);
   const [jobOpen, setJobOpen] = useState(false);
   const [jobId, setJobId] = useState(null);
-  const { jobs } = useSelector((state) => state.jobs);
   const { appliedJob } = useSelector((state) => state.jobs);
   const { user } = useSelector((state) => state.auth);
   useEffect(() => {
@@ -47,6 +46,15 @@ function CompanyDetailPage({ params }) {
       year: "numeric",
     });
   };
+
+  const jobs =
+    company?.jobs?.map((job) => ({
+      ...job,
+      company: {
+        profilePicture: company?.profilePicture,
+        companyName: company?.companyName,
+      },
+    })) || [];
 
   return (
     <>

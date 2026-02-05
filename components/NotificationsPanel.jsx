@@ -19,6 +19,7 @@ export default function NotificationsPanel() {
     (state) => state.notification,
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
   const dispatch = useDispatch();
   const [selectedTab, setSelectedTab] = useState("ALL");
 
@@ -41,14 +42,14 @@ export default function NotificationsPanel() {
     if (user?.role === "STUDENT") {
       if (notifications.length === 0)
         dispatch(
-          asyncGetStudentNotifications({ limit: 10, page: currentPage }),
+          asyncGetStudentNotifications({ limit: pageSize, page: currentPage }),
         );
     }
 
     if (user?.role === "COMPANY") {
       if (notifications.length === 0)
         dispatch(
-          asyncGetCompanyNotifications({ limit: 10, page: currentPage }),
+          asyncGetCompanyNotifications({ limit: pageSize, page: currentPage }),
         );
     }
   };
@@ -60,8 +61,24 @@ export default function NotificationsPanel() {
 
   useDidChange([currentPage, selectedTab], () => {
     const query = {
-      limit: 10,
+      limit: pageSize,
       page: currentPage,
+      type: selectedTab === "ALL" ? undefined : selectedTab,
+    };
+    if (user?.role === "STUDENT") {
+      dispatch(asyncGetStudentNotifications(query));
+    }
+
+    if (user?.role === "COMPANY") {
+      dispatch(asyncGetCompanyNotifications(query));
+    }
+  });
+
+  useDidChange([pageSize], () => {
+    setCurrentPage(1);
+    const query = {
+      limit: pageSize,
+      page: 1,
       type: selectedTab === "ALL" ? undefined : selectedTab,
     };
     if (user?.role === "STUDENT") {
@@ -164,8 +181,10 @@ export default function NotificationsPanel() {
       {notifications.length > 0 && (
         <Pagination
           page={currentPage}
+          pageSize={pageSize}
           totalPages={totalPages}
           setPage={(page) => setCurrentPage(page)}
+          setPageSize={(size) => setPageSize(size)}
         />
       )}
     </div>

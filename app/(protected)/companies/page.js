@@ -19,7 +19,6 @@ function CompaniesPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-  const [locationSearch, setLocationSearch] = useState("");
   const [filterData, setFilterData] = useState({
     location: "",
     industry: "",
@@ -42,14 +41,21 @@ function CompaniesPage() {
       page,
       ...Object.fromEntries(
         Object.entries({
-          location: locationSearch || "",
+          location: filterData.location || "",
           industry: debouncedSearchTerm,
           companySize: filterData.companySize,
         }).filter(([_, value]) => value !== ""),
       ),
     };
     return params;
-  }, [page, debouncedSearchTerm, locationSearch]);
+  }, [
+    page,
+    debouncedSearchTerm,
+    filterData.location,
+    filterData.industry,
+    filterData.companySize,
+    filterData.sectors,
+  ]);
 
   const fetchCompanies = useCallback(() => {
     setLoading(true);
@@ -91,7 +97,12 @@ function CompaniesPage() {
   });
 
   const isFilterApplied = () => {
-    return filterData.industry || filterData.companySize || filterData.location;
+    return (
+      filterData.industry ||
+      filterData.companySize ||
+      filterData.location ||
+      filterData.sectors?.length > 0
+    );
   };
 
   const filterDataRef = React.useRef(filterData);
@@ -106,7 +117,8 @@ function CompaniesPage() {
       if (
         currentFilter.industry ||
         currentFilter.companySize ||
-        currentFilter.location
+        currentFilter.location ||
+        currentFilter.sectors?.length > 0
       ) {
         clearOnUnmount();
       }
@@ -130,13 +142,15 @@ function CompaniesPage() {
 
           <div className="relative w-full md:w-2/5">
             <LocationSearchInput
-              selectedPlace={locationSearch}
+              selectedPlace={filterData.location}
               onPlaceSelected={(locationData) =>
-                setLocationSearch(
-                  locationData.city && locationData.state
-                    ? `${locationData?.city}, ${locationData?.state}, ${locationData?.country}`
-                    : "",
-                )
+                setFilterData((prev) => ({
+                  ...prev,
+                  location:
+                    locationData.city && locationData.state
+                      ? `${locationData?.city}, ${locationData?.state}, ${locationData?.country}`
+                      : "",
+                }))
               }
               clearOnUnmount={clearOnUnmount}
               handleClear={handleClearSearch}
@@ -147,7 +161,7 @@ function CompaniesPage() {
             <button
               disabled={
                 loading ||
-                (searchTerm.trim() === "" && locationSearch.trim() === "")
+                (searchTerm.trim() === "" && filterData.location.trim() === "")
               }
               onClick={handleSearch}
               className="bg-primary rounded-lg px-8 py-3.5 text-gray-300 cursor-pointer"
