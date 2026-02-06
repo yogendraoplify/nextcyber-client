@@ -26,6 +26,7 @@ function CompaniesPage() {
     sectors: [],
   });
   const [showFilter, setShowFilter] = useState(false);
+  const [isSearched, setIsSearched] = useState(false);
   const handleToggleFilter = () => setShowFilter(!showFilter);
 
   useEffect(() => {
@@ -68,6 +69,7 @@ function CompaniesPage() {
 
   const handleSearch = () => {
     setLoading(true);
+    setIsSearched(true);
     const params = buildParams();
     console.log("Searching with params:", params);
     dispatch(asyncGetCompanies(params, setLoading)).then((data) => {
@@ -87,9 +89,11 @@ function CompaniesPage() {
   };
 
   const handleClearSearch = () => {
-    setLoading(true);
+    if (isSearched) {
+      setLoading(true);
+      dispatch(asyncGetCompanies()).then(() => setLoading(false));
+    }
     setSearchTerm("");
-    dispatch(asyncGetCompanies()).then(() => setLoading(false));
   };
 
   useDidChange(page, () => {

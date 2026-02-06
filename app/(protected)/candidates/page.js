@@ -1,6 +1,6 @@
 "use client";
-import { use, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ChevronDown, SlidersHorizontal, Loader2 } from "lucide-react";
+import {  useCallback, useEffect, useRef, useState } from "react";
+import {  SlidersHorizontal, Loader2 } from "lucide-react";
 import LocationSearchInput from "@/components/helper/LocationSearchInput";
 import StudentCard from "@/components/cards/StudentCard";
 import {
@@ -38,6 +38,7 @@ export default function CandidatesPage() {
     remotePolicy: [],
     experienceRange: { min: 0, max: 10 },
   });
+  const [isSearched, setIsSearched] = useState(false);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -97,15 +98,16 @@ export default function CandidatesPage() {
   }, []);
 
   const clearOnUnmount = () => {
-    console.log("Clearing candidates on unmount");
     setSearchTerm("");
     dispatch(removeCandidates());
   };
 
   const handleClearSearch = () => {
+    if (isSearched) {
     setLoading(true);
-    setSearchTerm("");
     dispatch(asyncGetCandidates()).then(() => setLoading(false));
+    }
+    setSearchTerm("");
   };
 
   const isFilterApplied = () => {

@@ -36,6 +36,7 @@ function JobsPage() {
   });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const handleToggleFilter = () => setIsFilterOpen(!isFilterOpen);
+  const [isSearched, setIsSearched] = useState(false);
 
   const clearOnUnmount = () => {
     dispatch(removeJobs());
@@ -70,6 +71,7 @@ function JobsPage() {
   }, []);
 
   const handleSearch = () => {
+    setIsSearched(true);
     setPage(1);
     fetchJobs();
   };
@@ -81,9 +83,11 @@ function JobsPage() {
   };
 
   const handleClearSearch = () => {
-    setLoading(true);
+    if (isSearched) {
+      setLoading(true);
+      dispatch(asyncGetJobs()).then(() => setLoading(false));
+    }
     setSearchTerm("");
-    dispatch(asyncGetJobs()).then(() => setLoading(false));
   };
 
   const isFilterApplied = () => {
