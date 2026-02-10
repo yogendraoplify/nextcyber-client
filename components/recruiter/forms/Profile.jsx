@@ -176,6 +176,7 @@ export default function Profile() {
     }
 
     if ([...formData.entries()].length === 0) {
+      setIsSubmitting(false);
       toast("No changes detected");
       return;
     }
