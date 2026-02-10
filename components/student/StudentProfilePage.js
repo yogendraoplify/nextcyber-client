@@ -70,6 +70,7 @@ export default function StudentProfilePage() {
       remotePolicy: sp.remotePolicy || "",
 
       profilePicture: sp.profilePicture || null,
+      profileBanner: sp.profileBanner || null,
     });
   }, [user, methods]);
 
