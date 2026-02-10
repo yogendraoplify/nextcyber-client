@@ -8,13 +8,11 @@ import TechnicalForm from "@/components/profile/steps/TechnicalForm";
 import AddEducationModal from "@/components/profile/steps/AddEducationModal";
 import AddExperienceModal from "@/components/profile/steps/AddExperienceModal";
 import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { updateStudentApi } from "@/api/studentApi";
 import { useSelector } from "react-redux";
 import { SaveButton } from "../ui/SaveButton";
 
 export default function StudentProfilePage() {
-  const router = useRouter();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
@@ -41,6 +39,7 @@ export default function StudentProfilePage() {
       remotePolicy: "",
       resume: null,
       profilePicture: null,
+      profileBanner: null,
     },
   });
 
@@ -74,7 +73,7 @@ export default function StudentProfilePage() {
     });
   }, [user, methods]);
 
-  const { control, trigger, handleSubmit, getValues, clearErrors, setError } =
+  const { control, trigger, handleSubmit, getValues, clearErrors, setError, formState: { dirtyFields } } =
     methods;
 
   const eduFieldArray = useFieldArray({ control, name: "education" });
@@ -97,7 +96,7 @@ export default function StudentProfilePage() {
         "currency",
         "gender",
         "nationalities",
-        "language",
+        "languages",
         "expectedSalary",
         "hourlyRate",
       ],
@@ -117,13 +116,34 @@ export default function StudentProfilePage() {
   };
   let toastId;
 
+  const checkDirtyFields = async () => {
+    const currentStepFields = steps[step].fields;
+    const isDirty = currentStepFields.some((field) => dirtyFields[field]);
+
+    if (!isDirty) {
+      toast("No changes detected");
+      return false;
+    }
+
+    const valid = await trigger(currentStepFields);
+    if (!valid) {
+      toast.error("Please fix the errors before proceeding.");
+      return false;
+    }
+
+    return true;
+  };
+
   const onSubmit = async (data) => {
     if (step === 1 && data.resume === null) {
       setError("resume", { type: "manual", message: "Resume is required" });
       return;
     }
-    const formData = new FormData();
 
+    const isDirty = await checkDirtyFields();
+    if (!isDirty) return;
+    
+    const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
 
