@@ -10,7 +10,6 @@ export default function TechnicalForm() {
     register,
     watch,
     setValue,
-    clearErrors,
     formState: { errors },
   } = useFormContext();
 
@@ -56,7 +55,10 @@ export default function TechnicalForm() {
                 type="button"
                 key={option}
                 onClick={() =>
-                  setValue("contractType", option, { shouldValidate: true })
+                  setValue("contractType", option, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
                 className={`px-4 py-2 rounded-full cursor-pointer capitalize border bg-g-600 transition text-sm leading-5 font-medium ${
                   contractType === option
@@ -88,7 +90,10 @@ export default function TechnicalForm() {
               type="button"
               key={option}
               onClick={() =>
-                setValue("remotePolicy", option, { shouldValidate: true })
+                setValue("remotePolicy", option, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })
               }
               className={`px-4 py-2 rounded-full border capitalize bg-g-600 cursor-pointer transition text-sm leading-5 font-medium ${
                 remotePolicy === option

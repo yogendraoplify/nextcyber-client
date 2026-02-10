@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Image as LucideImage, X } from "lucide-react";
 import toast from "react-hot-toast";
 import LocationSearchInput from "@/components/helper/LocationSearchInput";
+import validateImage from "@/helper/validateImage";
 
 export default function AccountDetails() {
   const {
@@ -54,7 +55,7 @@ export default function AccountDetails() {
       return;
     }
 
-    setValue("profilePicture", f, { shouldValidate: true });
+    setValue("profilePicture", f, { shouldValidate: true, shouldDirty: true });
   };
 
   const handleDrop = (e) => {
@@ -72,10 +73,10 @@ export default function AccountDetails() {
       return;
     }
 
-    setValue("profilePicture", f, { shouldValidate: true });
+    setValue("profilePicture", f, { shouldValidate: true, shouldDirty: true });
   };
 
-  const handleBannerSelect = (e) => {
+  const handleBannerSelect = async (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
 
@@ -84,20 +85,29 @@ export default function AccountDetails() {
       return;
     }
 
-    if (f.size > 5 * 1024 * 1024) {
-      toast.error("Image must be less than 5MB");
+    const validationError = await validateImage(f, {
+      maxSizeMB: 5,
+      minWidth: 1200,
+      minHeight: 300,
+      aspectRatio: 4,
+      formats: [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/svg+xml",
+        "image/webp",
+      ],
+    });
+
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
-    if (f.width / f.height < 3.5) {
-      toast.error("aspects ratio must be 4:1");
-      return;
-    }
-
-    setValue("profileBanner", f, { shouldValidate: true });
+    setValue("profileBanner", f, { shouldValidate: true, shouldDirty: true });
   };
 
-  const handleBannerDrop = (e) => {
+  const handleBannerDrop = async (e) => {
     e.preventDefault();
     const f = e.dataTransfer.files?.[0];
     if (!f) return;
@@ -107,27 +117,42 @@ export default function AccountDetails() {
       return;
     }
 
-    if (f.size > 5 * 1024 * 1024) {
-      toast.error("Image must be less than 5MB");
-      return;
-    }
-    console.log(f.width, f.height < 3.5);
-    if (f.width / f.height < 3.5) {
-      toast.error("aspects ratio must be 4:1");
+    const validationError = await validateImage(f, {
+      maxSizeMB: 5,
+      minWidth: 1200,
+      minHeight: 300,
+      aspectRatio: 4,
+      formats: [
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/svg+xml",
+        "image/webp",
+      ],
+    });
+
+    if (validationError) {
+      toast.error(validationError);
       return;
     }
 
-    setValue("profileBanner", f, { shouldValidate: true });
+    setValue("profileBanner", f, { shouldValidate: true, shouldDirty: true });
   };
 
   const removeBanner = () => {
-    setValue("profileBanner", null, { shouldValidate: true });
+    setValue("profileBanner", null, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
     setBannerPreview(null);
     if (bannerRef.current) bannerRef.current.value = "";
   };
 
   const removeImage = () => {
-    setValue("profilePicture", null, { shouldValidate: true });
+    setValue("profilePicture", null, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
     setPreview(null);
     if (fileRef.current) fileRef.current.value = "";
   };
@@ -303,7 +328,7 @@ export default function AccountDetails() {
               `${place.city || ""}, ${place.state || ""}, ${place.country || ""}`
                 .replace(/,\s*,/g, ",")
                 .replace(/^\s*,|,\s*$/g, "");
-            setValue("location", address, { shouldDirty: true });
+            setValue("location", address, { shouldDirty: true, shouldValidate: true});
           }}
         />
         {errors.location && <p className="error">{errors.location.message}</p>}
@@ -327,7 +352,7 @@ export default function AccountDetails() {
               type="button"
               key={option}
               onClick={() =>
-                setValue("gender", option, { shouldValidate: true })
+                setValue("gender", option, { shouldValidate: true, shouldDirty: true })
               }
               className={`px-4 py-2 cursor-pointer rounded-full border capitalize transition text-sm leading-5 bg-g-600 text-g-200 border-g-500 font-medium ${
                 gender === option ? "border-primary" : "hover:bg-g-700"
