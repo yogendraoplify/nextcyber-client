@@ -5,11 +5,12 @@ import React, { useCallback, useEffect } from "react";
 import { useFormContext } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function TechnicalForm({ showErrors = false }) {
+export default function TechnicalForm() {
   const {
     register,
     watch,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useFormContext();
 
@@ -28,6 +29,11 @@ export default function TechnicalForm({ showErrors = false }) {
   useEffect(() => {
     fetchDropdowns();
   }, [fetchDropdowns]);
+
+  useEffect(() => {
+    register("contractType", { required: "Contract type is required" });
+    register("remotePolicy", { required: "Remote policy is required" });
+  }, [register]);
 
   const pillClass = (isActive) =>
     `px-2 py-1 rounded-full border transition text-xs leading-4 font-medium ${
@@ -49,7 +55,9 @@ export default function TechnicalForm({ showErrors = false }) {
               <button
                 type="button"
                 key={option}
-                onClick={() => setValue("contractType", option)}
+                onClick={() =>
+                  setValue("contractType", option, { shouldValidate: true })
+                }
                 className={`px-4 py-2 rounded-full cursor-pointer capitalize border bg-g-600 transition text-sm leading-5 font-medium ${
                   contractType === option
                     ? "text-white border-primary"
@@ -58,7 +66,13 @@ export default function TechnicalForm({ showErrors = false }) {
               >
                 {option.toLowerCase()}
               </button>
-            )
+            ),
+          )}
+
+          {errors.contractType && (
+            <p className="text-dark-red text-sm mt-1">
+              {errors.contractType.message}
+            </p>
           )}
         </div>
       </div>
@@ -73,7 +87,9 @@ export default function TechnicalForm({ showErrors = false }) {
             <button
               type="button"
               key={option}
-              onClick={() => setValue("remotePolicy", option)}
+              onClick={() =>
+                setValue("remotePolicy", option, { shouldValidate: true })
+              }
               className={`px-4 py-2 rounded-full border capitalize bg-g-600 cursor-pointer transition text-sm leading-5 font-medium ${
                 remotePolicy === option
                   ? "text-white border-primary"
@@ -83,6 +99,12 @@ export default function TechnicalForm({ showErrors = false }) {
               {option.toLowerCase()}
             </button>
           ))}
+
+          {errors.remotePolicy && (
+            <p className="text-dark-red text-sm mt-1">
+              {errors.remotePolicy.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -99,7 +121,7 @@ export default function TechnicalForm({ showErrors = false }) {
               "AWS Certified SysOps Administrator - Associate",
             ]}
             rules={{ required: "Certificates are required" }}
-            showErrors={showErrors}
+            showErrors={errors.certificates ? true : false}
           />
 
           <div className="flex gap-2 mt-4 flex-wrap">
@@ -122,7 +144,7 @@ export default function TechnicalForm({ showErrors = false }) {
             multiple
             options={skillsDropdown}
             rules={{ required: "Skills are required" }}
-            showErrors={showErrors}
+            showErrors={errors.skills ? true : false}
           />
 
           <div className="flex gap-2 mt-4 flex-wrap">
