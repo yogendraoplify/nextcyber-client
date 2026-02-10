@@ -16,7 +16,6 @@ import { SaveButton } from "../ui/SaveButton";
 export default function StudentProfilePage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [validatedSteps, setValidatedSteps] = useState(new Set());
   const [loading, setLoading] = useState(false);
   const { user } = useSelector((state) => state.auth);
 
@@ -74,7 +73,8 @@ export default function StudentProfilePage() {
     });
   }, [user, methods]);
 
-  const { control, trigger, handleSubmit, getValues, clearErrors } = methods;
+  const { control, trigger, handleSubmit, getValues, clearErrors, setError } =
+    methods;
 
   const eduFieldArray = useFieldArray({ control, name: "education" });
   const expFieldArray = useFieldArray({ control, name: "workExperience" });
@@ -111,32 +111,18 @@ export default function StudentProfilePage() {
     },
   ];
 
-  const validateCurrentStep = async () => {
-    const fields = steps[step].fields;
-    if (fields && fields.length > 0) {
-      return await trigger(fields);
-    }
-    return true;
-  };
-
-  const onNext = async () => {
-    const isValid = await validateCurrentStep();
-    setValidatedSteps((prev) => new Set([...prev, step]));
-
-    if (!isValid) {
-      toast.error("Please fill all required fields");
-      return;
-    }
-
-    setStep((s) => Math.min(steps.length - 1, s + 1));
-  };
-
   const onBack = () => {
     setStep((s) => Math.max(0, s - 1));
   };
   let toastId;
+
   const onSubmit = async (data) => {
+    if (step === 1 && data.resume === null) {
+      setError("resume", { type: "manual", message: "Resume is required" });
+      return;
+    }
     const formData = new FormData();
+
     Object.entries(data).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
 
@@ -149,20 +135,14 @@ export default function StudentProfilePage() {
       }
     });
 
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
     setLoading(true);
-    toastId = toast.loading("Updating Profile...");
+    const toastId = toast.loading("Updating Profile...");
+
     try {
       const { data } = await updateStudentApi(formData);
-      toast.success("Profile Updated!");
-      toast.dismiss(toastId);
-      router.push("/dashboard");
+      toast.success(data.message || "Profile Updated!");
     } catch (error) {
-      console.log(error);
-      toast.error("Request Failed. Please Try Again!");
+      toast.error(error.response?.data?.message || "Something went wrong");
     } finally {
       toast.dismiss(toastId);
       setLoading(false);
@@ -181,13 +161,10 @@ export default function StudentProfilePage() {
 
           <div className="rounded-[10px] p-0.5 bg-gradient-to-r from-[#2F3031] to-[#1B1C1E] mt-10">
             <div className="p-10 bg-g-800 rounded-lg">
-              {step === 0 && (
-                <AccountDetails showErrors={validatedSteps.has(0)} />
-              )}
+              {step === 0 && <AccountDetails />}
 
               {step === 1 && (
                 <ProfileForm
-                  showErrors={validatedSteps.has(1)}
                   educationList={eduFieldArray.fields}
                   onOpenAddEducation={() => {
                     setEduEditIndex(null);
@@ -211,9 +188,7 @@ export default function StudentProfilePage() {
                 />
               )}
 
-              {step === 2 && (
-                <TechnicalForm showErrors={validatedSteps.has(2)} />
-              )}
+              {step === 2 && <TechnicalForm />}
 
               <div className="flex justify-end gap-3.5 mt-8">
                 {step > 0 && (

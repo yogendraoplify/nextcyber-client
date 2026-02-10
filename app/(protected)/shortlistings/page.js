@@ -17,12 +17,16 @@ import useDidChange from "@/hooks/useDidChange";
 
 export default function ShortlistingsPage() {
   const { user } = useSelector((state) => state.auth);
-  const { shortlistedCandidates, shortListingTotalPages, shortlistingCurrentPage } =
-    useSelector((state) => state.candidate);
+  const {
+    shortlistedCandidates,
+    shortListingTotalPages,
+    shortlistingCurrentPage,
+  } = useSelector((state) => state.candidate);
   const [page, setPage] = useState(shortlistingCurrentPage || 1);
   const [pageLimit, setPageLimit] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const [debounceSearchTerm, setDebounceSearchTerm] = useState("");
+  const [isSearched, setIsSearched] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [locationSearch, setLocationSearch] = useState("");
@@ -90,6 +94,7 @@ export default function ShortlistingsPage() {
   };
 
   const handleSearch = () => {
+    setIsSearched(true);
     const params = buildParams();
     setLoading(true);
     dispatch(asyncShortlistedCandidates(params)).then(() => setLoading(false));
@@ -108,9 +113,11 @@ export default function ShortlistingsPage() {
   };
 
   const handleClearSearch = () => {
-    setLoading(true);
+    if (isSearched) {
+      setLoading(true);
+      dispatch(asyncShortlistedCandidates()).then(() => setLoading(false));
+    }
     setSearchTerm("");
-    dispatch(asyncShortlistedCandidates()).then(() => setLoading(false));
   };
 
   const isFilterApplied = () => {

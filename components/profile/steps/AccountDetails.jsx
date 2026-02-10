@@ -1,117 +1,26 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import SelectField from "@/components/SelectField";
 import Image from "next/image";
-import { ImageUp, Info, Image as LucideImage, X } from "lucide-react";
+import { Image as LucideImage, X } from "lucide-react";
 import toast from "react-hot-toast";
 import LocationSearchInput from "@/components/helper/LocationSearchInput";
-import validateImage from "@/helper/validateImage";
 
-function UploadBox({ title, onChange, error, validationRules, tips }) {
-  const inputRef = useRef(null);
-  const tipRef = useRef(null);
-
-  const [localError, setLocalError] = useState(null);
-  const [tipOpen, setTipOpen] = useState(false);
-
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (tipRef.current && !tipRef.current.contains(e.target)) {
-        setTipOpen(false);
-      }
-    }
-
-    if (tipOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [tipOpen]);
-
-  const handleFile = async (file) => {
-    if (!file) return;
-
-    const validationError = await validateImage(file, validationRules);
-
-    if (validationError) {
-      setLocalError(validationError);
-      onChange(null);
-      return;
-    }
-
-    setLocalError(null);
-    const previewUrl = URL.createObjectURL(file);
-    onChange({ file, preview: previewUrl });
-  };
-
-  return (
-    <div className="flex flex-col w-full">
-      <div className=" flex gap-2 items-center mb-4 relative">
-        <label className="text-g-200 font-medium leading-6 block mb-1">
-          {title}
-        </label>{" "}
-        <Info
-          size={16}
-          className=" text-g-200 cursor-pointer"
-          onClick={() => setTipOpen(true)}
-        />
-        {tipOpen && (
-          <div ref={tipRef} className=" relative z-50 ml-1">
-            <TipsCard tips={tips} />
-          </div>
-        )}
-      </div>
-
-      <div
-        onClick={() => inputRef.current.click()}
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          handleFile(e.dataTransfer.files[0]);
-        }}
-        className={`h-46 border border-dashed rounded-lg
-        bg-[#1B1C1E] flex items-center justify-center text-sm flex-col gap-2.5 cursor-pointer
-        ${error || localError ? "border-dark-red" : "border-[#2F3031]"}`}
-      >
-        <ImageUp className="text-accent-color-1" size={20} />
-        <div className="text-g-200 text-center">
-          <span className="text-accent-color-1">Upload a file</span> or drag and
-          drop
-        </div>
-
-        <input
-          ref={inputRef}
-          type="file"
-          hidden
-          accept={validationRules.formats.join(",")}
-          onChange={(e) => handleFile(e.target.files[0])}
-        />
-      </div>
-
-      {(error || localError) && (
-        <p className="text-dark-red text-xs mt-1">{error || localError}</p>
-      )}
-    </div>
-  );
-}
-
-export default function AccountDetails({ showErrors = true }) {
+export default function AccountDetails() {
   const {
     register,
     setValue,
     watch,
-    control,
     formState: { errors },
   } = useFormContext();
 
   const fileRef = useRef(null);
   const gender = watch("gender");
   const file = watch("profilePicture");
-  const profileBanner = watch("profileBanner");
-  const profilePicture = watch("profilePicture");
+  const bannerFile = watch("profileBanner");
+  const bannerRef = useRef(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
 
   const [preview, setPreview] = useState(null);
 
@@ -122,6 +31,14 @@ export default function AccountDetails({ showErrors = true }) {
       setPreview(null);
     }
   }, [file]);
+
+  useEffect(() => {
+    if (bannerFile instanceof File) {
+      setBannerPreview(URL.createObjectURL(bannerFile));
+    } else {
+      setBannerPreview(null);
+    }
+  }, [bannerFile]);
 
   const handleSelect = (e) => {
     const f = e.target.files?.[0];
@@ -158,6 +75,57 @@ export default function AccountDetails({ showErrors = true }) {
     setValue("profilePicture", f, { shouldValidate: true });
   };
 
+  const handleBannerSelect = (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+
+    if (!f.type.startsWith("image/")) {
+      toast.error("Only image files allowed");
+      return;
+    }
+
+    if (f.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    if (f.width / f.height < 3.5) {
+      toast.error("aspects ratio must be 4:1");
+      return;
+    }
+
+    setValue("profileBanner", f, { shouldValidate: true });
+  };
+
+  const handleBannerDrop = (e) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files?.[0];
+    if (!f) return;
+
+    if (!f.type.startsWith("image/")) {
+      toast.error("Only image files allowed");
+      return;
+    }
+
+    if (f.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+    console.log(f.width, f.height < 3.5);
+    if (f.width / f.height < 3.5) {
+      toast.error("aspects ratio must be 4:1");
+      return;
+    }
+
+    setValue("profileBanner", f, { shouldValidate: true });
+  };
+
+  const removeBanner = () => {
+    setValue("profileBanner", null, { shouldValidate: true });
+    setBannerPreview(null);
+    if (bannerRef.current) bannerRef.current.value = "";
+  };
+
   const removeImage = () => {
     setValue("profilePicture", null, { shouldValidate: true });
     setPreview(null);
@@ -168,93 +136,132 @@ export default function AccountDetails({ showErrors = true }) {
     register("profilePicture", {
       required: "Profile picture is required",
     });
+
+    register("profileBanner", {
+      required: "Profile banner is required",
+    });
   }, [register]);
 
   return (
     <div className="grid grid-cols-2 gap-x-6 gap-y-8">
-      <div className="col-span-2 gap-y-6 flex gap-5">
+      <div className="col-span-2 gap-y-6 flex gap-6">
         <div className="w-1/2">
-          <Controller
-            name="profilePicture"
-            control={control}
-            render={({ field }) => (
-              <UploadBox
-                title="Profile Picture"
-                {...field}
-                error={errors.profilePicture?.message}
-                validationRules={{
-                  maxSizeMB: 1,
-                  minWidth: 200,
-                  minHeight: 200,
-                  aspectRatio: 1,
-                  formats: [
-                    "image/png",
-                    "image/jpeg",
-                    "image/jpg",
-                    "image/svg+xml",
-                  ],
-                }}
-                tips={["Use a clear headshot", "Prefer transparent background"]}
-              />
+          <label className="text-g-200 font-medium leading-6 block mb-1">
+            Profile Picture <span className="text-dark-red">*</span>
+          </label>
+
+          <div
+            className={`${
+              !preview && !file?.url && "border border-dashed border-g-200 p-5 "
+            } rounded text-center cursor-pointer`}
+            onClick={() => fileRef.current.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleDrop}
+          >
+            {preview || file?.url ? (
+              <div className="relative w-fit">
+                <Image
+                  src={preview || file?.url}
+                  alt="Preview"
+                  width={50}
+                  height={50}
+                  className="rounded-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeImage();
+                  }}
+                  className="bg-dark-red absolute -top-0.5 -right-0.5 p-0.5 rounded-full"
+                >
+                  <X size={12} className=" text-g-100" />
+                </button>
+              </div>
+            ) : (
+              <div className="select-none text-sm font-medium text-g-200 flex flex-col items-center justify-center gap-1">
+                <LucideImage size={20} />
+                <p>
+                  <span className="text-primary">Upload an image</span> or drag
+                  and drop
+                </p>
+                <p>PNG, JPG, JPEG, GIF • Max 5MB</p>
+              </div>
             )}
+          </div>
+
+          <input
+            type="file"
+            ref={fileRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleSelect}
           />
 
-          {(preview || profilePicture?.preview || file?.url) && (
-            <div className="relative mt-2 rounded-lg w-32 h-32">
-              <Image
-                src={preview || profilePicture?.preview || file?.url}
-                height={128}
-                width={128}
-                alt="Profile"
-                className="rounded-lg object-cover w-32 h-32"
-              />
-              <button
-                type="button"
-                onClick={removeImage}
-                className="absolute top-2 right-2 bg-g-700 rounded-full p-1 hover:bg-g-600"
-              >
-                <X className="w-4 h-4 text-g-200" />
-              </button>
-            </div>
+          {errors.profilePicture && (
+            <p className="mt-1 text-sm text-red-400">
+              {errors.profilePicture.message}
+            </p>
           )}
         </div>
-        <div className="w-1/2">
-          <Controller
-            name="profileBanner"
-            control={control}
-            render={({ field }) => (
-              <UploadBox
-                title="Banner Image"
-                {...field}
-                error={errors.profileBanner?.message}
-                validationRules={{
-                  maxSizeMB: 3,
-                  minWidth: 1200,
-                  minHeight: 300,
-                  aspectRatio: 4,
-                  formats: [
-                    "image/png",
-                    "image/jpeg",
-                    "image/jpg",
-                    "image/webp",
-                  ],
-                }}
-                tips={[
-                  "Keep it centered and not stretched",
-                  "Prefer transparent background",
-                ]}
-              />
+        <div className="col-span-2 w-1/2">
+          <label className="text-g-200 font-medium leading-6 block mb-1">
+            Profile Banner <span className="text-dark-red">*</span>
+          </label>
+
+          <div
+            className={`${
+              !bannerPreview &&
+              !bannerFile?.url &&
+              "border border-dashed border-g-200 p-5"
+            } rounded cursor-pointer`}
+            onClick={() => bannerRef.current.click()}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={handleBannerDrop}
+          >
+            {bannerPreview || bannerFile?.url ? (
+              <div className="relative w-full h-40">
+                <Image
+                  src={bannerPreview || bannerFile?.url}
+                  alt="Banner Preview"
+                  fill
+                  className="rounded-lg object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeBanner();
+                  }}
+                  className="bg-dark-red absolute top-2 right-2 p-1 rounded-full"
+                >
+                  <X size={14} className="text-g-100" />
+                </button>
+              </div>
+            ) : (
+              <div className="select-none text-sm font-medium text-g-200 flex flex-col items-center justify-center gap-1 h-40">
+                <LucideImage size={24} />
+                <p>
+                  <span className="text-primary">Upload a banner</span> or drag
+                  and drop
+                </p>
+                <p>PNG, JPG, JPEG • Max 5MB</p>
+              </div>
             )}
+          </div>
+
+          <input
+            type="file"
+            ref={bannerRef}
+            className="hidden"
+            accept="image/*"
+            onChange={handleBannerSelect}
           />
 
-          {profileBanner?.preview && (
-            <Image
-              src={profileBanner.preview}
-              height={64}
-              width={64}
-              alt="Profile"
-              className="mt-2 rounded-lg object-cover h-20 w-full"
-            />
+          {errors.profileBanner && (
+            <p className="mt-1 text-sm text-red-400">
+              {errors.profileBanner.message}
+            </p>
           )}
         </div>
       </div>
@@ -270,7 +277,9 @@ export default function AccountDetails({ showErrors = true }) {
           className="w-full py-4 px-5 rounded-lg border text-g-300 outline-none bg-g-700 border-g-600"
           placeholder="Enter first name"
         />
-        {showErrors && <p className="error">{errors.firstName?.message}</p>}
+        {errors.firstName && (
+          <p className="error">{errors.firstName.message}</p>
+        )}
       </div>
       <div>
         <label className="text-g-200 font-medium leading-6 block mb-1">
@@ -281,7 +290,7 @@ export default function AccountDetails({ showErrors = true }) {
           className="w-full py-4 px-5 rounded-lg border text-g-300 outline-none bg-g-700 border-g-600"
           placeholder="Enter last name"
         />
-        {showErrors && <p className="error">{errors.lastName?.message}</p>}
+        {errors.lastName && <p className="error">{errors.lastName.message}</p>}
       </div>
       <div>
         <label className="text-g-200 font-medium leading-6 block mb-1">
@@ -297,7 +306,7 @@ export default function AccountDetails({ showErrors = true }) {
             setValue("location", address, { shouldDirty: true });
           }}
         />
-        {showErrors && <p className="error">{errors.location?.message}</p>}
+        {errors.location && <p className="error">{errors.location.message}</p>}
       </div>
       <SelectField
         label="Currency"
@@ -305,7 +314,7 @@ export default function AccountDetails({ showErrors = true }) {
         options={["INR", "USD", "EUR"]}
         placeholder="Select currency"
         rules={{ required: "Currency required" }}
-        showErrors={showErrors}
+        showErrors={errors.currency ? true : false}
       />
 
       <div className="col-span-2">
@@ -328,7 +337,7 @@ export default function AccountDetails({ showErrors = true }) {
             </button>
           ))}
         </div>
-        {showErrors && errors.gender && (
+        {errors.gender && (
           <p className="mt-1 text-sm text-red-400">{errors.gender.message}</p>
         )}
       </div>
@@ -338,36 +347,59 @@ export default function AccountDetails({ showErrors = true }) {
         name="nationalities"
         multiple
         options={["India", "USA", "Canada"]}
-        showErrors={showErrors}
+        showErrors={errors.nationalities ? true : false}
       />
       <SelectField
         label="Language"
         name="languages"
         multiple
         options={["English", "Hindi", "Gujarati"]}
-        showErrors={showErrors}
+        showErrors={errors.languages ? true : false}
       />
 
       <div>
         <label className="text-g-200 font-medium leading-6 block mb-1">
-          Expected Salary
+          Expected Salary <span className="text-dark-red">*</span>
         </label>
         <input
-          {...register("expectedSalary")}
+          {...register("expectedSalary", {
+            message: "Expected salary must be a number",
+            validate: (value) =>
+              value === "" ||
+              !isNaN(value) ||
+              "Expected salary must be a number",
+            required: "Expected salary required",
+          })}
           className="w-full py-4 px-5 rounded-lg border text-g-300 outline-none bg-g-700 border-g-600"
           placeholder="Enter your salary"
         />
+        {errors.expectedSalary && (
+          <p className="text-dark-red text-sm mt-1">
+            {errors.expectedSalary.message}
+          </p>
+        )}
       </div>
 
       <div>
         <label className="text-g-200 font-medium leading-6 block mb-1">
-          Hourly Rate
+          Hourly Rate <span className="text-dark-red">*</span>
         </label>
         <input
-          {...register("hourlyRate")}
+          {...register("hourlyRate", {
+            message: "Hourly rate must be a number",
+            validate: (value) =>
+              value === "" || !isNaN(value) || "Hourly rate must be a number",
+            required: "Hourly rate required",
+          })}
           className="w-full py-4 px-5 rounded-lg border text-g-300 outline-none bg-g-700 border-g-600"
           placeholder="Enter your hourly rate"
         />
+
+        {errors.hourlyRate && (
+          <p className="text-dark-red text-sm mt-1">
+            {errors.hourlyRate.message}
+          </p>
+        )}
       </div>
     </div>
   );

@@ -54,8 +54,8 @@ describe("CandidateFilter Component", () => {
       experience: "",
       skills: [],
       salaryRange: { min: 0, max: 0 },
-      contractType: "",
-      remotePolicy: "",
+      contractType: [],
+      remotePolicy: [],
       experienceRange: { min: 0, max: 10 },
     },
   };

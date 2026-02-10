@@ -13,7 +13,6 @@ export default function ProfileForm({
   onOpenAddExperience,
   onEditExperience,
   onRemoveExperience,
-  showErrors = true,
 }) {
   const {
     watch,
@@ -57,9 +56,7 @@ export default function ProfileForm({
   };
 
   useEffect(() => {
-    register("resume", {
-      required: "Resume is required",
-    });
+    register("resume");
   }, [register]);
 
   return (
@@ -115,7 +112,7 @@ export default function ProfileForm({
           onChange={handleSelect}
         />
 
-        {showErrors && errors.resume && (
+        {errors.resume && (
           <p className="mt-1 text-sm text-red-400">{errors.resume.message}</p>
         )}
       </div>

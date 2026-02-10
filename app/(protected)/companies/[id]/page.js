@@ -61,7 +61,7 @@ function CompanyDetailPage({ params }) {
       <div className=" rounded-lg overflow-hidden">
         <div className="relative w-full h-[200px]">
           <Image
-            src="/company-banner.jpg"
+            src={company?.profileBanner?.url || "/company-banner.jpg"}
             alt="company-banner"
             fill
             className="object-cover"
