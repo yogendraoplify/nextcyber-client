@@ -124,6 +124,7 @@ export default function Pricing() {
   };
 
   const userSubscriptionType = user?.subscription?.type;
+  const userSubscriptionBillingCycle = user?.subscription?.billingCycle;
 
   return (
     <section className="bg-g-900">
@@ -168,9 +169,13 @@ export default function Pricing() {
           const currentSubs =
             user?.subscription &&
             userSubscriptionType ===
-              plan.name.split(" ").join("_").toUpperCase()
-            // user?.subscription.billingCycle === plan.billingCycle;
-            console.log("currentSubs", userSubscriptionType, plan.name.split(" ").join("_").toUpperCase());
+              plan.name.split(" ").join("_").toUpperCase() &&
+            userSubscriptionBillingCycle === plan.billingCycle;
+          console.log(
+            "currentSubs",
+            userSubscriptionType,
+            plan.name.split(" ").join("_").toUpperCase()
+          );
           return (
             <div key={plan.id}>
               <div className=" border border-g-500 rounded-[20px] p-5">
@@ -211,6 +216,9 @@ export default function Pricing() {
                     index === 0 || currentSubs
                       ? "cursor-not-allowed"
                       : "cursor-pointer"
+                  } ${
+                    index === 0 &&
+                    "bg-gradient-to-b from-accent-color-1 to-primary text-white"
                   } ${
                     currentSubs &&
                     "bg-gradient-to-b from-accent-color-1 to-primary text-white"
