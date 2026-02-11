@@ -73,7 +73,6 @@ export default function CompanyFilter({
       sectors: (FormData.sectors || []).join(","),
       companySize: FormData.companySize || "",
     };
-    console.log("Applying filters with params:", params);
     dispatch(asyncGetCompanies(params)).then((data) => {
       setLoading(false);
       setLoadingLocal((prev) => ({ ...prev, applyLoading: false }));

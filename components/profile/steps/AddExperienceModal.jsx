@@ -88,6 +88,7 @@ export default function AddExperienceModal({
             type="date"
             value={form.startDate}
             onChange={handleChange("startDate")}
+            aria-label="start-date"
             className="w-full py-4 px-5 rounded-lg border text-g-100 outline-none bg-g-700 border-g-600 cursor-pointer"
           />
         </div>
@@ -100,6 +101,7 @@ export default function AddExperienceModal({
             type="date"
             value={form.endDate}
             onChange={handleChange("endDate")}
+            aria-label="end-date"
             className="w-full py-4 px-5 rounded-lg border text-g-100 outline-none bg-g-700 border-g-600 cursor-pointer"
           />
         </div>

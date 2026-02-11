@@ -17,10 +17,6 @@ jest.mock("next/link", () => {
 });
 
 describe("Footer component", () => {
-  beforeEach(() => {
-    jest.spyOn(console, "log").mockImplementation(() => {});
-  });
-
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -85,11 +81,6 @@ describe("Footer component", () => {
 
     fireEvent.change(input, { target: { value: "user@test.com" } });
     fireEvent.click(submitBtn);
-
-    expect(console.log).toHaveBeenCalledWith(
-      "Email submitted:",
-      "user@test.com",
-    );
 
     expect(input.value).toBe("");
   });

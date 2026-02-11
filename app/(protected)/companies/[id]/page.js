@@ -24,10 +24,9 @@ function CompanyDetailPage({ params }) {
   const getCompany = async () => {
     try {
       const { data } = await getCompanyProfileApi(id);
-      console.log(data.company);
       setCompany(data.company);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching company profile:", error);
     }
   };
   const applyJob = async (id) => {

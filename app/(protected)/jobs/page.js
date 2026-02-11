@@ -66,7 +66,6 @@ function JobsPage() {
   }, [buildParams]);
 
   useEffect(() => {
-    console.log("Jobs updated:", jobs?.length);
     if (jobs?.length === 0) fetchJobs();
   }, []);
 
@@ -77,7 +76,6 @@ function JobsPage() {
   };
 
   const applyJob = (id) => {
-    console.log("Applying to job with ID:", id);
     setJobId(id);
     setJobOpen(true);
   };

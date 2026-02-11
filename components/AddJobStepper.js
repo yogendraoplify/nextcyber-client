@@ -94,7 +94,6 @@ export default function AddJobStepper() {
     return await trigger(fields);
   };
   const goNext = async () => {
-    console.log("Next");
 
     setValidatedSteps((prev) => new Set([...prev, activeStep]));
 

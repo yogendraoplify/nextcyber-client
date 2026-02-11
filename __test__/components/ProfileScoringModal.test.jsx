@@ -7,9 +7,6 @@ import {
 import "@testing-library/jest-dom";
 import ProfileScoringModal from "@/components/modal/ProfileScoreModal";
 
-/* =====================================================
-   MOCK DATA
-===================================================== */
 
 const mockData = {
   overallPercentage: 56,
@@ -56,12 +53,9 @@ const mockData = {
   },
 };
 
-/* =====================================================
-   TEST SUITE
-===================================================== */
+
 
 describe("ProfileScoringModal Component", () => {
-  /* ---------- CONDITIONAL RENDER ---------- */
 
   test("does not render when isOpen is false", () => {
     const { container } = render(
@@ -87,7 +81,6 @@ describe("ProfileScoringModal Component", () => {
     expect(container.firstChild).toBeNull();
   });
 
-  /* ---------- BASIC RENDER ---------- */
 
   test("renders modal title and overall percentage", () => {
     render(
@@ -107,7 +100,6 @@ describe("ProfileScoringModal Component", () => {
     ).toBeInTheDocument();
   });
 
-  /* ---------- SECTIONS ---------- */
 
   test("renders section titles and items", () => {
     render(

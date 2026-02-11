@@ -20,7 +20,6 @@ export default function JobApplyModel({ isOpen, onClose, id }) {
       setLoading(false);
       onClose();
     } catch (error) {
-      console.log(error);
       setLoading(false);
       toast.error(error.response?.data?.message || "Failed to apply job");
     }

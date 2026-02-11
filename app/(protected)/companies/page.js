@@ -71,7 +71,6 @@ function CompaniesPage() {
     setLoading(true);
     setIsSearched(true);
     const params = buildParams();
-    console.log("Searching with params:", params);
     dispatch(asyncGetCompanies(params, setLoading)).then((data) => {
       setTotalPages(data?.totalPages || 1);
       setLoading(false);
@@ -165,7 +164,7 @@ function CompaniesPage() {
             <button
               disabled={
                 loading ||
-                (searchTerm.trim() === "" && filterData.location.trim() === "")
+                (searchTerm?.trim() === "" && filterData?.location?.trim() === "")
               }
               onClick={handleSearch}
               className="bg-primary rounded-lg px-8 py-3.5 text-gray-300 cursor-pointer"

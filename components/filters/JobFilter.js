@@ -248,7 +248,6 @@ export default function JobFilter({
             options={skillsDropdown}
             value={filterData?.skills}
             onChange={(value) =>
-              console.log(value) ||
               setFilterData((prev) => ({ ...prev, skills: value }))
             }
             multiple

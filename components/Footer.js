@@ -12,10 +12,8 @@ const Footer = () => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.log("Invalid email format");
       return;
     }
-    console.log("Email submitted:", email);
     setEmail("");
   };
 

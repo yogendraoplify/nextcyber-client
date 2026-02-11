@@ -47,7 +47,6 @@ export default function JobDetails({ form, showErrors }) {
         </label>
         <LocationSearchInput
           onPlaceSelected={(locationData) => {
-            console.log(locationData);
             setValue(
               "jobLocation",
               `${locationData?.city}, ${locationData?.state}, ${locationData?.country}`,

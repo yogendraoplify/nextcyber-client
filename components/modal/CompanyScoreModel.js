@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { XCircle } from "lucide-react";
 
 export default function CompanyScoreModel({ isOpen, onClose, profileScore }) {
-  console.log("Profile Score Data:", profileScore);
   if (!isOpen || !profileScore) return null;
 
   const { overallPercentage, sectionPercentages } = profileScore;

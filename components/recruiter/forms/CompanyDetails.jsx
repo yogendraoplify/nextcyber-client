@@ -101,7 +101,6 @@ export default function CompanyDetails() {
 
       const { data: res } = await updateCompanyApi(payload);
       toast.success("Company details updated successfully");
-      console.log(res);
     } catch (error) {
       toast.error(getErrorMessage(error || "Failed to update company details"));
     } finally {

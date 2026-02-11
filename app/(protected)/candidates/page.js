@@ -78,7 +78,6 @@ export default function CandidatesPage() {
   };
 
   const handleFavoriteToggle = async (candidate) => {
-    console.log("Toggling favorite for candidate:", candidate);
     candidate?.favoritedBy
       ?.map(({ company }) => company.id)
       .includes(user?.companyProfile.id)
