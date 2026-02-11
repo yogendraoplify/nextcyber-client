@@ -55,7 +55,6 @@ export default function NotificationsPanel() {
   };
 
   useEffect(() => {
-    console.log("Fetching notifications...", notifications);
     fetchNotifications();
   }, []);
 

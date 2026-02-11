@@ -137,8 +137,7 @@ function StudentOnBoarding() {
       dispatch(asyncCurrentUser());
       router.push("/dashboard");
     } catch (error) {
-      console.log(error);
-      toast.error("Request Failed. Please Try Again!");
+      toast.error(error.response?.data?.message || "Request Failed. Please Try Again!");
     } finally {
       setLoading(false);
     }

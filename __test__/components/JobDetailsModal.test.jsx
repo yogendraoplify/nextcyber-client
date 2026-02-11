@@ -3,24 +3,18 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import JobDetailsModal from "@/components/modal/JobDetailsModal";
 
-/* =====================================================
-   MOCK NEXT/IMAGE
-===================================================== */
+
 jest.mock("next/image", () => (props) => {
   // eslint-disable-next-line @next/next/no-img-element
   return <img {...props} alt={props.alt} />;
 });
 
-/* =====================================================
-   MOCK TIME FORMATTER
-===================================================== */
+
 jest.mock("@/helper", () => ({
   timeFormatter: jest.fn(() => "2 days ago"),
 }));
 
-/* =====================================================
-   MOCK DATA
-===================================================== */
+
 const mockJob = {
   id: "job-1",
   title: "Frontend Developer",
@@ -40,9 +34,6 @@ const mockJob = {
   },
 };
 
-/* =====================================================
-   TEST SUITE
-===================================================== */
 
 describe("JobDetailsModal Component", () => {
   test("renders job title and company name", () => {

@@ -162,8 +162,7 @@ export default function SettingsPage() {
       toast.dismiss(toastId);
       router.push("/dashboard");
     } catch (error) {
-      console.log(error);
-      toast.error("Request Failed. Please Try Again!");
+      toast.error(error.response?.data?.message || "Failed to update profile");
     } finally {
       toast.dismiss(toastId);
       setLoading(false);

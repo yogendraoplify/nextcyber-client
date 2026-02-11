@@ -14,7 +14,7 @@ function JobsTable() {
         const { data } = await companyjobApi();
         setJobs(data.data.jobs || []);
       } catch (error) {
-        console.log("Error fetching jobs:", error);
+        console.error("Error fetching jobs:", error);
       }
     };
     getJob();
