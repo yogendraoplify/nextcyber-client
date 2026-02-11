@@ -29,6 +29,7 @@ import { createSocket } from "@/utils/socket";
 import { setUser } from "@/store/slices/authSlice";
 import { getErrorMessage } from "@/utils/errMessage";
 import axios from "axios";
+import { getLinkedInAuthUrl } from "@/utils/linkedin";
 
 const hasUpper = (s) => /[A-Z]/.test(s);
 const hasLower = (s) => /[a-z]/.test(s);
@@ -147,6 +148,11 @@ const SignInForm = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLinkedInLogin = () => {
+    const authUrl = getLinkedInAuthUrl();
+    window.location.href = authUrl;
   };
 
   const triggerGoogleLogin = () => {
@@ -275,7 +281,10 @@ const SignInForm = () => {
                     />
                   </div>
                   <div className="flex gap-4">
-                    <button className="flex-1 bg-[#1B1C1E] cursor-pointer text-[#9C9C9D] py-2 px-4 border border-[#2F3031] rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors">
+                    <button
+                      className="flex-1 bg-[#1B1C1E] cursor-pointer text-[#9C9C9D] py-2 px-4 border border-[#2F3031] rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+                      onClick={handleLinkedInLogin}
+                    >
                       <FaLinkedin size={20} className="text-white" />
                       LinkedIn
                     </button>
