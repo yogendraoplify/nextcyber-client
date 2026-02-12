@@ -45,8 +45,8 @@ const StudentCard = ({
               onClick={handleFavoriteToggle}
               className={`p-2 rounded-full transition-colors cursor-pointer ${
                 isFavorite
-                  ? "bg-purple-500/20 text-purple-400"
-                  : "bg-zinc-800 text-gray-400 hover:bg-zinc-700"
+                  ? "bg-[#7846EF]/20 text-[#7846EF]"
+                  : "bg-g-600 text-gray-400 hover:bg-g-500"
               }`}
             >
               <Heart

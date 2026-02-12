@@ -77,17 +77,17 @@ const FAQSection = () => {
           {faqItems.map((item) => (
             <div
               key={item.id}
-              className="border-b border-g-600 bg-[#FFFFFF0D] rounded-lg flex flex-col gap-6 overflow-hidden py-3.5 px-7.5"
+              className="border-b border-g-600 bg-[#FFFFFF0D] rounded-lg flex flex-col gap-6 overflow-hidden py-3.5 px-7.5 cursor-pointer"
             >
               <button
                 onClick={() => toggleItem(item.id)}
                 className="w-full text-left flex items-start justify-between gap-2.5"
               >
-                <span className="text-g-100 font-medium text-base leading-6">
+                <span className="text-g-100 font-medium text-base leading-6 cursor-pointer">
                   {item.question}
                 </span>
                 <div className="btn-gradient overflow-hidden shrink-0">
-                  <div className=" p-2.5 bg-g-600 rounded-[calc(100%-2px)] whitespace-nowrap text-g-200">
+                  <div className=" p-2.5 bg-g-600 rounded-[calc(100%-2px)] whitespace-nowrap text-g-200 cursor-pointer">
                     {openItems.has(item.id) ? (
                       <Minus size={16} />
                     ) : (

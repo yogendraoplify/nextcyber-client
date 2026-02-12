@@ -171,7 +171,7 @@ export default function LocationSearchInput({
                 onClick={() => (
                   handleSelect(item.place_id), setDropdownVisible(false)
                 )}
-                className="cursor-pointer px-4 py-2 text-gray-300 hover:bg-zinc-700"
+                className="cursor-pointer px-4 py-2 text-gray-300 hover:bg-g-400"
               >
                 {item.description}
               </div>

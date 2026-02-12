@@ -68,18 +68,18 @@ const Footer = () => {
               </h3>
               <ul className="space-y-3">
                 {[
-                  "Freelancer",
-                  "Candidate",
-                  "Company",
-                  "Mentorship",
-                  "About Us",
+                  { name: "Freelancer", url: "/freelancer" },
+                  { name: "Candidate", url: "/candidate" },
+                  { name: "Company", url: "/company" },
+                  { name: "Mentorship", url: "/mentorship" },
+                  { name: "About Us", url: "/about-us" },
                 ].map((link) => (
-                  <li key={link}>
+                  <li key={link.name}>
                     <Link
-                      href=""
+                      href={link.url}
                       className="text-g-200 hover:text-white transition-colors duration-200 text-sm  hover:underline"
                     >
-                      {link}
+                      {link.name}
                     </Link>
                   </li>
                 ))}
@@ -91,18 +91,21 @@ const Footer = () => {
                 RESOURCES
               </h3>
               <ul className="space-y-3">
-                {["Privacy Policy", "Terms Of Use", "Blogs", "Events"].map(
-                  (link) => (
-                    <li key={link}>
-                      <Link
-                        href=""
-                        className="text-g-200 hover:text-white transition-colors duration-200 text-sm hover:underline"
-                      >
-                        {link}
-                      </Link>
-                    </li>
-                  )
-                )}
+                {[
+                  { name: "Privacy Policy", url: "/privacy-policy" },
+                  { name: "Terms Of Use", url: "/terms-and-conditions" },
+                  { name: "Blogs", url: "/blogs" },
+                  { name: "Events", url: "/events" },
+                ].map((link) => (
+                  <li key={link.name}>
+                    <Link
+                      href={link.url}
+                      className="text-g-200 hover:text-white transition-colors duration-200 text-sm hover:underline"
+                    >
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
