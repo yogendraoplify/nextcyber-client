@@ -1,10 +1,13 @@
-import { ChevronDown } from "lucide-react";
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import React from "react";
 
 function Nav() {
-  const isCompany = window?.location?.href.split("/")[3] === "recruiter";
+  const pathname = usePathname();
+
+  const isCompany = pathname?.split("/")[1] === "recruiter";
   return (
     <nav className="sticky top-0 left-0 flex w-full mx-auto bg-g-800 items-center justify-between px-5 sm:px-10 lg:px-20 py-3 z-30">
       <Link href={"/"}>
