@@ -163,7 +163,7 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
     {
       label: "Settings",
       icon: Settings,
-      href: "",
+      href: "/settings",
     },
   ];
 
