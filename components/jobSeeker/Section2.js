@@ -11,7 +11,7 @@ function Section2() {
     "/greenhouse.svg",
   ];
   return (
-    <div className="overflow-hidden px-5 sm:px-10">
+    <div className="overflow-hidden px-5 sm:px-10 hide-scrollbar">
       <style jsx>{`
         @keyframes marquee {
           0% {
@@ -54,9 +54,9 @@ function Section2() {
         </h2>
       </div>
 
-      <div className="relative overflow-auto">
-        <div className="relative overflow-hidden w-7xl mx-auto">
-          <div className="flex items-center animate-marquee">
+      <div className="relative overflow-auto hide-scrollbar">
+        <div className="relative overflow-hidden w-7xl mx-auto hide-scrollbar">
+          <div className="flex items-center animate-marquee hide-scrollbar">
             {companies.map((company, index) => (
               <div key={`first-${index}`} className="flex-shrink-0 mx-5">
                 <img
