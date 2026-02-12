@@ -42,7 +42,7 @@ function Section1() {
         </p>
 
         <Link
-          href={"/auth/signup"}
+          href={"/auth/signup?role=COMPANY"}
           className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-12"
         >
           Let’s go!
