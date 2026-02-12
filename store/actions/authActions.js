@@ -41,6 +41,7 @@ export const asyncSigninUser =
         loading: "Signing in...",
         success: (response) => {
           const { data } = response;
+          dispatch(setUser(data.user));
           createSocket();
           router.push("/dashboard");
           return data.message || "Signed in successfully!";

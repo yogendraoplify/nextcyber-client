@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 
 function Nav() {
+  const isCompany = window?.location?.href.split("/")[3] === "recruiter";
   return (
     <nav className="sticky top-0 left-0 flex w-full mx-auto bg-g-800 items-center justify-between px-5 sm:px-10 lg:px-20 py-3 z-30">
       <Link href={"/"}>
@@ -30,13 +31,13 @@ function Nav() {
 
       <div className="flex items-center space-x-4 text-white text-xs sm:text-base font-medium">
         <Link
-          href={"/auth/signin"}
+          href={`/auth/signin?role=${isCompany ? "COMPANY" : "STUDENT"}`}
           className=" px-4 py-2 sm:px-6 sm:py-3 bg-g-600 border border-g-500 rounded-full"
         >
           Login
         </Link>
         <Link
-          href={"/auth/signup"}
+          href={`/auth/signup?role=${isCompany ? "COMPANY" : "STUDENT"}`}
           className="px-4 py-2 sm:px-6 sm:py-3 bg-primary rounded-full "
         >
           Sign up

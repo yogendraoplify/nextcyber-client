@@ -168,6 +168,7 @@ const SignInForm = () => {
         <div className="min-h-screen flex max-w-[1440px] mx-auto py-20 sm:py-10">
           <div className=" w-full lg:w-1/2 flex items-center justify-center px-5 sm:px-10">
             <div className="w-full max-w-sm">
+              <Link href={"/"}>
               <Image
                 src="/logo.png"
                 className=" h-9 w-auto mb-10"
@@ -175,6 +176,7 @@ const SignInForm = () => {
                 width={329}
                 alt="nextcybr-logo"
               />
+              </Link>
 
               <div className="space-y-1 mb-7.5">
                 <h1 className="text-g-100 text-2xl font-medium leading-tight">
