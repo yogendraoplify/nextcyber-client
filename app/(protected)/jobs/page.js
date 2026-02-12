@@ -49,7 +49,7 @@ function JobsPage() {
       ...Object.fromEntries(
         Object.entries({
           location: locationSearch || "",
-          Search: searchTerm,
+          search: searchTerm,
           contractType: filterData.contractType,
           remotePolicy: filterData.remotePolicy,
         }).filter(([_, value]) => value !== ""),
