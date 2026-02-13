@@ -99,49 +99,6 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
             href: "/notifications",
           },
           {
-            label: "Plans & Subscription",
-            icon: Gem,
-            href: "/plans",
-          },
-        ]
-      : user?.role === "COMPANY"
-      ? [
-          {
-            label: "Dashboard",
-            icon: LayoutDashboard,
-            href: "/dashboard",
-          },
-          {
-            label: "My Profile",
-            icon: User,
-            href: "/profile",
-          },
-          {
-            label: "Job Postings",
-            icon: Briefcase,
-            href: "/add-new-job",
-          },
-          {
-            label: "Candidate Search",
-            icon: Users,
-            href: "/candidates",
-          },
-          {
-            label: "Short Listings",
-            icon: Star,
-            href: "/shortlistings",
-          },
-          {
-            label: "Messaging",
-            icon: MessageCircleMore,
-            href: "/messages",
-          },
-          {
-            label: "Notifications",
-            icon: Bell,
-            href: "/notifications",
-          },
-          {
             label: "Payment & Finances",
             icon: CreditCard,
             href: "/payments",
@@ -151,21 +108,88 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
             icon: Gem,
             href: "/plans",
           },
+          {
+            label: "Support & Help",
+            icon: HelpCircle,
+            href: "",
+          },
+          {
+            label: "Settings",
+            icon: Settings,
+            href: "/settings",
+          },
+          {
+            label: "Logout",
+            icon: LogOut,
+            href: "/auth/signin",
+          },
         ]
-      : [];
+      : user?.role === "COMPANY"
+        ? [
+            {
+              label: "Dashboard",
+              icon: LayoutDashboard,
+              href: "/dashboard",
+            },
+            {
+              label: "My Profile",
+              icon: User,
+              href: "/profile",
+            },
+            {
+              label: "Job Postings",
+              icon: Briefcase,
+              href: "/add-new-job",
+            },
+            {
+              label: "Candidate Search",
+              icon: Users,
+              href: "/candidates",
+            },
+            {
+              label: "Short Listings",
+              icon: Star,
+              href: "/shortlistings",
+            },
+            {
+              label: "Messaging",
+              icon: MessageCircleMore,
+              href: "/messages",
+            },
+            {
+              label: "Notifications",
+              icon: Bell,
+              href: "/notifications",
+            },
+            {
+              label: "Payment & Finances",
+              icon: CreditCard,
+              href: "/payments",
+            },
+            {
+              label: "Plans & Subscription",
+              icon: Gem,
+              href: "/plans",
+            },
+            {
+              label: "Support & Help",
+              icon: HelpCircle,
+              href: "",
+            },
+            {
+              label: "Settings",
+              icon: Settings,
+              href: "/settings",
+            },
+            {
+              label: "Logout",
+              icon: LogOut,
+              href: "/auth/signin",
+            },
+          ]
+        : [];
 
-  const bottomNavItem = [
-    {
-      label: "Support & Help",
-      icon: HelpCircle,
-      href: "",
-    },
-    {
-      label: "Settings",
-      icon: Settings,
-      href: "/settings",
-    },
-  ];
+  const bottomNavItem = [];
 
   const handleLogout = async () => {
     router.replace("/auth/signin");
@@ -187,7 +211,7 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
                 title={collapsed ? item.label : ""}
                 className={clsx(
                   "flex items-center py-4 pr-2.5 pl-6 cursor-pointer gap-4 w-full transition-colors font-medium text-heading-secondary",
-                  isOpen ? "bg-background" : "hover:bg-background"
+                  isOpen ? "bg-background" : "hover:bg-background",
                 )}
               >
                 <IconComponent size={20} />
@@ -211,27 +235,35 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
           );
         }
 
-        return (
+        return item.label !== "Logout" ? (
           <Link
             key={item.label}
             href={item.href}
             title={collapsed ? item.label : ""}
             className={clsx(
               "flex items-center py-4 pr-2.5 gap-4 whitespace-nowrap transition-colors font-semibold text-sm leading-[150%] text-g-100 hover:bg-g-600 rounded-lg mt-1",
-              isActive
-                ? "bg-primary hover:bg-primary"
-                : "hover:bg-background ",
-              collapsed ? "justify-center pl-2.5" : "pl-6"
+              isActive ? "bg-primary hover:bg-primary" : "hover:bg-background ",
+              collapsed ? "justify-center pl-2.5" : "pl-6",
             )}
           >
-            <IconComponent
-              size={20}
-              className={isActive ? "text-g-100" : ""}
-            />
+            <IconComponent size={20} className={isActive ? "text-g-100" : ""} />
             {!collapsed && (
               <span className="text-sm font-medium">{item.label}</span>
             )}
           </Link>
+        ) : (
+          <button
+            onClick={handleLogout}
+            className={clsx(
+              "flex items-center cursor-pointer py-4 pr-2.5 gap-4 w-full transition-colors font-semibold text-sm leading-[150%] text-g-100 hover:bg-g-600",
+              collapseSidebar ? "justify-center pl-2.5" : "pl-6",
+            )}
+          >
+            <LogOut size={20} />
+            {!collapseSidebar && (
+              <span className="text-sm font-medium">Logout</span>
+            )}
+          </button>
         );
       })}
     </>
@@ -244,7 +276,7 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
         <div
           className={clsx(
             "bg-g-800 text-heading-secondary text-sm font-medium h-full flex flex-col justify-between transition-all duration-300",
-            collapseSidebar ? "w-20 items-start" : "w-62"
+            collapseSidebar ? "w-20 items-start" : "w-62",
           )}
         >
           <div
@@ -284,19 +316,6 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
               items={bottomNavItem}
               collapsed={collapseSidebar}
             />
-
-            <button
-              onClick={handleLogout}
-              className={clsx(
-                "flex items-center cursor-pointer py-4 pr-2.5 gap-4 w-full transition-colors font-semibold text-sm leading-[150%] text-g-100 hover:bg-g-600",
-                collapseSidebar ? "justify-center pl-2.5" : "pl-6"
-              )}
-            >
-              <LogOut size={20} />
-              {!collapseSidebar && (
-                <span className="text-sm font-medium">Logout</span>
-              )}
-            </button>
           </div>
         </div>
       </div>
@@ -338,7 +357,7 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
                     toggleMobile();
                   }}
                   className={clsx(
-                    "flex items-center cursor-pointer py-4 pr-2.5 pl-6 gap-4 w-full transition-colors font-semibold text-sm leading-[150%] text-g-100 hover:bg-g-600"
+                    "flex items-center cursor-pointer py-4 pr-2.5 pl-6 gap-4 w-full transition-colors font-semibold text-sm leading-[150%] text-g-100 hover:bg-g-600",
                   )}
                 >
                   <LogOut size={20} />
