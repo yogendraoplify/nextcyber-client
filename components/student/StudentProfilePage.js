@@ -77,7 +77,7 @@ export default function StudentProfilePage() {
     methods;
 
   const eduFieldArray = useFieldArray({ control, name: "education" });
-  const expFieldArray = useFieldArray({ control, name: "workExperience" });
+  const expFieldArray = useFieldArray({ control, name: "workExperience" });``
 
   const [eduModalOpen, setEduModalOpen] = useState(false);
   const [eduEditIndex, setEduEditIndex] = useState(null);

@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRouter } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,6 +10,7 @@ function Section3() {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
   const cardsRef = useRef([]);
+  const router = useRouter();
 
   useEffect(() => {
     // Set initial states to prevent flash of unstyled content
@@ -87,6 +89,8 @@ function Section3() {
     }
   };
 
+  const handleRedirect = ()=> router.push("/auth/signin?role=COMPANY")
+
   return (
     <div
       ref={sectionRef}
@@ -153,7 +157,7 @@ function Section3() {
               Instantly see what certifications, training, and projects will
               make you stand out for the exact role you want.
             </p>
-            <button className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
+            <button onClick={handleRedirect} className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
               Show me the roadmap
             </button>
           </div>
@@ -175,7 +179,7 @@ function Section3() {
               relevant job opportunities, making your job search faster and
               smarter.
             </p>
-            <button className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
+            <button onClick={handleRedirect} className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
               Explore recommended jobs
             </button>
           </div>
@@ -210,7 +214,7 @@ function Section3() {
               Instantly see what certifications, training, and projects will
               make you stand out for the exact role you want.
             </p>
-            <button className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
+            <button onClick={handleRedirect} className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
               Show me the roadmap
             </button>
           </div>

@@ -29,7 +29,7 @@ const NextCyberLanding = () => {
             <div className="flex items-center justify-start space-x-4 mb-7 text-sm leading-4 font-medium">
               <button
                 onClick={() => setActiveTab("Recruiter")}
-                className={`px-4 py-2 rounded-full ${
+                className={`px-4 py-2 rounded-full cursor-pointer ${
                   activeTab === "Recruiter"
                     ? "bg-primary text-white"
                     : "text-g-200 border bg-g-600 border-g-500"
@@ -39,7 +39,7 @@ const NextCyberLanding = () => {
               </button>
               <button
                 onClick={() => setActiveTab("Candidates")}
-                className={`px-4 py-2 rounded-full  transition ${
+                className={`px-4 py-2 rounded-full cursor-pointer  transition ${
                   activeTab === "Candidates"
                     ? "bg-primary text-white"
                     : "bg-g-600 text-g-200 border border-g-500"
