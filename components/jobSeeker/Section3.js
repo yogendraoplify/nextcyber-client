@@ -1,7 +1,8 @@
-"use client"
+"use client";
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRouter } from "next/navigation";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -9,6 +10,7 @@ function Section3() {
   const sectionRef = useRef(null);
   const headingRef = useRef(null);
   const cardsRef = useRef([]);
+  const router = useRouter();
 
   useEffect(() => {
     // Set initial states to prevent flash of unstyled content
@@ -16,7 +18,7 @@ function Section3() {
     cardsRef.current.forEach((card) => {
       const image = card.querySelector("img");
       const textElements = card.querySelectorAll(".text-content > *");
-      
+
       gsap.set(image, { opacity: 0, x: 0, scale: 0.95 });
       gsap.set(textElements, { opacity: 0, y: 20 });
     });
@@ -59,7 +61,7 @@ function Section3() {
             duration: 0.8,
             ease: "power2.out",
           },
-          0
+          0,
         );
 
         // Animate text content with stagger
@@ -72,7 +74,7 @@ function Section3() {
             stagger: 0.1,
             ease: "power2.out",
           },
-          0.2
+          0.2,
         );
       });
     }, sectionRef);
@@ -85,6 +87,8 @@ function Section3() {
       cardsRef.current.push(el);
     }
   };
+
+  const handleRedirect = () => router.push("/auth/signin?role=STUDENT");
 
   return (
     <div
@@ -117,7 +121,10 @@ function Section3() {
               standout version, designed to catch recruiters&apos; attention and
               help you land the job.
             </p>
-            <button className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
+            <button
+              onClick={handleRedirect}
+              className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8"
+            >
               Create my resume
             </button>
           </div>
@@ -152,7 +159,10 @@ function Section3() {
               Instantly see what certifications, training, and projects will
               make you stand out for the exact role you want.
             </p>
-            <button className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
+            <button
+              onClick={handleRedirect}
+              className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8"
+            >
               Show me the roadmap
             </button>
           </div>
@@ -160,7 +170,7 @@ function Section3() {
 
         <div
           ref={addToRefs}
-          className="flex flex-col lg:flex-row items-center gap-12"
+          className="flex flex-col-revers lg:flex-row items-center gap-12"
         >
           <div className="flex-1 text-content">
             <p className="text-sm font-semibold leading-5 tracking-[4%] text-g-300 uppercase">
@@ -209,13 +219,15 @@ function Section3() {
               Instantly see what certifications, training, and projects will
               make you stand out for the exact role you want.
             </p>
-            <button className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8">
+            <button
+              onClick={handleRedirect}
+              className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-8"
+            >
               Show me the roadmap
             </button>
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

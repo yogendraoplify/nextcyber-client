@@ -1,21 +1,6 @@
 "use client";
 
 import React from "react";
-import {
-  Bold,
-  Italic,
-  Underline,
-  List,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
-  Link,
-  Image,
-  FileText,
-  Paperclip,
-  Upload,
-  X,
-} from "lucide-react";
 import QuillEditor from "../QuillEditor";
 import { Controller } from "react-hook-form";
 
