@@ -125,7 +125,14 @@ export default function Pricing() {
 
   const userSubscriptionType = user?.subscription?.type;
   const userSubscriptionBillingCycle = user?.subscription?.billingCycle;
+  const currentSubs = plans.find(
+      (plan) =>
+        plan.name.split(" ").join("_").toUpperCase() === userSubscriptionType &&
+        plan.billingCycle === userSubscriptionBillingCycle
+    );
 
+
+    console.log("currentSubs", currentSubs);
   return (
     <section className="bg-g-900">
       <div className="text-center max-w-xl mx-auto">
@@ -232,7 +239,7 @@ export default function Pricing() {
                     buySubscriptionHandler(payload);
                   }}
                 >
-                  {currentSubs ? "Currently Active" : plan.ctaText}
+                  {currentSubs ? "Currently Active" : (plan.ctaText === "Free") ? "Free" : currentSubs && currentSubs.price > plan.price ? "Not Downgradable" : "Upgrade Now"}
                 </button>
               </div>
 
