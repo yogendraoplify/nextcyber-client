@@ -23,7 +23,7 @@ export default function ShortlistingsPage() {
     shortlistingCurrentPage,
   } = useSelector((state) => state.candidate);
   const [page, setPage] = useState(shortlistingCurrentPage || 1);
-  const [pageLimit, setPageLimit] = useState(10);
+  const [pageLimit, setPageLimit] = useState(12);
   const [searchTerm, setSearchTerm] = useState("");
   const [debounceSearchTerm, setDebounceSearchTerm] = useState("");
   const [isSearched, setIsSearched] = useState(false);

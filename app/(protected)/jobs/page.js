@@ -52,6 +52,7 @@ function JobsPage() {
           search: searchTerm,
           contractType: filterData.contractType,
           remotePolicy: filterData.remotePolicy,
+          limit: 12,
         }).filter(([_, value]) => value !== ""),
       ),
     };
