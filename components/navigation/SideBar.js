@@ -111,7 +111,7 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
           {
             label: "Support & Help",
             icon: HelpCircle,
-            href: "",
+            href: "/support-help",
           },
           {
             label: "Settings",
@@ -174,7 +174,7 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
             {
               label: "Support & Help",
               icon: HelpCircle,
-              href: "",
+              href: "/support-help",
             },
             {
               label: "Settings",
@@ -253,6 +253,7 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
           </Link>
         ) : (
           <button
+            key={item.label}
             onClick={handleLogout}
             className={clsx(
               "flex items-center cursor-pointer py-4 pr-2.5 gap-4 w-full transition-colors font-semibold text-sm leading-[150%] text-g-100 hover:bg-g-600",

@@ -45,6 +45,7 @@ function CompaniesPage() {
           location: filterData.location || "",
           industry: debouncedSearchTerm,
           companySize: filterData.companySize,
+          limit: 12,
         }).filter(([_, value]) => value !== ""),
       ),
     };

@@ -58,6 +58,7 @@ export default function CandidatesPage() {
         Object.entries({
           search: debounceSearchTerm, // Use debounced search term
           location: locationSearch,
+          limit: 12,
         }).filter(([_, value]) => value !== ""),
       ),
     };
