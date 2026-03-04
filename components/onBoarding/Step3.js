@@ -25,18 +25,23 @@ const Step3 = () => {
           <span className="block">
             {user.role == "STUDENT"
               ? "AI powered resumes that"
-              : "Hire Job Seekers that matches"}
+              : user.role == "COMPANY"
+                ? "Hire Job Seekers that matches"
+                : "Start Your Mentorship"}
           </span>
           <span>
-            {user.role == "COMPANY"
+            {user.role == "STUDENT"
               ? "lands you job"
-              : "your profile with AI help"}
+              : user.role == "COMPANY"
+                ? "your profile with AI help"
+                : "Journey Today"}
           </span>
         </h1>
 
         <p className="text-g-200 text-xl leading-6 max-w-3xl">
-          Use our AI to create resumes in top templates, following industry best
-          practices, and specifically tailored to your target roles.
+          {user.role == "MENTOR"
+            ? "Connect with motivated job seekers and guide them through personalized 1-on-1 or interactive group mentoring sessions."
+            : "Use our AI to create resumes in top templates, following industry best practices, and specifically tailored to your target roles."}
         </p>
       </div>
     </div>

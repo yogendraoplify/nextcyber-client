@@ -15,6 +15,7 @@ import {
   Briefcase,
   User,
   Loader2,
+  ShieldUser,
 } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -83,12 +84,13 @@ const SignInForm = () => {
       });
       setSelectedRole(tab);
     },
-    [router]
+    [router],
   );
 
   const tabs = [
     { id: "COMPANY", label: "Recruiter", icon: Briefcase },
     { id: "STUDENT", label: "Candidate", icon: User },
+    { id: "MENTOR", label: "Mentor", icon: ShieldUser },
   ];
 
   const {
@@ -137,7 +139,7 @@ const SignInForm = () => {
         {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
-        }
+        },
       );
       dispatch(setUser(data.user));
       createSocket();
@@ -152,6 +154,7 @@ const SignInForm = () => {
 
   const handleLinkedInLogin = () => {
     const authUrl = getLinkedInAuthUrl();
+    console.log(authUrl);
     window.location.href = authUrl;
   };
 
@@ -169,13 +172,13 @@ const SignInForm = () => {
           <div className=" w-full lg:w-1/2 flex items-center justify-center px-5 sm:px-10">
             <div className="w-full max-w-sm">
               <Link href={"/"}>
-              <Image
-                src="/logo.png"
-                className=" h-9 w-auto mb-10"
-                height={72}
-                width={329}
-                alt="nextcybr-logo"
-              />
+                <Image
+                  src="/logo.png"
+                  className=" h-9 w-auto mb-10"
+                  height={72}
+                  width={329}
+                  alt="nextcybr-logo"
+                />
               </Link>
 
               <div className="space-y-1 mb-7.5">
