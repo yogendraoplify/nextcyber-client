@@ -151,7 +151,7 @@ function TrainingPage() {
             ))}
           </div>
 
-          {/* Textarea + Actions */}
+          {/* Textarea + Actions + Button */}
           <div className="w-full flex flex-col gap-3 px-10">
             <textarea
               value={prompt}
