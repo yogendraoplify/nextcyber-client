@@ -25,18 +25,23 @@ const Step4 = () => {
           <span className="block">
             {user.role == "STUDENT"
               ? "Personalized roadmap to"
-              : "Keep track of and oversee all your"}
+              : user.role == "COMPANY"
+                ? "Keep track of and oversee all your"
+                : "Mentor One-on-One or in"}
           </span>
           <span>
-            {user.role == "COMPANY"
+            {user.role == "STUDENT"
               ? "stand out instantly"
-              : "job seekers instantly"}
+              : user.role == "COMPANY"
+                ? "job seekers instantly"
+                : "Groups"}
           </span>
         </h1>
 
         <p className="text-g-200 text-xl leading-6 max-w-3xl">
-          Instantly see what certifications, training, and projects will make
-          you stand out for the exact role you want.
+          {user.role == "MENTOR"
+            ? "Offer tailored career guidance privately or conduct group sessions to help multiple job seekers grow together."
+            : "Instantly see what certifications, training, and projects will make you stand out for the exact role you want."}
         </p>
       </div>
     </div>

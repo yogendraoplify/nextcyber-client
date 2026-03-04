@@ -129,7 +129,7 @@ const Step6 = ({ files, setFiles, showErrors = true }) => {
       </div>
 
       {/* Candidate Section */}
-      {user?.role === "STUDENT" ? (
+      {user?.role === "STUDENT" || user?.role === "MENTOR" ? (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <div>
@@ -174,7 +174,7 @@ const Step6 = ({ files, setFiles, showErrors = true }) => {
                     locationData.city && locationData.state
                       ? `${locationData?.city}, ${locationData?.state}, ${locationData?.country}`
                       : "",
-                    { shouldValidate: true, shouldDirty: true }
+                    { shouldValidate: true, shouldDirty: true },
                   )
                 }
               />
@@ -299,7 +299,7 @@ const Step6 = ({ files, setFiles, showErrors = true }) => {
                     locationData.city && locationData.state
                       ? `${locationData?.city}, ${locationData?.state}, ${locationData?.country}`
                       : "",
-                    { shouldValidate: true, shouldDirty: true }
+                    { shouldValidate: true, shouldDirty: true },
                   )
                 }
               />

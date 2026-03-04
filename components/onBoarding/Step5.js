@@ -25,19 +25,25 @@ const Step5 = () => {
           <span className="block">
             {user.role == "STUDENT"
               ? "Showcase your wins and to"
-              : "AI Assistant for Crafting Clear Job "}
+              : user.role == "COMPANY"
+                ? "AI Assistant for Crafting Clear Job "
+                : "Get Recommended to"}
           </span>
           <span>
-            {user.role == "COMPANY"
+            {user.role == "STUDENT"
               ? "your dream job faster"
-              : "Descriptions"}
+              : user.role == "COMPANY"
+                ? "Descriptions"
+                : "Relevant Job Seekers"}
           </span>
         </h1>
 
         <p className="text-g-200 text-xl leading-6 max-w-3xl">
           {user.role == "STUDENT"
             ? "Badges, completed challenges, internships  all displayed as milestones that boost your AI-powered profile score."
-            : "An AI assistant that helps you craft clearer job descriptions and define key responsibilities using keywords or basic role outlines."}
+            : user.role == "COMPANY"
+              ? "An AI assistant that helps you craft clearer job descriptions and define key responsibilities using keywords or basic role outlines."
+              : "Our AI matches you with job seekers from your industry, increasing visibility and helping you get hired faster."}
         </p>
       </div>
     </div>
