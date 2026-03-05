@@ -5,3 +5,5 @@ export const getStudentPlansApi = () =>
 
 export const getCompanyPlansApi = () =>
   axios.get(`/company/subscription-plans`);
+
+export const getMentorPlansApi = () => axios.get(`/mentor/subscription-plans`);

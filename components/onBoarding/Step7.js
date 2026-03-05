@@ -9,6 +9,7 @@ const Step7 = ({ showErrors = true }) => {
   const {
     setValue,
     watch,
+    register,
     formState: { errors },
   } = useFormContext();
 
@@ -16,6 +17,8 @@ const Step7 = ({ showErrors = true }) => {
 
   const contractType = watch("contractType");
   const skills = watch("skills");
+  const domain = watch("domain");
+  const certificates = watch("certificates");
   const remotePolicy = watch("remotePolicy");
   const dispatch = useDispatch();
   const { skillsDropdown } = useSelector((state) => state.dropdown);
@@ -40,6 +43,74 @@ const Step7 = ({ showErrors = true }) => {
     <div className="w-full mx-auto bg-g-900 px-20 pt-20 space-y-10 min-h-[calc(100vh-204px)]">
       {user.role === "MENTOR" ? (
         <div className=" w-1/2 flex flex-col gap-10">
+          <div>
+            <div>
+              <label className="text-g-200 font-medium leading-6 block mb-1">
+                Years of Experience
+              </label>
+              <input
+                {...register("yearsOfExperience", {
+                  required: "Years of experience required",
+                  min: { value: 0, message: "Please enter a valid number" },
+                })}
+                className="w-full py-4 px-5 rounded-lg border text-g-300 outline-none bg-g-700 border-g-600"
+                placeholder="Enter years of experience"
+              />
+              {errors.yearsOfExperience && (
+                <p className="error">{errors.yearsOfExperience.message}</p>
+              )}
+            </div>
+          </div>
+          <div>
+            <SelectField
+              label="Domain"
+              name="domain"
+              placeholder="Domain"
+              showErrors={showErrors}
+              multiple
+              options={
+                ["Web Development", "Data Science", "Cybersecurity"] || []
+              }
+              rules={{
+                validate: (value) =>
+                  value.length > 0 || "Please select at least one domain",
+              }}
+            />
+            <div className="flex gap-2 mt-4 flex-wrap">
+              {domain?.map((domainOption) => (
+                <button key={domainOption} className={`${pillClass(true)}`}>
+                  {domainOption}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <SelectField
+              label="Certificates"
+              name="certificates"
+              placeholder="Certificates"
+              showErrors={showErrors}
+              multiple
+              options={
+                [
+                  "CCNA",
+                  "AWS Certified Cloud Practitioner",
+                  "AWS Certified SysOps Administrator - Associate",
+                ] || []
+              }
+              rules={{
+                validate: (value) =>
+                  value.length > 0 || "Please select at least one certificate",
+              }}
+            />
+            <div className="flex gap-2 mt-4 flex-wrap">
+              {certificates?.map((certificate) => (
+                <button key={certificate} className={`${pillClass(true)}`}>
+                  {certificate}
+                </button>
+              ))}
+            </div>
+          </div>
           <div>
             <SelectField
               label="Skills"

@@ -2,6 +2,7 @@
 import Retry from "@/components/ui/Retry";
 import {
   asyncGetCompanyPlans,
+  asyncGetMentorPlans,
   asyncGetStudentPlans,
 } from "@/store/actions/planAction";
 import { buySubscriptionAPIHandler } from "@/store/actions/subscriptionAction";
@@ -33,8 +34,10 @@ export default function Pricing() {
 
     if (user.role === "STUDENT") {
       dispatch(asyncGetStudentPlans(setError));
-    } else {
+    } else if (user.role === "COMPANY") {
       dispatch(asyncGetCompanyPlans(setError));
+    } else {
+      dispatch(asyncGetMentorPlans(setError));
     }
   };
 
@@ -44,8 +47,10 @@ export default function Pricing() {
 
     if (user.role === "STUDENT") {
       dispatch(asyncGetStudentPlans(setError));
-    } else {
+    } else if (user.role === "COMPANY") {
       dispatch(asyncGetCompanyPlans(setError));
+    } else {
+      dispatch(asyncGetMentorPlans(setError));
     }
   }, [user, plans.length, dispatch]);
 
@@ -116,7 +121,7 @@ export default function Pricing() {
   }
 
   const filteredPlans = plans.filter(
-    (p) => p.billingCycle === billingType || p.price === 0
+    (p) => p.billingCycle === billingType || p.price === 0,
   );
 
   const buySubscriptionHandler = (payload) => {
@@ -126,13 +131,12 @@ export default function Pricing() {
   const userSubscriptionType = user?.subscription?.type;
   const userSubscriptionBillingCycle = user?.subscription?.billingCycle;
   const currentSubs = plans.find(
-      (plan) =>
-        plan.name.split(" ").join("_").toUpperCase() === userSubscriptionType &&
-        plan.billingCycle === userSubscriptionBillingCycle
-    );
+    (plan) =>
+      plan.name.split(" ").join("_").toUpperCase() === userSubscriptionType &&
+      plan.billingCycle === userSubscriptionBillingCycle,
+  );
 
-
-    console.log("currentSubs", currentSubs);
+  console.log("currentSubs", currentSubs);
   return (
     <section className="bg-g-900">
       <div className="text-center max-w-xl mx-auto">
@@ -181,7 +185,7 @@ export default function Pricing() {
           console.log(
             "currentSubs",
             userSubscriptionType,
-            plan.name.split(" ").join("_").toUpperCase()
+            plan.name.split(" ").join("_").toUpperCase(),
           );
           return (
             <div key={plan.id}>
@@ -239,7 +243,13 @@ export default function Pricing() {
                     buySubscriptionHandler(payload);
                   }}
                 >
-                  {currentSubs ? "Currently Active" : (plan.ctaText === "Free") ? "Free" : currentSubs && currentSubs.price > plan.price ? "Not Downgradable" : "Upgrade Now"}
+                  {currentSubs
+                    ? "Currently Active"
+                    : plan.ctaText === "Free"
+                      ? "Free"
+                      : currentSubs && currentSubs.price > plan.price
+                        ? "Not Downgradable"
+                        : "Upgrade Now"}
                 </button>
               </div>
 
