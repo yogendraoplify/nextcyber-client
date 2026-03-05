@@ -17,6 +17,7 @@ import Step6 from "./Step6";
 import Step7 from "./Step7";
 import Step1LeftSide from "./StepLeftSide";
 import { asyncCurrentUser } from "@/store/actions/authActions";
+import { mentorOnboardingApi } from "@/api/mentorApi";
 
 function MentorOnboarding() {
   const router = useRouter();
@@ -39,6 +40,9 @@ function MentorOnboarding() {
       // contractType: "",
       // remotePolicy: "",
       skills: [],
+      domain: [],
+      certificates: [],
+      yearOfExperience: "",
     },
   });
 
@@ -59,9 +63,15 @@ function MentorOnboarding() {
     {
       name: "STEP7",
       // fields: ["contractType", "remotePolicy", "skills"],
-      fields: ["skills"],
+      fields: [
+        "yearOfExperience",
+        "domain",
+        "domain",
+        "certificates",
+        "skills",
+      ],
     },
-  ];  
+  ];
 
   const validateCurrentStep = async () => {
     const currentStepFields = steps[activeStep].fields;
@@ -127,13 +137,21 @@ function MentorOnboarding() {
       formData.append("skills", JSON.stringify(data.skills));
     }
 
+    if (data.domain && data.domain.length > 0) {
+      formData.append("domain", JSON.stringify(data.domain));
+    }
+
+    if (data.certificates && data.certificates.length > 0) {
+      formData.append("certificates", JSON.stringify(data.certificates));
+    }
+
     if (files.profilePicture) {
       formData.append("profilePicture", files.profilePicture);
     }
 
     setLoading(true);
     try {
-      const { data } = await studentOnboardingApi(formData);
+      const { data } = await mentorOnboardingApi(formData);
       toast.success("Onboarding completed successfully!");
       dispatch(asyncCurrentUser());
       router.push("/dashboard");
