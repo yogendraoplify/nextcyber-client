@@ -23,6 +23,7 @@ import {
   Star,
   Bell,
   Gem,
+  Cog,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -187,7 +188,74 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
               href: "/auth/signin",
             },
           ]
-        : [];
+        : [
+            {
+              label: "Dashboard",
+              icon: LayoutDashboard,
+              href: "/dashboard",
+            },
+            {
+              label: "My Profile",
+              icon: User,
+              href: "/profile",
+            },
+            {
+              label: "Candidate Search",
+              icon: Users,
+              href: "/candidates",
+            },
+            {
+              label: "Short Listings",
+              icon: Star,
+              href: "/shortlistings",
+            },
+            {
+              label: "Services",
+              icon: Cog,
+              href: "/services",
+            },
+            {
+              label: "Sessions",
+              icon: CreditCard,
+              href: "/sessions",
+            },
+            {
+              label: "Messaging",
+              icon: MessageCircleMore,
+              href: "/messages",
+            },
+            {
+              label: "Payment & Finances",
+              icon: CreditCard,
+              href: "/payments",
+            },
+            {
+              label: "Notifications",
+              icon: Bell,
+              href: "/notifications",
+            },
+            {
+              label: "Plans & Subscription",
+              icon: Gem,
+              href: "/plans",
+            },
+
+            {
+              label: "Support & Help",
+              icon: HelpCircle,
+              href: "/support-help",
+            },
+            {
+              label: "Settings",
+              icon: Settings,
+              href: "/settings",
+            },
+            {
+              label: "Logout",
+              icon: LogOut,
+              href: "/auth/signin",
+            },
+          ];
 
   const bottomNavItem = [];
 

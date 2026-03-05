@@ -7,7 +7,8 @@ import appSettings from "./slices/appSettingsSlice.js";
 import candidate from "./slices/candidateSlice.js";
 import dropdown from "./slices/dropdownSlice.js";
 import notification from "./slices/notificationSlice.js";
+import blog from "./slices/blogSlice.js";
 
 export const store = configureStore({
-  reducer: { auth, plans, jobs, companies, appSettings, candidate, dropdown, notification },
+  reducer: { auth, plans, jobs, companies, appSettings, candidate, dropdown, notification, blog },
 });
