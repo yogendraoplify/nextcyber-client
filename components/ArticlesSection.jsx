@@ -1,6 +1,17 @@
 "use client";
 
+import { asyncGetBlogs } from "@/store/actions/blogAction";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 export default function ArticlesSection() {
+  const { blogs } = useSelector((state) => state.blog);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (blogs?.length === 0) dispatch(asyncGetBlogs());
+  }, []);
+
   return (
     <div className="space-y-16  pt-17 pb-35 max-w-[1440px] mx-auto">
       <div className=" flex-col xl:flex-row flex gap-10">

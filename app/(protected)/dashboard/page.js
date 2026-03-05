@@ -349,8 +349,8 @@ function DashboardPage() {
             <div className="mt-4 relative">
               <div className=" text-right text-g-200 text-xs leading-[150%]">
                 {user.role == "COMPANY"
-                  ? user.companyProfile.profileScore.overallPercentage
-                  : user.studentProfile.profileScore.overallPercentage || 0}
+                  ? user.companyProfile?.profileScore?.overallPercentage
+                  : user.studentProfile?.profileScore?.overallPercentage || 0}
                 %
               </div>
               <div className=" w-full h-1.5 bg-g-500"></div>
@@ -359,8 +359,8 @@ function DashboardPage() {
                 style={{
                   width: `${
                     user.role == "COMPANY"
-                      ? user.companyProfile.profileScore.overallPercentage
-                      : user.studentProfile.profileScore.overallPercentage || 0
+                      ? user.companyProfile?.profileScore?.overallPercentage
+                      : user.studentProfile?.profileScore?.overallPercentage || 0
                   }%`,
                 }}
               ></div>
