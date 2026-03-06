@@ -17,7 +17,7 @@ import Step6 from "./Step6";
 import Step7 from "./Step7";
 import Step1LeftSide from "./StepLeftSide";
 import { asyncCurrentUser } from "@/store/actions/authActions";
-import { mentorOnboardingApi } from "@/api/mentorApi";
+import { mentorOnboardingApi } from "@/services/mentorApi";
 
 function MentorOnboarding() {
   const router = useRouter();
