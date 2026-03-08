@@ -26,7 +26,7 @@ function Wrapper({ children }) {
     "/job-seeker",
     "/recruiter",
   ];
-  const dynamicAuthPages = ["/reset-password/"];
+  const dynamicAuthPages = ["/reset-password/", "/blogs/"];
   const NavPages = [
     "/",
     "/blogs",
