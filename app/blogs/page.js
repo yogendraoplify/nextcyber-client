@@ -1,4 +1,5 @@
 "use client";
+import { timeFormatter } from "@/helper";
 import { asyncGetBlogs } from "@/store/actions/blogAction";
 import { setLoading } from "@/store/slices/blogSlice";
 import {
@@ -47,14 +48,6 @@ const BlogCardSkeleton = () => {
   );
 };
 
-const featuredInsight = {
-  tags: ["CareerPath", "EntryLevel", "BlueTeam"],
-  title: "How I Broke Into Cyber Security Without a Degree",
-  author: "Jane Doe",
-  role: "SOC Manager, CyberCorp",
-  duration: "12 min watch",
-};
-
 function InsightCardImage({ image }) {
   return (
     <div className="relative w-full h-40 bg-g-500 flex items-center justify-center">
@@ -66,10 +59,17 @@ function InsightCardImage({ image }) {
 export default function NextCybrInsights() {
   const { blogs, loading } = useSelector((state) => state.blog);
   const dispatch = useDispatch();
+  const [featuredInsight, setFeaturedInsight] = useState(null);
 
   useEffect(() => {
     if (blogs?.length === 0) dispatch(asyncGetBlogs());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (blogs?.length > 0) {
+      setFeaturedInsight(blogs[0]);
+    }
+  }, [blogs]);
 
   return (
     <div className="min-h-screen text-g-50 font-sans">
@@ -138,70 +138,32 @@ export default function NextCybrInsights() {
                 Featured Insight
               </h2>
               <div className="flex flex-col sm:flex-row rounded-xl overflow-hidden border border-white/10 bg-g-600">
-                <div className="sm:w-80 w-full flex-shrink-0 bg-g-500 flex items-center justify-center p-6 min-h-48">
-                  <div className="relative">
-                    <div className="w-32 h-32 bg-g-500 rounded-lg flex items-center justify-center relative">
-                      <svg
-                        width="70"
-                        height="70"
-                        viewBox="0 0 100 120"
-                        fill="none"
-                      >
-                        <ellipse
-                          cx="50"
-                          cy="30"
-                          rx="18"
-                          ry="18"
-                          fill="#5a5a7a"
-                        />
-                        <rect
-                          x="20"
-                          y="50"
-                          width="60"
-                          height="50"
-                          rx="8"
-                          fill="#3a3a5a"
-                        />
-                        <rect
-                          x="28"
-                          y="60"
-                          width="44"
-                          height="28"
-                          rx="4"
-                          fill="#2a2a42"
-                        />
-                        <rect
-                          x="32"
-                          y="48"
-                          width="36"
-                          height="6"
-                          rx="2"
-                          fill="#4a4a6a"
-                        />
-                      </svg>
-                    </div>
-                    <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-28 h-4 bg-g-400 rounded" />
-                    <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 w-20 h-2 bg-g-500 rounded" />
-                  </div>
+                <div className="relative sm:w-80 w-full flex-shrink-0 bg-g-500 flex items-center justify-center p-6 min-h-48">
+                    <Image
+                      src={featuredInsight?.blogImage?.url}
+                      alt="play-icon"
+                      fill
+                      className="object-cover rounded-lg"
+                    />
                 </div>
 
                 <div className="flex-1 p-6 flex flex-col justify-center">
                   <div className="flex flex-wrap gap-2 mb-3">
-                    {featuredInsight.tags.map((t) => (
+                    {featuredInsight?.tags?.map((t) => (
                       <Tag key={t} label={t} />
                     ))}
                   </div>
                   <h3 className="text-xl font-bold text-g-50 mb-3 leading-snug">
-                    {featuredInsight.title}
+                    {featuredInsight?.title}
                   </h3>
                   <p className="text-g-100 text-sm mb-1">
-                    {featuredInsight.author}
+                    {featuredInsight?.author}
                   </p>
                   <p className="text-g-200 text-sm mb-1">
-                    {featuredInsight.role}
+                    {featuredInsight?.role}
                   </p>
                   <p className="text-g-200 text-xs mb-5">
-                    {featuredInsight.duration}
+                    {timeFormatter(featuredInsight?.createdAt)}
                   </p>
                   <div className="flex gap-3">
                     <button className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-g-50 text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
@@ -222,7 +184,7 @@ export default function NextCybrInsights() {
                   Array.from({ length: 3 }).map((_, i) => (
                     <BlogCardSkeleton key={i} />
                   ))
-                ) : (blogs?.length === 0) ? (
+                ) : blogs?.length === 0 ? (
                   <p className="text-g-200 text-sm">No insights available.</p>
                 ) : (
                   blogs?.map((insight) => (

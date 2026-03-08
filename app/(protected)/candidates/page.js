@@ -1,6 +1,6 @@
 "use client";
-import {  useCallback, useEffect, useRef, useState } from "react";
-import {  SlidersHorizontal, Loader2 } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { SlidersHorizontal, Loader2 } from "lucide-react";
 import LocationSearchInput from "@/components/helper/LocationSearchInput";
 import StudentCard from "@/components/cards/StudentCard";
 import {
@@ -69,6 +69,7 @@ export default function CandidatesPage() {
     setLoading(true);
     dispatch(asyncGetCandidates(params)).then(() => {
       setLoading(false);
+      setIsSearched(true);
     });
   };
 
@@ -103,9 +104,10 @@ export default function CandidatesPage() {
   };
 
   const handleClearSearch = () => {
+    console.log("Clearing search and location filters");
     if (isSearched) {
-    setLoading(true);
-    dispatch(asyncGetCandidates()).then(() => setLoading(false));
+      setLoading(true);
+      dispatch(asyncGetCandidates()).then(() => setLoading(false));
     }
     setSearchTerm("");
   };
