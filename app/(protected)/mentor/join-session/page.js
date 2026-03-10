@@ -8,7 +8,7 @@ import "@livekit/components-styles";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export const VideoCall = ({ sessionId }) => {
+export default VideoCall = ({ sessionId }) => {
   const [connectionDetails, setConnectionDetails] = useState(null);
 
   useEffect(() => {

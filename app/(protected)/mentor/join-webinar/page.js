@@ -23,7 +23,7 @@ const MentorStage = () => {
   );
 };
 
-export const WebinarViewer = ({ webinarId, connectionDetails }) => {
+export default WebinarViewer = ({ webinarId, connectionDetails }) => {
   return (
     <LiveKitRoom
       serverUrl={connectionDetails.serverUrl}
