@@ -212,12 +212,17 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
             {
               label: "Services",
               icon: Cog,
-              href: "/services",
+              href: "/mentor/services",
             },
             {
               label: "Sessions",
               icon: CreditCard,
-              href: "/sessions",
+              href: "/mentor/sessions",
+            },
+            {
+              label: "Availabilty",
+              icon: Cog,
+              href: "/mentor/availability",
             },
             {
               label: "Messaging",
