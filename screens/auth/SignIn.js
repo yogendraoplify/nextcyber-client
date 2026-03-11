@@ -65,10 +65,12 @@ const hasSequentialChars = (s) => {
 const SignInForm = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("STUDENT");
+  const searchParams = useSearchParams();
+  const [selectedRole, setSelectedRole] = useState(
+    searchParams.get("role") || "STUDENT",
+  );
   const router = useRouter();
   const dispatch = useDispatch();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const urlTab = searchParams.get("role") || "STUDENT";
   const [activeTab, setActiveTab] = useState(urlTab);
@@ -154,7 +156,7 @@ const SignInForm = () => {
 
   const handleLinkedInLogin = () => {
     const authUrl = getLinkedInAuthUrl();
-    console.log(authUrl);
+    // console.log(authUrl);
     window.location.href = authUrl;
   };
 
@@ -269,7 +271,7 @@ const SignInForm = () => {
                 <ArrowRight size={20} />
               </button>
 
-              {selectedRole == "STUDENT" && (
+              {selectedRole !== "COMPANY" && (
                 <div className="space-y-8 mb-10">
                   <div className=" flex gap-2.5 items-center">
                     <div className=" bg-g-300 h-0.5 flex-1"></div>

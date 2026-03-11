@@ -30,6 +30,7 @@ import { setUser } from "@/store/slices/authSlice";
 import toast from "react-hot-toast";
 import { getErrorMessage } from "@/utils/errMessage";
 import axios from "axios";
+import { getLinkedInAuthUrl } from "@/utils/linkedin";
 
 const hasUpper = (s) => /[A-Z]/.test(s);
 const hasLower = (s) => /[a-z]/.test(s);
@@ -62,12 +63,14 @@ const hasSequentialChars = (s) => {
 };
 
 const SignUpForm = () => {
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [selectedRole, setSelectedRole] = useState("STUDENT");
+  const [selectedRole, setSelectedRole] = useState(
+    searchParams.get("role") || "STUDENT",
+  );
   const router = useRouter();
   const dispatch = useDispatch();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const urlTab = searchParams.get("role") || "STUDENT";
   const [activeTab, setActiveTab] = useState(urlTab);
@@ -126,6 +129,12 @@ const SignUpForm = () => {
     if (hasSequentialChars(password))
       return "Password must not contain sequential characters like '1234' or 'abcd'.";
     return true; // valid
+  };
+
+  const handleLinkedInLogin = () => {
+    const authUrl = getLinkedInAuthUrl();
+    // console.log(authUrl);
+    window.location.href = authUrl;
   };
 
   const handleGoogleSuccess = async (credentialResponse) => {
@@ -299,7 +308,7 @@ const SignUpForm = () => {
                 <ArrowRight size={20} />
               </button>
 
-              {selectedRole == "STUDENT" && (
+              {selectedRole !== "COMPANY" && (
                 <div className="space-y-8 mb-10">
                   <div className=" flex gap-2.5 items-center">
                     <div className=" bg-g-300 h-0.5 flex-1"></div>
@@ -317,7 +326,10 @@ const SignUpForm = () => {
                   </div>
 
                   <div className="flex gap-4">
-                    <button className="flex-1 bg-[#1B1C1E] cursor-pointer text-[#9C9C9D] py-2 px-4 border border-[#2F3031] rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors">
+                    <button
+                      className="flex-1 bg-[#1B1C1E] cursor-pointer text-[#9C9C9D] py-2 px-4 border border-[#2F3031] rounded-lg font-medium text-sm flex items-center justify-center gap-2 transition-colors"
+                      onClick={handleLinkedInLogin}
+                    >
                       <FaLinkedin size={20} className="text-white" />
                       LinkedIn
                     </button>
