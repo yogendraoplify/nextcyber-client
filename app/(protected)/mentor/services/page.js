@@ -11,7 +11,6 @@ import {
 import ViewServiceModal from "@/components/mentor/ViewServiceModal";
 import Link from "next/link";
 
-// ─── Stat Card ────────────────────────────────────────────
 const StatCard = ({ icon, bg, label, value, unit }) => (
   <div className="flex-1 flex items-center gap-4 px-6 py-5">
     <div
