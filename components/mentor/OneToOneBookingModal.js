@@ -315,14 +315,23 @@ export default function OneToOneBookingModal({ service, onClose, onSuccess }) {
     );
   };
 
+  // const toAmPm = (iso) => {
+  //   const d = new Date(iso);
+  //   return d.toLocaleTimeString("en-IN", {
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //     hour12: true,
+  //   });
+  // };
+
   const toAmPm = (iso) => {
-    const d = new Date(iso);
-    return d.toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+  return new Date(iso).toLocaleTimeString("en-IN", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "Asia/Kolkata",
+  });
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
@@ -415,6 +424,7 @@ export default function OneToOneBookingModal({ service, onClose, onSuccess }) {
                       onClick={() => handleSlotSelect(slot)}
                       className="px-4 py-2.5 bg-gray-900 border border-gray-700 hover:border-blue-500 hover:bg-blue-950 text-sm font-semibold text-gray-300 hover:text-blue-300 rounded-xl transition-all"
                     >
+                      {/* {toAmPm(slot.startTime)} – {toAmPm(slot.endTime)} */}
                       {toAmPm(slot.startTime)} – {toAmPm(slot.endTime)}
                     </button>
                   ))}
