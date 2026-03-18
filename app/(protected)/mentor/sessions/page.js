@@ -8,7 +8,6 @@ import {
 } from "@/services/mentorApi";
 import Link from "next/link";
 
-// ─── API ──────────────────────────────────────────────────
 const api = {
   getSessions: (params) =>
     axios.get("/api/sessions/mentor", { params }).then((r) => r.data),
