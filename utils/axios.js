@@ -20,7 +20,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => config,
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 instance.interceptors.response.use(
@@ -45,7 +45,7 @@ instance.interceptors.response.use(
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
         {},
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       processQueue(null);
@@ -60,7 +60,7 @@ instance.interceptors.response.use(
     } finally {
       isRefreshing = false;
     }
-  }
+  },
 );
 
 export default instance;
