@@ -1,4 +1,5 @@
 import {
+  getSuggestedMenteesApi,
   getSuggestedMentorsApi,
   getSuggetededStudentsApi,
 } from "@/services/dashboardApi";
@@ -27,6 +28,20 @@ export const asyncGetSuggestedStudents =
       dispatch(setSuggestions(data.students));
     } catch (error) {
       console.error("Failed to fetch suggested students:", error);
+    } finally {
+      setIsLoading?.(false);
+    }
+  };
+
+// mentor
+export const asyncGetSuggestedMentees =
+  (params, setIsLoading) => async (dispatch) => {
+    setIsLoading?.(true);
+    try {
+      const { data } = await getSuggestedMenteesApi(params);
+      dispatch(setSuggestions(data.mentees));
+    } catch (error) {
+      console.error("Failed to fetch suggested mentees:", error);
     } finally {
       setIsLoading?.(false);
     }
