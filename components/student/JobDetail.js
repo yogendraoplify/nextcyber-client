@@ -25,7 +25,7 @@ function JobDetail({ jobId }) {
       // Simulate API call delay
       const { data } = await getJobByIdStudentApi(jobId);
       console.log("Fetched Job Details:", data);
-      setJobDetails(data);
+      setJobDetails(data.data);
       setLoading(false);
     } catch (error) {
       //   setLoading(false);
