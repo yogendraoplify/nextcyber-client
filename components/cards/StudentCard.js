@@ -17,13 +17,20 @@ const StudentCard = ({
   style,
   handleFavoriteToggle,
   isFavorite,
+  setModal = () => {},
 }) => {
   return (
     <>
       <div
         key={candidate.id}
         className={`flex flex-col justify-between bg-g-600 border border-g-800 rounded-xl p-4 hover:border-g-400 transition-all ${className}`}
-        style={style}
+        style={{
+          background:
+            isFavorite
+              ? "radial-gradient(150.01% 100% at 50% 0%, rgba(2, 91, 207, 0.22) 0%, #1B1C1E 42%)"
+              : undefined,
+          ...style,
+        }}
       >
         <div className="mb-4">
           <div className="flex justify-between items-start mb-4">
@@ -75,7 +82,7 @@ const StudentCard = ({
             </div>
             <div className="flex items-center gap-1.5 text-g-200 bg-g-500 text-sm py-0.5 px-2 rounded-sm">
               <Clock className="w-4 h-4" />
-              <span>{candidate.workExperienceInYears}</span>
+              <span>{candidate.totalExperienceYears} years</span>
             </div>
           </div>
         </div>
@@ -88,7 +95,12 @@ const StudentCard = ({
             <MessageCircleMore className="w-4 h-4" />
             <span className="text-sm">Chat</span>
           </Link>
-          <button className="flex-1 flex items-center justify-center gap-2 border border-g-500 hover:bg-primary text-gray-300 py-2.5 rounded-lg transition-colors cursor-pointer">
+          <button
+            className="flex-1 flex items-center justify-center gap-2 border border-g-500 hover:bg-primary text-gray-300 py-2.5 rounded-lg transition-colors cursor-pointer"
+            onClick={() =>
+              setModal({ type: "candidateProfile", data: candidate })
+            }
+          >
             <ArrowUpRight className="w-4 h-4" />
             <span className="text-sm">Profile</span>
           </button>

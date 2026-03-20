@@ -14,6 +14,7 @@ import AdvancePagination from "@/components/ui/AdvancePagination";
 import Search from "@/components/ui/Search";
 import { removeShortlistedCandidates } from "@/store/slices/candidateSlice";
 import useDidChange from "@/hooks/useDidChange";
+import ViewCandidateProfile from "@/components/modal/ViewCandidateProfile";
 
 export default function ShortlistingsPage() {
   const { user } = useSelector((state) => state.auth);
@@ -27,6 +28,10 @@ export default function ShortlistingsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debounceSearchTerm, setDebounceSearchTerm] = useState("");
   const [isSearched, setIsSearched] = useState(false);
+  const [modal, setModal] = useState({
+    type: "",
+    data: null,
+  });
 
   const [loading, setLoading] = useState(false);
   const [locationSearch, setLocationSearch] = useState("");
@@ -234,11 +239,8 @@ export default function ShortlistingsPage() {
                   isFavorite={candidate?.favoritedBy
                     ?.map(({ company }) => company.id)
                     .includes(user?.companyProfile.id)}
-                  style={{
-                    background:
-                      "radial-gradient(150.01% 100% at 50% 0%, rgba(2, 91, 207, 0.22) 0%, #1B1C1E 42%)",
-                  }}
                   className="hover:border-[#025BCF]!"
+                  setModal={setModal}
                 />
               ))
             ) : (
@@ -251,11 +253,13 @@ export default function ShortlistingsPage() {
 
         {shortlistedCandidates?.length > 0 && !loading && (
           <div className="sticky bottom-0 flex justify-center mt-5">
-            <AdvancePagination
-              currentPage={page}
-              totalPages={shortListingTotalPages}
-              onPageChange={(page) => setPage(page)}
-            />
+            {(shortlistedCandidates?.length === 12 || page !== 1) && (
+              <AdvancePagination
+                currentPage={page}
+                totalPages={shortListingTotalPages}
+                onPageChange={(page) => setPage(page)}
+              />
+            )}
           </div>
         )}
       </div>
@@ -271,6 +275,14 @@ export default function ShortlistingsPage() {
           }
           handleResetFilters={() => dispatch(asyncShortlistedCandidates())}
           isFilterApplied={isFilterApplied}
+        />
+      )}
+
+      {modal.type === "candidateProfile" && (
+        <ViewCandidateProfile
+          isOpen={modal.type === "candidateProfile"}
+          data={modal.data}
+          onClose={() => setModal({ type: "", data: null })}
         />
       )}
     </>

@@ -1,5 +1,8 @@
 "use client";
+import { getCurrentUser } from "@/api/authApi";
 import { jobApplyApi } from "@/api/jobApi";
+import { asyncCurrentUser } from "@/store/actions/authActions";
+import { setUser } from "@/store/slices/authSlice";
 import { addAppliedJobs } from "@/store/slices/jobSlice";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -11,11 +14,22 @@ export default function JobApplyModel({ isOpen, onClose, id }) {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
+  const fetchCurrentUser = async () => {
+    try {
+      const { data } = await getCurrentUser();
+      dispatch(setUser(data.user));
+      return data.user;
+    } catch (error) {
+      return null;
+    }
+  };
+
   const applyJob = async () => {
     setLoading(true);
     try {
       const { data } = await jobApplyApi(id);
       dispatch(addAppliedJobs(data.data));
+      await fetchCurrentUser();
       toast.success(data.message);
       setLoading(false);
       onClose();

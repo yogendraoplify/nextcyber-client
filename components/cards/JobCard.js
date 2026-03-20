@@ -13,7 +13,7 @@ import { BiDollarCircle } from "react-icons/bi";
 
 const ImageSkeleton = () => ( <div className="w-15 h-15 bg-gray-300 rounded-2xl border-2 border-dark-yellow flex-shrink-0 animate-pulse" />);
 
-const JobCard = ({ job, handleClick }) => {
+const JobCard = ({ job, handleClick, isApplied }) => {
   return (
     <div
       onClick={() => handleClick(job)}
@@ -98,8 +98,8 @@ const JobCard = ({ job, handleClick }) => {
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 bg-primary text-white font-medium py-3.5 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer truncate">
-          <span>Apply Now</span>
+        <button className={`flex-1 ${isApplied ? 'bg-primary/50 ' : 'bg-primary hover:bg-primary/90'} text-white font-medium py-3.5 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer truncate`}>
+          <span> {isApplied ? "Applied" : "Apply Now"}</span>
           <ArrowUpRight className="w-5 h-5" />
         </button>
         <button className="bg-primary text-white p-3.5 rounded-lg transition-colors cursor-pointer">

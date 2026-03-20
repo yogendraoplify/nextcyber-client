@@ -2,10 +2,27 @@
 
 import AddJobStepper from "@/components/AddJobStepper";
 import JobsTable from "@/components/jobs/JobsTable";
-import { useState } from "react";
+import { asyncGetCreatedJobs } from "@/store/actions/jobActions";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const AddNewJob = () => {
   const [activeTab, setActiveTab] = useState("jobList");
+  const isFirstLoad = useRef(true);
+  const dispatch = useDispatch();
+  const { jobs } = useSelector((state) => state.jobs);
+
+  useEffect(() => {
+    if (isFirstLoad.current) {
+      isFirstLoad.current = false;
+
+      if (jobs.length > 0) return;
+    }
+
+    if (jobs?.length === 0) {
+      dispatch(asyncGetCreatedJobs({}, () => {}));
+    }
+  }, [dispatch]);
 
   return (
     <section>
@@ -13,7 +30,7 @@ const AddNewJob = () => {
         <div className=" flex justify-end">
           <JobsTabs active={activeTab} onChange={setActiveTab} />
         </div>
-        {activeTab === "postJob" && <AddJobStepper />}
+        {activeTab === "postJob" && <AddJobStepper isJobAvailable={true} />}
         {activeTab === "jobList" && <JobsTable />}
       </div>
     </section>

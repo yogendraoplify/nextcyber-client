@@ -19,3 +19,7 @@ export const updateApplicationStatusApi = (applicationId, newStatus) =>
   axios.patch(`/company/update-job-application-status?id=${applicationId}`, {
     status: newStatus,
   });
+
+export const getJobByIdStudentApi = (id) => axios.get(`/student/get-job?id=${id}`);
+
+export const getJobByIdRecruiterApi = (id) => axios.get(`/company/get-job?id=${id}`);
