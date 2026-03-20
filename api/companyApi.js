@@ -5,3 +5,5 @@ export const getCompanyProfileApi = (id) =>
 
 export const updateCompanyApi = (data) =>
   axios.patch("/company/update-profile", data);
+
+export const getStudentByIdApi = (id) => axios.get(`/company/student-profile?id=${id}`);

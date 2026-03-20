@@ -1,20 +1,74 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import CandidateProfileTabs from "../recruiter/candidate-profile/CandidateProfileTabs";
 import { FaLinkedinIn } from "react-icons/fa6";
 import { X } from "lucide-react";
+import { getStudentByIdApi } from "@/api/companyApi";
 
-const ViewCandidateProfile = ({ isOpen, onClose, data: user }) => {
+const ViewCandidateProfile = ({ isOpen, onClose, data: userData }) => {
   const [isExpModalOpen, setIsExpModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   if (!isOpen) return null;
+
+  const fetchUserData = async () => {
+    try {
+      const { data } = await getStudentByIdApi(userData?.id);
+      setUser(data?.student);
+      return data;
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (userData?.id) {
+      fetchUserData();
+    }
+  }, [userData?.id]);
 
   const getProfilePicture = () =>
     user?.profilePicture?.url || "/user-profile.png";
 
   const getProfileBanner = () =>
     user?.profileBanner?.url || "/company-banner.jpg";
+
+ 
+  // if loading show skeleton
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+        <div className="relative w-full max-w-2xl bg-g-700 rounded-xl border border-g-400 shadow-xl overflow-hidden animate-pulse">
+          <div className="relative h-[180px] w-full bg-gray-500" />
+          <div className="relative px-6 pb-6 bg-g-600">
+            <div className="absolute -top-12 left-6">
+              <div className="rounded-full border-4 border-g-600 object-cover h-24 w-24 bg-gray-500" />
+            </div>
+            <div className="pt-14 flex justify-between items-start">
+              <div>
+                <h2 className="text-lg font-semibold text-g-100 flex items-center gap-2">
+                  <div className="h-4 w-32 bg-gray-500 rounded" />
+                </h2>
+                <p className="text-sm text-g-200 mt-1">
+                  <div className="h-3 w-24 bg-gray-500 rounded mt-1" />
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="h-4 w-full bg-gray-500 rounded mb-4" />
+            <div className="h-4 w-full bg-gray-500 rounded mb-4" />
+            <div className="h-4 w-full bg-gray-500 rounded mb-4" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -61,9 +115,7 @@ const ViewCandidateProfile = ({ isOpen, onClose, data: user }) => {
           <div className="pt-14 flex justify-between items-start">
             <div>
               <h2 className="text-lg font-semibold text-g-100 flex items-center gap-2">
-                {`${user?.user?.firstName || ""} ${
-                  user?.user?.lastName || ""
-                }`}
+                {`${user?.user?.firstName || ""} ${user?.user?.lastName || ""}`}
                 <button className="text-g-200 hover:text-white">
                   <FaLinkedinIn />
                 </button>
