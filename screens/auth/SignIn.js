@@ -31,6 +31,7 @@ import { setUser } from "@/store/slices/authSlice";
 import { getErrorMessage } from "@/utils/errMessage";
 import axios from "axios";
 import { getLinkedInAuthUrl } from "@/utils/linkedin";
+import MovingCard from "@/components/animated/card/MovingCard";
 
 const hasUpper = (s) => /[A-Z]/.test(s);
 const hasLower = (s) => /[a-z]/.test(s);
@@ -307,7 +308,7 @@ const SignInForm = () => {
               )}
 
               <p className="text-[#6A6B6C] text-sm">
-                Don't have an account?
+                Don't have an account?&nbsp;
                 <Link
                   href={`/auth/signup?role=${activeTab}`}
                   className="text-[#9C9C9D] font-medium cursor-pointer"

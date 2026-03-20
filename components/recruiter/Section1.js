@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import Button from "../animated/button/Button";
 
 function Section1() {
   return (
@@ -41,11 +42,17 @@ function Section1() {
           organization{"’"}s security objectives.
         </p>
 
-        <Link
+        {/* <Link
           href={"/auth/signup?role=COMPANY"}
           className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-12"
         >
           Let’s go!
+        </Link> */}
+        <Link href={"/auth/signup?role=COMPANY"}>
+          <Button
+            className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-12"
+            text={"Let’s go!"}
+          />
         </Link>
       </div>
     </div>

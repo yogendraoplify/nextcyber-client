@@ -24,7 +24,8 @@ const STATUS_STYLES = {
 };
 
 const tabs = [
-  { label: "Applied", value: "APPLIED", count: 0, active: true },
+  { label: "All", value: "", count: 0, active: true },
+  { label: "Applied", value: "APPLIED", count: 0, active: false },
   { label: "Shortlisted", value: "SHORTLISTED", count: 0, active: false },
   {
     label: "Invited to Interview",
@@ -91,12 +92,12 @@ function JobDetailsHeader({ status, setStatus }) {
 export default function Page() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [status, setStatus] = useState("APPLIED");
+  const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const { applications, totalApplicationsPages } = useSelector(
-    (state) => state.jobs
+    (state) => state.jobs,
   );
   const isFirstLoad = useRef(true);
   const { id } = useParams();
@@ -117,8 +118,8 @@ export default function Page() {
           status: status?.toUpperCase() ?? "",
           search,
         },
-        setLoading
-      )
+        setLoading,
+      ),
     );
   }, [page, pageSize, status, search, dispatch]);
 
@@ -132,8 +133,7 @@ export default function Page() {
   };
 
   const updateApplicationStatus = (applicationId, newStatus) => {
-    // Dispatch an action to update the application status
-    dispatch(asyncUpdateApplicationStatus(applicationId, newStatus));
+    dispatch(asyncUpdateApplicationStatus(applicationId, newStatus, status));
   };
 
   const columns = [
@@ -229,12 +229,10 @@ export default function Page() {
       <div className="rounded-primary mt-5 mx-auto overflow-hidden border border-g-500">
         <div className="flex justify-between bg-g-600 p-5">
           <Search
-            placeholder="Search by job title or ID"
+            placeholder="Search by job title"
             value={search}
-            setValue={(val) => {
-              setPage(1);
-              setSearch(val);
-            }}
+            setValue={setSearch}
+            handleClear={() => setSearch("")}
           />
         </div>
 

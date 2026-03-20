@@ -1,0 +1,46 @@
+.perspective {
+  perspective: 800px;
+}
+
+/* Base card */
+.card {
+  position: absolute;
+  border-radius: 12px;
+  transform-style: preserve-3d;
+}
+
+/* Card Animations */
+.card1 {
+  top: 60px;
+  left: 40px;
+  animation: loopCard1 10s linear infinite;
+}
+
+.card2 {
+  top: 120px;
+  left: 100px;
+  animation: loopCard2 10s linear infinite;
+}
+
+/* Animations */
+@keyframes loopCard1 {
+  0% { z-index: -1; }
+  48% { z-index: -1; transform: translate(0, 0); }
+
+  50% { z-index: 1; transform: translate(80px, 80px); }
+
+  98% { z-index: 1; transform: translate(80px, 80px); }
+
+  100% { z-index: -1; }
+}
+
+@keyframes loopCard2 {
+  0% { z-index: 1; }
+  48% { z-index: 1; transform: translate(0, 0); }
+
+  50% { z-index: -1; transform: translate(-80px, -80px); }
+
+  98% { z-index: -1; transform: translate(-80px, -80px); }
+
+  100% { z-index: 1; }
+}

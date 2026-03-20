@@ -345,7 +345,7 @@ const SignUpForm = () => {
               )}
 
               <p className="text-[#6A6B6C] text-sm">
-                Have an account?
+                Have an account?&nbsp;
                 <Link
                   href={`/auth/signin?role=${activeTab}`}
                   className="text-[#9C9C9D] font-medium cursor-pointer"

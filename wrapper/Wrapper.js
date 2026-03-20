@@ -7,6 +7,7 @@ import { asyncCurrentUser } from "@/store/actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNotifications } from "@/hooks/useNotifications";
+import ComingSoon from "@/components/comming-soon/ComingSoon";
 // import { socket } from "@/utils/socket";
 
 function Wrapper({ children }) {

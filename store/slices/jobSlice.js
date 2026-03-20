@@ -38,12 +38,19 @@ export const jobReducer = createSlice({
     },
     updateAppliedJobStatus: (state, action) => {
       const { applicationId, newStatus } = action.payload;
-      const applicationIndex = state.appliedJob.findIndex(
-        (app) => app.id === applicationId
+      const applicationIndex = state.applications.findIndex(
+        (app) => app.id === applicationId,
       );
       if (applicationIndex !== -1) {
-        state.appliedJob[applicationIndex].status = newStatus;
+        state.applications[applicationIndex].status = newStatus;
       }
+    },
+    removeJobFromStatus: (state, action) => {
+      const { applicationId } = action.payload;
+      const applicationIndex = state.applications.findIndex(
+        (app) => app.id === applicationId,
+      );
+      state.applications.splice(applicationIndex, 1);
     },
   },
 });
@@ -56,5 +63,6 @@ export const {
   removeJobs,
   setJobsByAI,
   updateAppliedJobStatus,
+  removeJobFromStatus
 } = jobReducer.actions;
 export default jobReducer.reducer;

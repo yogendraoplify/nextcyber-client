@@ -26,7 +26,8 @@ import { asyncGetAppliedJob } from "@/store/actions/jobActions";
 import ProfileScoringModal from "@/components/modal/ProfileScoreModal";
 import ExperienceModal from "@/components/modal/ExperienceModal";
 import CompanyScoreModel from "@/components/modal/CompanyScoreModel";
-
+import DashboardNotification from "@/components/dashboard/notification/DashboardNotification";
+import Suggestion from "@/components/dashboard/Suggestion";
 function DashboardPage() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -78,28 +79,28 @@ function DashboardPage() {
   const stats = [
     {
       label: "Courses Completed",
-      value: 12,
+      value: user.stats?.coursesCompleted || 0,
       link: "view courses",
       href: "#",
       icon: Medal,
     },
     {
       label: "Mentors Engaged",
-      value: 4,
+      value: user.stats?.mentorsEngaged || 0,
       link: "find mentors",
       href: "#",
       icon: UserStar,
     },
     {
-      label: "Jobs Applied",
-      value: appliedJob.length,
+      label: <span>Jobs <br /> Applied</span>,
+      value: user.stats?.jobsApplied || 0,
       link: "browse jobs",
       href: "#",
       icon: BriefcaseBusiness,
     },
     {
-      label: "Skills Verified",
-      value: 15,
+      label: <span>Skills <br /> Verified</span>,
+      value: user.stats?.skillsVerified || 0,
       link: "view courses",
       href: "#",
       icon: FileBadge2,
@@ -222,20 +223,22 @@ function DashboardPage() {
                 </div>
 
                 <div className="hidden md:flex lg:hidden xl:flex items-center gap-2">
-                  {user.role === "STUDENT" && (
-                    <button className="py-1 px-2 bg-g-600 border cursor-pointer border-g-500 text-g-200 rounded-full flex items-center gap-2">
-                      <ArrowDownToLine size={20} />
-                      <span>Download CV</span>
-                    </button>
-                  )}
-                  <button className="py-1 px-2 bg-g-600 border cursor-pointer border-g-500 text-g-200 rounded-full flex items-center gap-2">
+                  {
+                  // user.role === "STUDENT" && (
+                  //   <button className="py-1 px-2 bg-g-600 border cursor-pointer border-g-500 text-g-200 rounded-full flex items-center gap-2">
+                  //     <ArrowDownToLine size={20} />
+                  //     <span>Download CV</span>
+                  //   </button>
+                  // )
+                  }
+                  {/* <button className="py-1 px-2 bg-g-600 border cursor-pointer border-g-500 text-g-200 rounded-full flex items-center gap-2">
                     <Share2 size={20} />
                     <span>Share Profile</span>
-                  </button>
+                  </button> */}
                 </div>
               </div>
 
-              <div className="flex items-center justify-between gap-2 sm:pl-30 w-full">
+              {/* <div className="flex items-center justify-between gap-2 sm:pl-30 w-full">
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className="w-fit py-1 px-2 bg-g-600 border cursor-pointer border-g-500 text-g-200 rounded-full"
@@ -258,7 +261,7 @@ function DashboardPage() {
                     </span>
                   </button>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -574,224 +577,10 @@ function DashboardPage() {
             </div>
           </div>
 
-          {/* COMPANY sidebar */}
-          {user.role === "COMPANY" && (
-            <div className="p-2.5 pb-4 bg-gradient-to-b from-g-600 to-[#434345] mt-3.5 rounded-lg border border-g-500">
-              <h6 className="font-semibold leading-6 text-g-100 max-w-3xs">
-                AI Job Seeker Profile Suggestions
-              </h6>
-              <div className="flex flex-col gap-4 mt-4">
-                <div className="flex gap-2 items-center">
-                  <Image
-                    src={"/avatar.jpeg"}
-                    height={40}
-                    width={40}
-                    alt="mentor-avatar"
-                    className="rounded-full h-10 w-10 object-cover"
-                  />
-                  <div>
-                    <h3 className="text-sm font-semibold leading-4 text-g-100">
-                      Steve Smith
-                    </h3>
-                    <p className="text-g-200 font-normal leading-4 text-xs">
-                      Penetration Testing
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <Image
-                    src={"/avatar.jpeg"}
-                    height={40}
-                    width={40}
-                    alt="mentor-avatar"
-                    className="rounded-full h-10 w-10 object-cover"
-                  />
-                  <div>
-                    <h3 className="text-sm font-semibold leading-4 text-g-100">
-                      Nathan Astle
-                    </h3>
-                    <p className="text-g-200 font-normal leading-4 text-xs">
-                      Penetration Testing
-                    </p>
-                  </div>
-                </div>
-                <button className="text-white text-sm leading-4 bg-primary px-4 py-2 rounded-lg flex items-center gap-2 justify-center">
-                  <UserPlus size={20} />
-                  Connect with Job Seeker
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* STUDENT sidebar */}
-          {user.role === "STUDENT" && (
-            <>
-              <div className="p-2.5 pb-4 bg-gradient-to-b from-g-600 to-[#434345] mt-3.5 rounded-lg border border-g-500">
-                <h6 className="font-semibold leading-6 text-g-100">
-                  Mentor Suggestions
-                </h6>
-                <div className="flex flex-col gap-4 mt-4">
-                  <div className="flex gap-2 items-center">
-                    <Image
-                      src={"/avatar.jpeg"}
-                      height={40}
-                      width={40}
-                      alt="mentor-avatar"
-                      className="rounded-full h-10 w-10 object-cover"
-                    />
-                    <div>
-                      <h3 className="text-sm font-semibold leading-4 text-g-100">
-                        Steve Smith
-                      </h3>
-                      <p className="text-g-200 font-normal leading-4 text-xs">
-                        Penetration Testing
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <Image
-                      src={"/avatar.jpeg"}
-                      height={40}
-                      width={40}
-                      alt="mentor-avatar"
-                      className="rounded-full h-10 w-10 object-cover"
-                    />
-                    <div>
-                      <h3 className="text-sm font-semibold leading-4 text-g-100">
-                        Nathan Astle
-                      </h3>
-                      <p className="text-g-200 font-normal leading-4 text-xs">
-                        Penetration Testing
-                      </p>
-                    </div>
-                  </div>
-                  <button className="text-white text-sm leading-4 bg-primary px-4 py-2 rounded-lg flex items-center gap-2 justify-center">
-                    <UserPlus size={20} />
-                    Connect with Mentors
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-2.5 pb-4 bg-gradient-to-b from-g-600 to-[#434345] mt-3.5 rounded-lg border border-g-500">
-                <div className="h-40 relative w-full">
-                  <Image
-                    src={"/certification-image.png"}
-                    className="object-cover"
-                    fill
-                    priority
-                    alt="certification-image"
-                  />
-                  <h4 className="absolute top-2.5 bg-white py-1.5 px-2 text-g-300 text-xs font-medium leading-4">
-                    Certification
-                  </h4>
-                </div>
-                <h5 className="mt-7.5 text-sm font-medium leading-4 text-white max-w-3xs">
-                  Certified Information Systems Security Professional (CISSP)
-                </h5>
-                <button className="text-white text-sm leading-4 mt-5 w-full bg-primary px-4 py-2 rounded-lg">
-                  Enroll Now
-                </button>
-              </div>
-            </>
-          )}
-
-          {/* MENTOR sidebar */}
-          {user.role === "MENTOR" && (
-            <>
-              {/* Upcoming sessions widget */}
-              <div className="p-2.5 pb-4 bg-gradient-to-b from-g-600 to-[#434345] mt-3.5 rounded-lg border border-g-500">
-                <h6 className="font-semibold leading-6 text-g-100">
-                  Upcoming Sessions
-                </h6>
-                <div className="flex flex-col gap-4 mt-4">
-                  {mentorStat?.upcomingSessions > 0 ? (
-                    <p className="text-xs text-g-200">
-                      You have {mentorStat.upcomingSessions} upcoming
-                      session(s).
-                    </p>
-                  ) : (
-                    <p className="text-xs text-g-200">
-                      No upcoming sessions scheduled.
-                    </p>
-                  )}
-                  <button className="text-white text-sm leading-4 bg-primary px-4 py-2 rounded-lg flex items-center gap-2 justify-center">
-                    <CalendarClock size={20} />
-                    Manage Schedule
-                  </button>
-                </div>
-              </div>
-
-              {/* Mentee suggestions */}
-              <div className="p-2.5 pb-4 bg-gradient-to-b from-g-600 to-[#434345] mt-3.5 rounded-lg border border-g-500">
-                <h6 className="font-semibold leading-6 text-g-100">
-                  Mentee Suggestions
-                </h6>
-                <div className="flex flex-col gap-4 mt-4">
-                  <div className="flex gap-2 items-center">
-                    <Image
-                      src={"/avatar.jpeg"}
-                      height={40}
-                      width={40}
-                      alt="mentee-avatar"
-                      className="rounded-full h-10 w-10 object-cover"
-                    />
-                    <div>
-                      <h3 className="text-sm font-semibold leading-4 text-g-100">
-                        Alex Johnson
-                      </h3>
-                      <p className="text-g-200 font-normal leading-4 text-xs">
-                        Software Engineering
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <Image
-                      src={"/avatar.jpeg"}
-                      height={40}
-                      width={40}
-                      alt="mentee-avatar"
-                      className="rounded-full h-10 w-10 object-cover"
-                    />
-                    <div>
-                      <h3 className="text-sm font-semibold leading-4 text-g-100">
-                        Priya Patel
-                      </h3>
-                      <p className="text-g-200 font-normal leading-4 text-xs">
-                        Full Stack Development
-                      </p>
-                    </div>
-                  </div>
-                  <button className="text-white text-sm leading-4 bg-primary px-4 py-2 rounded-lg flex items-center gap-2 justify-center">
-                    <UserPlus size={20} />
-                    Connect with Mentees
-                  </button>
-                </div>
-              </div>
-            </>
-          )}
+          <Suggestion />
 
           {/* Notifications (all roles) */}
-          <div className="p-2.5 pb-4 bg-g-600 mt-3.5 rounded-lg border border-g-500">
-            <h4 className="text-g-100 font-semibold leading-6 text-base">
-              Notifications
-            </h4>
-            <div className="mt-2.5 gap-2.5 flex flex-col">
-              <div className="flex gap-2 items-start max-w-3/4">
-                <BadgeCheck size={18} className="text-accent-color-1" />
-                <div className="text-g-100 leading-[150%] text-xs space-y-1">
-                  <p>You earned the 'Bugs Bounty champ' badge!</p>
-                  <span className="text-g-200 text-xs leading-4">2hrs ago</span>
-                </div>
-              </div>
-              <div className="flex gap-2 items-start max-w-3/4">
-                <BadgeCheck size={18} className="text-accent-color-1" />
-                <div className="text-g-100 leading-[150%] text-xs space-y-1">
-                  <p>You earned the 'Bugs Bounty champ' badge!</p>
-                  <span className="text-g-200 text-xs leading-4">2hrs ago</span>
-                </div>
-              </div>
-            </div>
-          </div>
+         <DashboardNotification />
         </div>
       </div>
 
