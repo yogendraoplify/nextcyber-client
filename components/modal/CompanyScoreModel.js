@@ -4,7 +4,7 @@ import { XCircle } from "lucide-react";
 export default function CompanyScoreModel({ isOpen, onClose, profileScore }) {
   if (!isOpen || !profileScore) return null;
 
-  const { overallPercentage, sectionPercentages } = profileScore;
+  const { overallPercentage, sections } = profileScore;
 
   const RadioButton = ({ checked }) => (
     <div className="relative w-4 h-4 flex-shrink-0">
@@ -29,19 +29,23 @@ export default function CompanyScoreModel({ isOpen, onClose, profileScore }) {
     </div>
   );
 
-  const Section = ({ title, percentage, items }) => (
+  const Section = ({ title, data }) => (
     <div className="flex flex-col gap-1.5 w-full">
       <div className="flex items-center gap-2">
-        <h3 className="text-base font-semibold text-[#69EDFE]">{title}</h3>
+        <h3 className="text-base font-semibold text-[#69EDFE] capitalize">
+          {title}
+        </h3>
+
         <div className="px-2 py-0.5 bg-dark-green rounded-full">
           <span className="text-xs font-medium text-white">
-            {percentage}%
+            {data?.percentage}%
           </span>
         </div>
       </div>
-      {items.map((item, index) => (
+
+      {data?.items?.map((item) => (
         <SectionItem
-          key={index}
+          key={item.key}
           label={item.label}
           weight={item.weight}
           completed={item.completed}
@@ -49,40 +53,6 @@ export default function CompanyScoreModel({ isOpen, onClose, profileScore }) {
       ))}
     </div>
   );
-
-  // Define section configurations
-  const sections = [
-    {
-      title: "Account Details",
-      percentage: sectionPercentages.accountDetails,
-      items: [
-        { label: "Company Name", weight: 10, completed: sectionPercentages.accountDetails >= 10 },
-        { label: "Industry", weight: 10, completed: sectionPercentages.accountDetails >= 20 },
-        { label: "Company Size", weight: 10, completed: sectionPercentages.accountDetails >= 30 },
-        { label: "Location", weight: 10, completed: sectionPercentages.accountDetails >= 40 },
-      ],
-    },
-    {
-      title: "Profile",
-      percentage: sectionPercentages.profile,
-      items: [
-        { label: "Company Description", weight: 10, completed: sectionPercentages.profile >= 10 },
-        { label: "Logo", weight: 10, completed: sectionPercentages.profile >= 20 },
-        { label: "Website", weight: 7, completed: sectionPercentages.profile >= 27 },
-        { label: "Social Media", weight: 10, completed: sectionPercentages.profile >= 37 },
-      ],
-    },
-    {
-      title: "Cyber Security",
-      percentage: sectionPercentages.cyber,
-      items: [
-        { label: "Security Policy", weight: 15, completed: sectionPercentages.cyber >= 15 },
-        { label: "Data Protection", weight: 15, completed: sectionPercentages.cyber >= 30 },
-        { label: "Compliance", weight: 15, completed: sectionPercentages.cyber >= 45 },
-        { label: "Security Training", weight: 15, completed: sectionPercentages.cyber >= 60 },
-      ],
-    },
-  ];
 
   useEffect(() => {
     if (!isOpen) return;
@@ -94,12 +64,13 @@ export default function CompanyScoreModel({ isOpen, onClose, profileScore }) {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-10 flex items-center justify-center bg-g-900/50 p-4"
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-g-900/50 p-4"
     >
       <div
         className="flex flex-col gap-5 w-full max-w-[500px] bg-g-600 border-2 border-g-400 rounded-[10px] p-5"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Header */}
         <div className="flex justify-between items-start">
           <h2 className="text-xl font-semibold text-g-100">
             Profile Scoring Model
@@ -112,10 +83,12 @@ export default function CompanyScoreModel({ isOpen, onClose, profileScore }) {
           </button>
         </div>
 
+        {/* Overall Progress */}
         <div className="flex flex-col gap-1 w-full">
           <span className="text-xs font-medium text-g-100 text-right">
             {overallPercentage}%
           </span>
+
           <div className="relative w-full h-1.5 rounded-full bg-g-500">
             <div
               className="absolute h-1.5 rounded-full"
@@ -127,14 +100,9 @@ export default function CompanyScoreModel({ isOpen, onClose, profileScore }) {
           </div>
         </div>
 
-        {/* Sections */}
-        {sections.map((section, index) => (
-          <Section
-            key={index}
-            title={section.title}
-            percentage={section.percentage}
-            items={section.items}
-          />
+        {/* Sections (Dynamic) */}
+        {Object.entries(sections).map(([key, value]) => (
+          <Section key={key} title={key} data={value} />
         ))}
       </div>
     </div>

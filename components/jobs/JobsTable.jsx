@@ -145,12 +145,10 @@ export default function JobsTable() {
     <div className="rounded-primary mt-5 mx-auto overflow-hidden border border-g-500">
       <div className="flex justify-between bg-g-600 p-5">
         <Search
-          placeholder="Search by job title or ID"
+          placeholder="Search by job title"
           value={search}
-          setValue={(val) => {
-            setPage(1);
-            setSearch(val);
-          }}
+          setValue={setSearch}
+          handleClear={() => setSearch("")}
         />
 
         <Filter

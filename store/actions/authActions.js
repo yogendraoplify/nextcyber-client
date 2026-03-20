@@ -2,6 +2,7 @@ import { setUser, clearUser, setLoading } from "../slices/authSlice.js";
 import toast from "react-hot-toast";
 import { signIn, getCurrentUser, signOut, signUp } from "@/api/authApi.js";
 import { createSocket, disconnectSocket } from "@/utils/socket";
+import { removeNotifications } from "../slices/notificationSlice.js";
 
 const getErrorMessage = (error) =>
   error?.response?.data?.message ||
@@ -78,6 +79,7 @@ export const asyncSignOutUser = () => async (dispatch) => {
       success: (response) => {
         const { data } = response;
         dispatch(clearUser());
+        dispatch(removeNotifications());
         return data.message || "Logged out successfully!";
       },
       error: (err) => getErrorMessage(err),

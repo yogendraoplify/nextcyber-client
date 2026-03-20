@@ -424,19 +424,6 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
               <div className="flex flex-col flex-grow bg-g-800">
                 <SidebarNavLinks items={navItems} collapsed={false} />
                 <SidebarNavLinks items={bottomNavItem} collapsed={false} />
-
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    toggleMobile();
-                  }}
-                  className={clsx(
-                    "flex items-center cursor-pointer py-4 pr-2.5 pl-6 gap-4 w-full transition-colors font-semibold text-sm leading-[150%] text-g-100 hover:bg-g-600",
-                  )}
-                >
-                  <LogOut size={20} />
-                  <span className="text-sm font-medium">Logout</span>
-                </button>
               </div>
             </div>
           </div>

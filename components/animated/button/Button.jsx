@@ -1,0 +1,93 @@
+"use client";
+
+const MediaObject = ({ text, onclick, className }) => {
+  return (
+    <>
+      <button className={`media-object rounded-lg ${className || ""}`} onClick={onclick}>
+        <span className="text-white text-lg">{text || "click"}</span>
+        <style jsx>{`
+          .media-object {
+            --border-width: 1px;
+            --radius: 24px;
+
+            position: relative;
+            border: var(--border-width) solid transparent;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 24px;
+
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+          }
+
+          /* Animated border */
+          .media-object::before {
+            content: "";
+            position: absolute;
+            inset: calc(var(--border-width) * -1);
+            z-index: -1;
+
+            border-radius: inherit;
+            border: inherit;
+
+            background-image: conic-gradient(
+              from var(--angle),
+              #381d6a 80%,
+              #e0d1ff 88%,
+              #e0d1ff 92%,
+              #381d6a 100%
+            );
+
+            background-origin: border-box;
+
+            -webkit-mask:
+              linear-gradient(black, black) content-box,
+              linear-gradient(black, black);
+
+            -webkit-mask-clip: content-box, border-box;
+            -webkit-mask-composite: xor;
+
+            mask-composite: exclude;
+
+            animation: spin 3s linear infinite;
+          }
+
+          /* Fallback */
+          @supports not (background: paint(something)) {
+            .media-object::before {
+              background-image: conic-gradient(
+                #381d6a 80%,
+                #e0d1ff 88%,
+                #e0d1ff 92%,
+                #381d6a 100%
+              );
+            }
+          }
+
+          /* Pause animation on hover */
+          .media-object:hover::before {
+            animation-play-state: paused;
+          }
+
+          /* Custom property */
+          @property --angle {
+            syntax: "<angle>";
+            inherits: true;
+            initial-value: 0turn;
+          }
+
+          /* Animation */
+          @keyframes spin {
+            to {
+              --angle: 1turn;
+            }
+          }
+        `}</style>
+      </button>
+    </>
+  );
+};
+
+export default MediaObject;

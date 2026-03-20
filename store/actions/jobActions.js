@@ -7,6 +7,7 @@ import {
   updateApplicationStatusApi,
 } from "@/api/jobApi";
 import {
+  removeJobFromStatus,
   setApplications,
   setAppliedJobs,
   setJobs,
@@ -80,16 +81,18 @@ export const asyncGetJobApplicants =
   };
 
 export const asyncUpdateApplicationStatus =
-  (applicationId, newStatus) => async (dispatch) => {
+  (applicationId, newStatus, label) => async (dispatch) => {
     try {
-      // Assuming there's an API endpoint to update application status
       await updateApplicationStatusApi(applicationId, newStatus);
       dispatch(updateAppliedJobStatus({ applicationId, newStatus }));
+      if (label !== "") {
+        console.log("Application status updated successfully", label);
+        dispatch(removeJobFromStatus({ applicationId }));
+      }
       toast.success("Application status updated successfully");
-      // Optionally, you can dispatch an action to refresh the applications list
     } catch (error) {
       toast.error(
-        getErrorMessage(error, "Failed to update application status")
+        getErrorMessage(error, "Failed to update application status"),
       );
     }
   };

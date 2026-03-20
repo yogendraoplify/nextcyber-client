@@ -61,7 +61,7 @@ export default function ProfileScoringModal({ isOpen, onClose, data }) {
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-10 flex items-center justify-center bg-g-900/50 p-4"
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-g-900/50 p-4"
     >
       <div
         className="flex flex-col gap-5 w-full max-w-[500px] bg-g-600 border-2 border-g-400 rounded-[10px] p-5"
