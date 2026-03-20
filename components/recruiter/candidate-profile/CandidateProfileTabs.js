@@ -125,10 +125,10 @@ export default function CandidateProfileTabs({ user, openExperienceModal }) {
                                 {formatDateRange(exp.startDate, exp.endDate)}
                               </p>
                               <h4 className="text-primary font-semibold text-base">
-                                {exp.role || "—"}
+                                {exp.jobTitle || "—"}
                               </h4>
                               <p className="text-g-100 text-sm font-medium">
-                                {exp.company || "—"}
+                                {exp.companyName || "—"}
                               </p>
                               <p className="text-g-300 text-sm">
                                 {exp.description || "—"}

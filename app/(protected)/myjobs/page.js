@@ -67,7 +67,7 @@ const Page = () => {
 
   if (modal.type === "jobpreview") {
     return (
-      <div className="z-50 flex items-center justify-center mt-4">
+      <div className="z-50 flex items-center justify-center mt-4 max-w-7xl mx-auto">
         <div className="bg-g-800 rounded-lg w-full p-6 relative">
           <button
             onClick={() => setModal({ type: "", data: null })}
