@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import Button from "../animated/button/Button";
 
 function Section1() {
   return (
@@ -47,9 +48,11 @@ function Section1() {
 
         <Link
           href={"/auth/signup?role=STUDENT"}
-          className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-12"
         >
-          Sign me up!
+          <Button
+            className="bg-primary text-white text-xl leading-6 font-medium py-4 px-8 rounded-lg mt-12"
+            text={"Sign me up!"}
+          />
         </Link>
       </div>
     </div>

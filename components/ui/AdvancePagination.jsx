@@ -69,10 +69,10 @@ export default function AdvancePagination({
             disabled={page === "..."}
             className={`min-w-[2.5rem] px-4 py-2 rounded-lg transition ${
               page === currentPage
-                ? "bg-g-400 text-white font-medium"
+                ? " bg-gray-200 text-gray-700  "
                 : page === "..."
                 ? "text-gray-500 cursor-default hover:bg-transparent"
-                : "bg-gray-200 text-gray-700 cursor-pointer hover:bg-g-400 hover:text-white"
+                : "bg-g-400 text-white font-medium hover:bg-g-400 hover:text-white cursor-pointer"
             }`}
           >
             {page}

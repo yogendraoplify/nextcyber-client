@@ -78,12 +78,12 @@ const CompanyCard = ({ company }) => {
           href={`/companies/${company?.id}`}
           className="flex-1 bg-primary text-white font-medium py-3.5 px-6 rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer"
         >
-          <span className="truncate">124 Open Jobs</span>
+          <span className="truncate"> {company?._count?.jobs || 0} Open Jobs</span>
           <ArrowUpRight className="w-5 h-5" />
         </Link>
-        <button className="bg-primary text-white p-3.5 rounded-lg transition-colors cursor-pointer">
+        <Link href={company?.companyWebsiteLink || "#"} target="_blank" className={`bg-primary text-white p-3.5 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2 ${!company?.companyWebsiteLink ? "pointer-events-none opacity-50 disabled:cursor-not-allowed" : ""}`}>
           <Globe className="w-5 h-5" />
-        </button>
+        </Link>
       </div>
       </div>
       </div>

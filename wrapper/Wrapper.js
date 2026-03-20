@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Nav from "@/components/navigation/Nav";
 import Footer from "@/components/Footer";
 import { usePathname, useRouter } from "next/navigation";
@@ -15,6 +15,9 @@ function Wrapper({ children }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((state) => state.auth);
+  const [showComingSoon, setShowComingSoon] = useState(
+    (process.env.NEXT_PUBLIC_SHOW_COMING_SOON === "true"),
+  );
   const authPages = [
     "/auth/signin",
     "/blogs",
@@ -82,6 +85,10 @@ function Wrapper({ children }) {
       }
     }
   }, [user, isLoading, router]);
+
+  if (showComingSoon) {
+    return <ComingSoon showComingSoon={setShowComingSoon} />;
+  }
 
   if (!isAuthPage && (isLoading || user === null)) {
     return <>{children}</>;

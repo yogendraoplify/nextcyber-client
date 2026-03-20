@@ -1,6 +1,6 @@
 "use client";
 
-import { BriefcaseBusiness, EyeIcon } from "lucide-react";
+import { BriefcaseBusiness, EyeIcon, Undo2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Filter from "../ui/Filter";
 import Search from "../ui/Search";
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { asyncGetCreatedJobs } from "@/store/actions/jobActions";
 import Link from "next/link";
 import useDidChange from "@/hooks/useDidChange";
+import JobDetail from "../recruiter/JobDetail";
 
 const STATUS_STYLES = {
   ACTIVE: "bg-[#16A600]",
@@ -32,6 +33,10 @@ export default function JobsTable() {
   const dispatch = useDispatch();
   const { jobs, totalJobsPages } = useSelector((state) => state.jobs);
   const isFirstLoad = useRef(true);
+  const [modal, setModal] = useState({
+    type: "",
+    data: null,
+  });
 
   useEffect(() => {
     if (isFirstLoad.current) {
@@ -54,6 +59,8 @@ export default function JobsTable() {
       );
     }
   }, [dispatch]);
+
+  useEffect(() => {}, [status]);
 
   useDidChange([page, pageSize, status, search], () => {
     dispatch(
@@ -83,17 +90,18 @@ export default function JobsTable() {
       label: "Job Title",
       key: "title",
       render: (row) => (
-        <span className="underline cursor-pointer">{row.title}</span>
+        <span
+          className="underline cursor-pointer"
+          onClick={() => setModal({ type: "jobpreview", data: row })}
+        >
+          {row.title}
+        </span>
       ),
     },
     {
       label: "Job ID",
       key: "id",
-      render: (row) => (
-        <span className="underline cursor-pointer">
-          {row.id.slice(0, 4).toUpperCase()}
-        </span>
-      ),
+      render: (row) => <span>{row.id.slice(0, 4).toUpperCase()}</span>,
     },
     {
       label: "Posted On",
@@ -140,6 +148,23 @@ export default function JobsTable() {
       </p>
     </div>
   );
+
+  if (modal.type === "jobpreview") {
+    return (
+      <div className="z-50 flex items-center justify-center mt-4">
+        <div className="bg-g-800 rounded-lg w-full p-6 relative">
+          <button
+            onClick={() => setModal({ type: "", data: null })}
+          className="h-7 float-end flex items-center gap-2 px-2 py-1 bg-g-600 hover:bg-g-800 rounded-[28px] border border-g-400 transition-colors text-g-100"
+          >
+            <Undo2 className="w-5 h-5" />
+            <span className="text-xs">Back</span>
+          </button>
+          <JobDetail jobId={modal.data?.id} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="rounded-primary mt-5 mx-auto overflow-hidden border border-g-500">

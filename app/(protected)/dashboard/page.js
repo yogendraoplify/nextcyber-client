@@ -78,29 +78,29 @@ function DashboardPage() {
   // --- Stats per role ---
   const stats = [
     {
-      label: "Courses Completed",
-      value: user.stats?.coursesCompleted || 0,
+      label: "Sessions Completed",
+      value: user.studentProfile?.stats?.sessionCompleted || 0,
       link: "view courses",
       href: "#",
       icon: Medal,
     },
     {
-      label: "Mentors Engaged",
-      value: user.stats?.mentorsEngaged || 0,
+      label: <span>Mentors <br /> Engaged</span>,
+      value: user.studentProfile?.stats?.mentorsEngaged || 0,
       link: "find mentors",
-      href: "#",
+      href: "/mentorship",
       icon: UserStar,
     },
     {
       label: <span>Jobs <br /> Applied</span>,
-      value: user.stats?.jobsApplied || 0,
+      value: user.studentProfile?.stats?.jobsApplied || 0,
       link: "browse jobs",
-      href: "#",
+      href: "/myjobs",
       icon: BriefcaseBusiness,
     },
     {
       label: <span>Skills <br /> Verified</span>,
-      value: user.stats?.skillsVerified || 0,
+      value: user.studentProfile?.stats?.skillsVerified || 0,
       link: "view courses",
       href: "#",
       icon: FileBadge2,
@@ -264,7 +264,7 @@ function DashboardPage() {
               </div> */}
             </div>
           </div>
-
+         
           {/* Stats Grid */}
           <div className="my-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
@@ -551,7 +551,7 @@ function DashboardPage() {
         </div>
 
         {/* Right Sidebar */}
-        <div className="pl-5 hidden lg:block">
+        <div className="pl-5 hidden lg:block max-w-85">
           {/* Profile Completion */}
           <div className="px-2.5 pt-2.5 pb-4 bg-g-600 rounded-lg">
             <div className="flex items-center justify-between gap-3 text-g-100">
