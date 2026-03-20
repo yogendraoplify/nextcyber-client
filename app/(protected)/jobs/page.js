@@ -21,6 +21,8 @@ function JobsPage() {
   const { jobs, currentJobPage, totalJobsPages } = useSelector(
     (state) => state.jobs,
   );
+  const jobApplications = useSelector((state) => state?.auth?.user?.studentProfile?.jobApplications);
+  const [appliedJobsIds, setAppliedJobsIds] = useState(jobApplications?.map((application) => application?.jobId) || []);
   const [selectedJob, setSelectedJob] = useState(null);
   const dispatch = useDispatch();
   const [searchTerm, setSearchTerm] = useState("");
@@ -223,6 +225,7 @@ function JobsPage() {
                               key={i}
                               job={job}
                               handleClick={(job) => setSelectedJob(job)}
+                              isApplied={appliedJobsIds?.includes(job?.id)}
                             />
                           );
                         })
@@ -239,6 +242,7 @@ function JobsPage() {
                         selectedJob={selectedJob}
                         onClose={() => setSelectedJob(null)}
                         applyJob={applyJob}
+                        isApplied={appliedJobsIds?.includes(selectedJob?.id)}
                       />
                     </div>
                   )}

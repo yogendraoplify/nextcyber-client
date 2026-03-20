@@ -37,14 +37,14 @@ export const candidateReducer = createSlice({
           ? {
               ...c,
               favoritedBy: [
-                ...c.favoritedBy,
+                ...c?.favoritedBy,
                 { company: { id: companyId } },
               ],
             }
           : c
       );
 
-      state.shortlistedCandidates = [...state.shortlistedCandidates, {...candidate, favoritedBy: [...(candidate.favoritedBy || []), { company: { id: companyId } }]}];
+      state.shortlistedCandidates = [...state.shortlistedCandidates, {...candidate, favoritedBy: [...(candidate?.favoritedBy || []), { company: { id: companyId } }]}];
 
     },
     removeFromFavorite: (state, action) => {
@@ -53,7 +53,7 @@ export const candidateReducer = createSlice({
         candidate.id === candidateId
           ? {
               ...candidate,
-              favoritedBy: candidate.favoritedBy.filter(
+              favoritedBy: candidate?.favoritedBy?.filter(
                 (fav) => fav.company.id !== companyId
               ),
             }

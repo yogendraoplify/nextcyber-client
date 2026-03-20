@@ -8,6 +8,16 @@ const initialState = {
   totalJobsPages: null,
   appliedJob: [],
   currentJobPage: 1,
+  statusCounts: {
+    all: 0,
+    applied: 0,
+    under_review: 0,
+    shortlisted: 0,
+    interview_scheduled: 0,
+    rejected: 0,
+    hired: 0,
+    withdrawn: 0,
+  },
 };
 
 export const jobReducer = createSlice({
@@ -25,6 +35,7 @@ export const jobReducer = createSlice({
     removeJobs: (state) => {
       state.jobs = [];
       state.totalJobsPages = null;
+      state.currentJobPage = 1;
     },
     setAppliedJobs: (state, action) => {
       state.appliedJob = action.payload;
@@ -35,6 +46,17 @@ export const jobReducer = createSlice({
     setApplications: (state, action) => {
       state.applications = action.payload.jobs;
       state.totalApplicationsPages = action.payload.totalPages;
+      state.statusCounts = {
+        all: action.payload.statusCounts.ALL || 0,
+        applied: action.payload.statusCounts.APPLIED || 0,
+        under_review: action.payload.statusCounts.UNDER_REVIEW || 0,
+        shortlisted: action.payload.statusCounts.SHORTLISTED || 0,
+        interview_scheduled:
+          action.payload.statusCounts.INTERVIEW_SCHEDULED || 0,
+        rejected: action.payload.statusCounts.REJECTED || 0,
+        hired: action.payload.statusCounts.HIRED || 0,
+        withdrawn: action.payload.statusCounts.WITHDRAWN || 0,
+      };
     },
     updateAppliedJobStatus: (state, action) => {
       const { applicationId, newStatus } = action.payload;
@@ -63,6 +85,6 @@ export const {
   removeJobs,
   setJobsByAI,
   updateAppliedJobStatus,
-  removeJobFromStatus
+  removeJobFromStatus,
 } = jobReducer.actions;
 export default jobReducer.reducer;

@@ -23,29 +23,29 @@ const STATUS_STYLES = {
   REJECTED: "bg-[#FF3B30]",
 };
 
-const tabs = [
-  { label: "All", value: "", count: 0, active: true },
-  { label: "Applied", value: "APPLIED", count: 0, active: false },
-  { label: "Shortlisted", value: "SHORTLISTED", count: 0, active: false },
-  {
-    label: "Invited to Interview",
-    value: "INTERVIEW_SCHEDULED",
-    count: 0,
-    active: false,
-  },
-  { label: "Rejected", value: "REJECTED", count: 0, active: false },
-  { label: "Hired", value: "HIRED", count: 0, active: false },
-];
+function JobDetailsHeader({ status, setStatus, statusCounts }) {
+  const tabs = [
+    { label: "All", value: "", count: statusCounts?.all || 0, active: true },
+    { label: "Applied", value: "APPLIED", count: statusCounts?.applied || 0, active: false },
+    { label: "Shortlisted", value: "SHORTLISTED", count: statusCounts?.shortlisted || 0, active: false },
+    {
+      label: "Invited to Interview",
+      value: "INTERVIEW_SCHEDULED",
+      count: statusCounts?.interview_scheduled || 0,
+      active: false,
+    },
+    { label: "Rejected", value: "REJECTED", count: statusCounts?.rejected || 0, active: false },
+    { label: "Hired", value: "HIRED", count: statusCounts?.hired || 0, active: false },
+  ];
 
-function JobDetailsHeader({ status, setStatus }) {
   return (
     <div className="text-100">
       {/* Header Section */}
       <div className="flex items-center justify-between py-4">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-semibold">Job Details</h1>
-          <button className="py-1 px-2 bg-g-200 hover:bg-g-300 text-100 text-xs rounded transition-colors">
-            View Job
+          <button className="py-1 px-2 bg-g-200 hover:bg-g-300 text-100 text-xs rounded transition-colors cursor-pointer">
+            View Job 
           </button>
         </div>
         <Link
@@ -62,7 +62,7 @@ function JobDetailsHeader({ status, setStatus }) {
         {tabs.map((tab, index) => (
           <button
             key={index}
-            className={`flex items-center gap-2 px-5 py-2 whitespace-nowrap transition-colors relative ${
+            className={`flex items-center gap-2 px-5 py-2 whitespace-nowrap transition-colors relative cursor-pointer ${
               tab.value === status
                 ? "text-white"
                 : "text-g-200 hover:text-g-300"
@@ -70,7 +70,7 @@ function JobDetailsHeader({ status, setStatus }) {
             onClick={() => setStatus(tab.value)}
           >
             <span className="text-sm font-medium">{tab.label}</span>
-            {/* <span
+            <span
               className={`flex items-center justify-center w-8 h-6 rounded-full text-xs font-semibold ${
                 tab.value === status
                   ? "bg-light-blue text-primary"
@@ -78,7 +78,7 @@ function JobDetailsHeader({ status, setStatus }) {
               }`}
             >
               {tab.count}
-            </span> */}
+            </span>
             {tab.value === status && (
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"></div>
             )}
@@ -96,7 +96,7 @@ export default function Page() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  const { applications, totalApplicationsPages } = useSelector(
+  const { applications, totalApplicationsPages, statusCounts } = useSelector(
     (state) => state.jobs,
   );
   const isFirstLoad = useRef(true);
@@ -225,15 +225,15 @@ export default function Page() {
 
   return (
     <div>
-      <JobDetailsHeader status={status} setStatus={setStatus} />
+      <JobDetailsHeader status={status} setStatus={setStatus} statusCounts={statusCounts} />
       <div className="rounded-primary mt-5 mx-auto overflow-hidden border border-g-500">
         <div className="flex justify-between bg-g-600 p-5">
-          <Search
-            placeholder="Search by job title"
+          {/* <Search
+            placeholder="Search Candiate"
             value={search}
             setValue={setSearch}
             handleClear={() => setSearch("")}
-          />
+          /> */}
         </div>
 
         {loading ? (

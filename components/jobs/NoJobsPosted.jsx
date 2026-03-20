@@ -2,8 +2,11 @@
 
 import { Plus } from "lucide-react";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 
 export default function NoJobsPosted({ onClick }) {
+    const { jobs } = useSelector((state) => state.jobs);
+
   return (
     <div className="flex flex-col items-center gap-6  mx-auto mt-15">
       <Image
@@ -16,7 +19,7 @@ export default function NoJobsPosted({ onClick }) {
 
       <div className="flex flex-col items-center gap-3 text-center">
         <h2 className="text-2xl font-medium text-accent-color-1">
-          No Jobs Posted
+         {jobs.length > 0 ? `Post a Job` : "No Jobs Posted"}
         </h2>
         <p className="text-sm text-g-200 max-w-[420px]">
           Post your first job today and take the first step toward building a

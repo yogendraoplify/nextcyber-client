@@ -14,6 +14,7 @@ import AdvancePagination from "@/components/ui/AdvancePagination";
 import Search from "@/components/ui/Search";
 import { removeCandidates } from "@/store/slices/candidateSlice";
 import useDidChange from "@/hooks/useDidChange";
+import ViewCandidateProfile from "@/components/modal/ViewCandidateProfile";
 
 export default function CandidatesPage() {
   const { user } = useSelector((state) => state.auth);
@@ -39,6 +40,10 @@ export default function CandidatesPage() {
     experienceRange: { min: 0, max: 10 },
   });
   const [isSearched, setIsSearched] = useState(false);
+  const [modal, setModal] = useState({
+    type: "",
+    data: null,
+  });
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -80,6 +85,7 @@ export default function CandidatesPage() {
   };
 
   const handleFavoriteToggle = async (candidate) => {
+    console.log("Toggling favorite for candidate:", candidate);
     candidate?.favoritedBy
       ?.map(({ company }) => company.id)
       .includes(user?.companyProfile.id)
@@ -229,6 +235,7 @@ export default function CandidatesPage() {
                   isFavorite={candidate?.favoritedBy
                     ?.map(({ company }) => company.id)
                     .includes(user?.companyProfile.id)}
+                  setModal={setModal}
                 />
               ))
             ) : (
@@ -241,11 +248,13 @@ export default function CandidatesPage() {
 
         {candidates?.length > 0 && !loading && (
           <div className="sticky bottom-0 flex justify-center mt-5">
-            <AdvancePagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={(page) => setPage(page)}
-            />
+            {(candidates?.length === 12 || page !== 1) && (
+              <AdvancePagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={(page) => setPage(page)}
+              />
+            )}
           </div>
         )}
       </div>
@@ -259,6 +268,14 @@ export default function CandidatesPage() {
           handleApplyFilters={(params) => dispatch(asyncGetCandidates(params))}
           handleResetFilters={() => dispatch(asyncGetCandidates())}
           isFilterApplied={isFilterApplied}
+        />
+      )}
+
+      {modal.type === "candidateProfile" && (
+        <ViewCandidateProfile
+          isOpen={modal.type === "candidateProfile"}
+          data={modal.data}
+          onClose={() => setModal({ type: "", data: null })}
         />
       )}
     </>

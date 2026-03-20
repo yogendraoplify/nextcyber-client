@@ -11,7 +11,12 @@ import {
 import Image from "next/image";
 import JobApplyModel from "./JobApply";
 
-export default function JobDetailsModal({ selectedJob, onClose, applyJob }) {
+export default function JobDetailsModal({
+  selectedJob,
+  onClose,
+  applyJob,
+  isApplied,
+}) {
   return (
     <div className="sm:block bg-g-800 sticky py-4 flex-1 h-fit rounded-[10px] border border-g-500 overflow-x-hidden">
       <div>
@@ -52,11 +57,13 @@ export default function JobDetailsModal({ selectedJob, onClose, applyJob }) {
                 <Share2 size={20} className=" text-g-300" />
               </button>
               <button
-                onClick={() =>{
-                  applyJob(selectedJob.id)}}
-                className="bg-primary text-g-100 px-4 py-2 rounded-lg float-right font-medium cursor-pointer truncate"
+                disabled={isApplied}
+                onClick={() => {
+                  applyJob(selectedJob.id);
+                }}
+                className={` ${isApplied ? "bg-primary/50 " : "bg-primary hover:bg-primary/90"} text-g-100 px-4 py-2 rounded-lg float-right font-medium cursor-pointer truncate disabled:cursor-not-allowed`}
               >
-                Apply Now
+                {isApplied ? "Applied" : "Apply Now"}
               </button>
             </div>
           </div>
@@ -96,7 +103,9 @@ export default function JobDetailsModal({ selectedJob, onClose, applyJob }) {
         <div className="px-5 mt-5">
           <h5 className=" text-g-100 leading-6 font-medium">Job Description</h5>
           <div className=" text-g-200 font-normal leading-6 mt-3">
-           <div dangerouslySetInnerHTML={{ __html: selectedJob?.jobDescription }}></div>
+            <div
+              dangerouslySetInnerHTML={{ __html: selectedJob?.jobDescription }}
+            ></div>
           </div>
         </div>
         <div className="px-5 mt-7.5">

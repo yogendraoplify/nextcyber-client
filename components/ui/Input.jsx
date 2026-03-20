@@ -15,7 +15,7 @@ export const Input = forwardRef(
           placeholder={placeholder}
           className={`py-4 px-5 rounded-lg bg-g-700 border
           ${error ? "border-dark-red" : "border-g-500"}
-          text-g-300 placeholder-[#6A6B6C] outline-none 
+          text-g-100 placeholder-[#6A6B6C] outline-none 
           ${className}`}
           {...props}
         />

@@ -60,6 +60,11 @@ export default function Sidebar({ isMobileOpen, toggleMobile }) {
             href: "/dashboard",
           },
           {
+            label: "My Profile",
+            icon: User,
+            href: "/profile",
+          },
+          {
             label: "My NextGen CV",
             icon: FileText,
             href: "/resume-builder",
