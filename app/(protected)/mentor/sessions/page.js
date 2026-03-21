@@ -226,10 +226,7 @@ const SessionCard = ({ item, type, onClick }) => {
           />
 
           {!isWebinar && showJoinBtn && (
-            <Link
-              href={`/mentor/join-session/${item?.id}`}
-              className="text-xs"
-            >
+            <Link href={`/mentor/join-session/${item?.id}`} className="text-xs">
               Start Session
             </Link>
           )}
@@ -689,8 +686,8 @@ export default function SessionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 p-6">
-      <div className="max-w-5xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-9500">
+      <div className="w-full mx-auto space-y-6">
         {/* ── Page Header ─────────────────────────────── */}
         <div>
           <h1 className="text-2xl font-bold text-white">Sessions</h1>

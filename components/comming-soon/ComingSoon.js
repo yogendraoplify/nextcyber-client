@@ -59,6 +59,7 @@ export default function ComingSoon({ showComingSoon }) {
       setNotification(null);
     }, 3000); // auto close
   };
+
   const handleNotify = async () => {
     if (!email) {
       setError((prev) => ({
@@ -105,6 +106,7 @@ export default function ComingSoon({ showComingSoon }) {
         showNotification("success", "Access granted 🎉");
         setError({ email: "", password: "" });
         showComingSoon(false);
+        sessionStorage.setItem("hasAccess", true);
       } else {
         setError((prev) => ({
           ...prev,
@@ -170,13 +172,14 @@ export default function ComingSoon({ showComingSoon }) {
                 soon as we launch!
               </p>
 
-              <div className="flex flex-row items-center gap-4">
+              <div className="flex flex-row items-start gap-4">
                 <div className="flex flex-col" style={{ gap: 8 }}>
                   <input
                     type="email"
                     value={email}
+                    autoComplete="off"
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email..."
+                    placeholder="Enter Your Email"
                     className="h-[52px] outline-none rounded-[8px] placeholder-[#9C9C9D] text-white focus:ring-1 focus:ring-[#025BCF]"
                     style={{
                       width: 320,
@@ -250,6 +253,7 @@ export default function ComingSoon({ showComingSoon }) {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
                   placeholder="Enter Password"
                   className="h-[52px] outline-none rounded-[8px] placeholder-[#9C9C9D] text-white focus:ring-1 focus:ring-[#025BCF]"
                   style={{

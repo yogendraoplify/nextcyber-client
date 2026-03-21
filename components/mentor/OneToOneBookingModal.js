@@ -325,13 +325,22 @@ export default function OneToOneBookingModal({ service, onClose, onSuccess }) {
   // };
 
   const toAmPm = (iso) => {
-  return new Date(iso).toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-    timeZone: "Asia/Kolkata",
-  });
-};
+    return new Date(iso).toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZone: "Asia/Kolkata",
+    });
+  };
+
+  const toStudentLocalTime = (isoString) => {
+    return new Date(isoString).toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      // ✅ No timezone specified = browser uses student's local timezone automatically
+    });
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
@@ -425,7 +434,8 @@ export default function OneToOneBookingModal({ service, onClose, onSuccess }) {
                       className="px-4 py-2.5 bg-gray-900 border border-gray-700 hover:border-blue-500 hover:bg-blue-950 text-sm font-semibold text-gray-300 hover:text-blue-300 rounded-xl transition-all"
                     >
                       {/* {toAmPm(slot.startTime)} – {toAmPm(slot.endTime)} */}
-                      {toAmPm(slot.startTime)} – {toAmPm(slot.endTime)}
+                      {toStudentLocalTime(slot.startTime)} –{" "}
+                      {toStudentLocalTime(slot.endTime)}
                     </button>
                   ))}
                 </div>
@@ -454,8 +464,8 @@ export default function OneToOneBookingModal({ service, onClose, onSuccess }) {
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-500">Time</span>
                   <span className="text-gray-300 font-semibold">
-                    {toAmPm(selectedSlot.startTime)} –{" "}
-                    {toAmPm(selectedSlot.endTime)}
+                    {toStudentLocalTime(selectedSlot.startTime)} –{" "}
+                    {toStudentLocalTime(selectedSlot.endTime)}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">

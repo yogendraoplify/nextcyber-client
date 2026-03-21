@@ -418,8 +418,9 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
-import { useParams } from "next/navigation";
-import { joinSession } from "@/services/mentorApi";
+import { useParams, useRouter } from "next/navigation";
+import { endSession, joinSession } from "@/services/mentorApi";
+import { useSelector } from "react-redux";
 
 // ─── Control Button ───────────────────────────────────────
 const ControlBtn = ({
@@ -450,10 +451,12 @@ const ControlBtn = ({
   </button>
 );
 
-export default function VideoCall({ isMentor = false }) {
+export default function VideoCall() {
   const params = useParams();
+  const router = useRouter;
   const sessionId = params.id;
   const [connectionDetails, setConnectionDetails] = useState();
+  const { user } = useSelector((state) => state.auth);
 
   const [joined, setJoined] = useState(false);
   const [error, setError] = useState(null);
@@ -667,17 +670,18 @@ export default function VideoCall({ isMentor = false }) {
     cameraTrackRef.current?.close();
     screenTrackRef.current?.close();
     await clientRef.current?.leave();
-    window.location.href = `/session/${sessionId}/summary`;
+    router.push("/mentor/mentorship");
   };
 
   const handleEndSession = async () => {
     try {
-      await axios.post(`/api/session/${sessionId}/end`);
+      const res = await endSession(sessionId);
       micTrackRef.current?.close();
       cameraTrackRef.current?.close();
       screenTrackRef.current?.close();
       await clientRef.current?.leave();
-      window.location.href = `/session/${sessionId}/summary`;
+      router.push("/mentor/sessions");
+      // window.location.href = `/session/${sessionId}/summary`;
     } catch (e) {
       console.error("Failed to end session:", e);
     }
@@ -778,7 +782,7 @@ export default function VideoCall({ isMentor = false }) {
         />
 
         {/* Leave / End — different per role */}
-        {isMentor ? (
+        {user?.role === "MENTOR" ? (
           <ControlBtn
             onClick={handleEndSession}
             active={false}

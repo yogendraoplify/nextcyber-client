@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { useNotifications } from "@/hooks/useNotifications";
 import ComingSoon from "@/components/comming-soon/ComingSoon";
-// import { socket } from "@/utils/socket";
 
 function Wrapper({ children }) {
   const pathname = usePathname();
@@ -16,8 +15,9 @@ function Wrapper({ children }) {
   const dispatch = useDispatch();
   const { user, isLoading } = useSelector((state) => state.auth);
   const [showComingSoon, setShowComingSoon] = useState(
-    (process.env.NEXT_PUBLIC_SHOW_COMING_SOON === "true"),
+    process.env.NEXT_PUBLIC_SHOW_COMING_SOON === "true",
   );
+  const [hasAccessValue, setHasAccessValue] = useState(undefined);
   const authPages = [
     "/auth/signin",
     "/blogs",
@@ -44,19 +44,6 @@ function Wrapper({ children }) {
   const isAuthPage =
     authPages.includes(pathname) ||
     dynamicAuthPages.some((route) => pathname.startsWith(route));
-
-  // useEffect(() => {
-  //   if (!user) return;
-  //   const handler = (notification) => {
-  //     toast(notification.data.message);
-  //   };
-
-  //   socket.on("notification", handler);
-
-  //   return () => {
-  //     socket.off("notification", handler);
-  //   };
-  // }, []);
 
   useNotifications(); // 🔥 just call it
 
@@ -86,7 +73,15 @@ function Wrapper({ children }) {
     }
   }, [user, isLoading, router]);
 
-  if (showComingSoon) {
+  useEffect(() => {
+    setHasAccessValue(sessionStorage.getItem("hasAccess"));
+  }, []);
+
+  if (hasAccessValue === undefined) {
+    return null; // wait for client
+  }
+
+  if (showComingSoon && !hasAccessValue) {
     return <ComingSoon showComingSoon={setShowComingSoon} />;
   }
 

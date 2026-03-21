@@ -28,6 +28,9 @@ export const joinWebinar = (webinarServiceId) =>
 export const joinSession = (sessionId) =>
   axios.post(`/mentor/services/one-to-one/join-session?sessionId=${sessionId}`);
 
+export const endSession = (sessionId) =>
+  axios.post(`/mentor/services/one-to-one/end-session?sessionId=${sessionId}`);
+
 export const endWebinar = (webinarServiceId) =>
   axios.post(
     `/mentor/services/webinar/end-webinar?webinarServiceId=${webinarServiceId}`,
@@ -38,6 +41,9 @@ export const createOneToOneService = (data) =>
 
 export const updateOneToOneService = (serviceId, data) =>
   axios.patch(`/mentor/services/one-to-one?serviceId=${serviceId}`, data);
+
+export const updateMentorProfile = (data) =>
+  axios.patch(`/mentor/update-profile`, data);
 
 export const createWebinarService = (data) =>
   axios.post(`/mentor/services/webinar`, data);
