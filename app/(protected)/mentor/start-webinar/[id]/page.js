@@ -1,50 +1,8 @@
-// "use client";
-// import {
-//   LiveKitRoom,
-//   RoomAudioRenderer,
-//   useTracks,
-//   VideoTrack,
-// } from "@livekit/components-react";
-// import { Track } from "livekit-client";
-// import "@livekit/components-styles";
-
-// // Renders only the mentor's video — attendees can't publish anyway
-// const MentorStage = () => {
-//   const tracks = useTracks([Track.Source.Camera, Track.Source.ScreenShare]);
-//   const mentorTrack = tracks[0]; // only 1 publisher in webinar
-
-//   if (!mentorTrack) return <div>Waiting for host to share video...</div>;
-
-//   return (
-//     <VideoTrack
-//       trackRef={mentorTrack}
-//       style={{ width: "100%", height: "100vh" }}
-//     />
-//   );
-// };
-
-// export default WebinarViewer = ({ webinarId, connectionDetails }) => {
-//   return (
-//     <LiveKitRoom
-//       serverUrl={connectionDetails.serverUrl}
-//       token={connectionDetails.token}
-//       connect={true}
-//       audio={false} // attendees don't publish
-//       video={false}
-//     >
-//       <MentorStage />
-//       <RoomAudioRenderer /> {/* still plays mentor's audio */}
-//     </LiveKitRoom>
-//   );
-// };
-
 "use client";
 import { useEffect, useRef, useState } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { endWebinar, startWebinar } from "@/services/mentorApi";
 import { useParams } from "next/navigation";
-
-// const webinarServiceId = "fc9107c9-b000-4d42-b536-1b1179e87942";
 
 export default function WebinarHost() {
   const params = useParams();
@@ -66,16 +24,7 @@ export default function WebinarHost() {
   const handleGoLive = async () => {
     try {
       const res = await startWebinar(webinarServiceId);
-      // setDetails({
-      //   success: true,
-      //   message: "Webinar is now live.",
-      //   token:
-      //     "007eJxTYDigLfN5etO0psf7s88uFCm6UzWbr3eClL1sg8aV//bp0+4oMCSZJRlbpBglG5sZWZgYp5lYWlhYGFomWVimJSalWCQldXjtzJwRsTNz6aqZjIwMjAwsDIwMID4TmGQGkyxgUoehPDUpMy+xSDct2dLQwDzZUjfJwMBA1yTFxEg3ydTYTNcwydDQ3DLVwtzSxIiLwdDMxMzEzMLIzAgAAv41vA==",
-      //   appId: "b6b38d2c362843f4988819b89fabd8bb",
-      //   channelName: "webinar-fc9107c9-b000-4d42-b536-1b1179e87942",
-      //   uid: 1646468262,
-      //   role: "publisher",
-      // });
+
       setDetails(res.data);
     } catch (e) {
       setError(e.response?.data?.message ?? "Failed to start webinar.");
@@ -224,7 +173,7 @@ export default function WebinarHost() {
   }
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden">
+    <div className="relative w-full h-[calc(100vh-100.8px)] bg-gray-950 overflow-hidden">
       {/* ── Camera / Screen feed ─────────────────────── */}
       <div ref={localVidRef} className="w-full h-full object-cover" />
 

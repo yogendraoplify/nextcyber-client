@@ -1,492 +1,134 @@
-// "use client";
-// import {
-//   LiveKitRoom,
-//   VideoConference,
-//   RoomAudioRenderer,
-// } from "@livekit/components-react";
-// import "@livekit/components-styles";
-// import { useEffect, useState } from "react";
-// import axios from "axios";
-
-// export default VideoCall = ({ sessionId }) => {
-//   const [connectionDetails, setConnectionDetails] = useState(null);
-
-//   useEffect(() => {
-//     axios
-//       .post(`/api/livekit/session/${sessionId}/join`)
-//       .then((res) => setConnectionDetails(res.data));
-//   }, [sessionId]);
-
-//   if (!connectionDetails) return <div>Connecting...</div>;
-
-//   return (
-//     <LiveKitRoom
-//       serverUrl={connectionDetails.serverUrl}
-//       token={connectionDetails.token}
-//       connect={true}
-//       video={true}
-//       audio={true}
-//       onDisconnected={() => {
-//         // redirect to session summary page
-//         window.location.href = `/session/${sessionId}/summary`;
-//       }}
-//     >
-//       <VideoConference /> {/* gives you full UI out of the box */}
-//       <RoomAudioRenderer />
-//     </LiveKitRoom>
-//   );
-// };
-
-// "use client";
-// import { useEffect, useRef, useState } from "react";
-// import AgoraRTC from "agora-rtc-sdk-ng";
-// import axios from "axios";
-
-// export default function VideoCall({ sessionId }) {
-//   const [connectionDetails, setConnectionDetails] = useState(null);
-//   const [joined, setJoined] = useState(false);
-//   const [error, setError] = useState(null);
-
-//   const clientRef = useRef(null);
-//   const localVideoRef = useRef(null); // your own camera
-//   const remoteVideoRef = useRef(null); // other person's camera
-
-//   // ── Fetch token from your API ──────────────────────
-//   useEffect(() => {
-//     axios
-//       .post(`/api/session/${sessionId}/join`)
-//       .then((res) => setConnectionDetails(res.data))
-//       .catch(() => setError("Failed to connect to session."));
-//   }, [sessionId]);
-
-//   // ── Join Agora channel once we have credentials ────
-//   useEffect(() => {
-//     if (!connectionDetails) return;
-
-//     const join = async () => {
-//       try {
-//         const { appId, channelName, token, uid } = connectionDetails;
-
-//         const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-//         clientRef.current = client;
-
-//         // ── Listen for remote user joining ────────────
-//         client.on("user-published", async (user, mediaType) => {
-//           await client.subscribe(user, mediaType);
-
-//           if (mediaType === "video") {
-//             user.videoTrack.play(remoteVideoRef.current);
-//           }
-//           if (mediaType === "audio") {
-//             user.audioTrack.play();
-//           }
-//         });
-
-//         client.on("user-unpublished", (user, mediaType) => {
-//           if (mediaType === "video" && remoteVideoRef.current) {
-//             remoteVideoRef.current.innerHTML = "";
-//           }
-//         });
-
-//         // ── Join the channel ──────────────────────────
-//         await client.join(appId, channelName, token, uid);
-
-//         // ── Publish local camera + mic ────────────────
-//         const [micTrack, cameraTrack] =
-//           await AgoraRTC.createMicrophoneAndCameraTracks();
-
-//         cameraTrack.play(localVideoRef.current);
-//         await client.publish([micTrack, cameraTrack]);
-
-//         setJoined(true);
-//       } catch (e) {
-//         setError(e.message);
-//       }
-//     };
-
-//     join();
-
-//     // ── Cleanup on unmount ────────────────────────────
-//     return () => {
-//       clientRef.current?.leave();
-//     };
-//   }, [connectionDetails]);
-
-//   const handleLeave = async () => {
-//     await clientRef.current?.leave();
-//     window.location.href = `/session/${sessionId}/summary`;
-//   };
-
-//   if (error) return <div className="p-8 text-red-500">{error}</div>;
-//   if (!joined) return <div className="p-8 text-gray-500">Connecting...</div>;
-
-//   return (
-//     <div className="relative w-full h-screen bg-black">
-//       {/* Remote video — full screen */}
-//       <div ref={remoteVideoRef} className="w-full h-full" />
-
-//       {/* Local video — picture-in-picture */}
-//       <div
-//         ref={localVideoRef}
-//         className="absolute bottom-6 right-6 w-48 h-36 rounded-xl overflow-hidden border-2 border-white shadow-lg"
-//       />
-
-//       {/* Leave button */}
-//       <button
-//         onClick={handleLeave}
-//         className="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-full shadow-lg transition-colors"
-//       >
-//         Leave Session
-//       </button>
-//     </div>
-//   );
-// }
-
-// "use client";
-// import { useEffect, useRef, useState } from "react";
-// import AgoraRTC from "agora-rtc-sdk-ng";
-// import axios from "axios";
-// const sessionId = "0a71174d-4ccd-4d0b-a0c1-5bca969a1df8";
-
-// export default function VideoCall() {
-//   const [connectionDetails, setConnectionDetails] = useState({
-//     success: true,
-//     token:
-//       "007eJxTYDifcTrO8+WWuXcYcmtszs/78WCDw2X3jjLeBW4CEU6iN+wUGJLMkowtUoySjc2MLEyM00wsLSwsDC2TLCzTEpNSLJKStPh2Zm6T2Jl5JyWZhZGBkYGFgZEBxGcCk8xgkgVM6jAUpxYXZ+bn6Rokmhsampuk6JokJ6fomqQYJOkmGiQb6pomJSdamlkmGqakWXAxGJpZGlkamBubGgAAghI1Ng==",
-//     appId: "b6b38d2c362843f4988819b89fabd8bb",
-//     channelName: "session-0a71174d-4ccd-4d0b-a0c1-5bca969a1df8",
-//     uid: 1692907350,
-//     role: "publisher",
-//     displayName: "Ritik",
-//   });
-//   const [joined, setJoined] = useState(false);
-//   const [error, setError] = useState(null);
-//   const [audioBlocked, setAudioBlocked] = useState(false);
-//   const [remoteJoined, setRemoteJoined] = useState(false);
-
-//   const clientRef = useRef(null);
-//   const localVideoRef = useRef(null);
-//   const remoteVideoRef = useRef(null);
-//   const micTrackRef = useRef(null); // ✅ store refs for cleanup
-//   const cameraTrackRef = useRef(null);
-
-//   // useEffect(() => {
-//   //   const joinSessionDets = async () => {
-//   //     try {
-//   //       const res = await joinSession(sessionId);
-//   //       setConnectionDetails(res.data);
-//   //     } catch (error) {
-//   //       console.log(error);
-//   //     }
-//   //   };
-//   //   // axios
-//   //   //   .post(`/api/session/${sessionId}/join`)
-//   //   //   .then((res) => setConnectionDetails(res.data))
-//   //   //   .catch(() => setError("Failed to connect to session."));
-//   // }, [sessionId]);
-
-//   // useEffect(() => {
-//   //   if (!connectionDetails) return;
-
-//   //   const join = async () => {
-//   //     try {
-//   //       const { appId, channelName, token, uid } = connectionDetails;
-
-//   //       const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-//   //       clientRef.current = client;
-
-//   //       // ✅ Handle browser audio autoplay block
-//   //       client.on("autoplay-fallback", () => setAudioBlocked(true));
-
-//   //       client.on("user-published", async (user, mediaType) => {
-//   //         await client.subscribe(user, mediaType);
-
-//   //         if (mediaType === "video") {
-//   //           setRemoteJoined(true);
-//   //           // ✅ Small delay so div is in DOM before playing
-//   //           setTimeout(() => {
-//   //             if (remoteVideoRef.current) {
-//   //               user.videoTrack.play(remoteVideoRef.current);
-//   //             }
-//   //           }, 100);
-//   //         }
-
-//   //         if (mediaType === "audio") {
-//   //           try {
-//   //             user.audioTrack.play();
-//   //           } catch {
-//   //             setAudioBlocked(true);
-//   //           }
-//   //         }
-//   //       });
-
-//   //       client.on("user-unpublished", (user, mediaType) => {
-//   //         if (mediaType === "video") setRemoteJoined(false);
-//   //       });
-
-//   //       client.on("user-left", () => setRemoteJoined(false));
-
-//   //       await client.join(appId, channelName, token, uid);
-
-//   //       const [micTrack, cameraTrack] =
-//   //         await AgoraRTC.createMicrophoneAndCameraTracks();
-
-//   //       // ✅ Store track refs before publishing
-//   //       micTrackRef.current = micTrack;
-//   //       cameraTrackRef.current = cameraTrack;
-
-//   //       await client.publish([micTrack, cameraTrack]);
-
-//   //       // ✅ setJoined first so localVideoRef div renders, then play in next effect
-//   //       setJoined(true);
-//   //     } catch (e) {
-//   //       setError(e.message);
-//   //     }
-//   //   };
-
-//   //   join();
-
-//   //   return () => {
-//   //     // ✅ Close tracks properly so camera/mic light turns off
-//   //     micTrackRef.current?.close();
-//   //     cameraTrackRef.current?.close();
-//   //     clientRef.current?.leave();
-//   //   };
-//   // }, [connectionDetails]);
-
-//   useEffect(() => {
-//     if (!connectionDetails) return;
-
-//     let cancelled = false; // ✅ track if effect was cleaned up
-
-//     const join = async () => {
-//       try {
-//         const { appId, channelName, token, uid } = connectionDetails;
-
-//         const client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
-//         clientRef.current = client;
-
-//         client.on("autoplay-fallback", () => setAudioBlocked(true));
-
-//         client.on("user-published", async (user, mediaType) => {
-//           await client.subscribe(user, mediaType);
-
-//           if (mediaType === "video") {
-//             setRemoteJoined(true);
-//             setTimeout(() => {
-//               if (remoteVideoRef.current) {
-//                 user.videoTrack.play(remoteVideoRef.current);
-//               }
-//             }, 100);
-//           }
-
-//           if (mediaType === "audio") {
-//             try {
-//               user.audioTrack.play();
-//             } catch {
-//               setAudioBlocked(true);
-//             }
-//           }
-//         });
-
-//         client.on("user-unpublished", (user, mediaType) => {
-//           if (mediaType === "video") setRemoteJoined(false);
-//         });
-
-//         client.on("user-left", () => setRemoteJoined(false));
-
-//         await client.join(appId, channelName, token, uid);
-
-//         // ✅ If cleanup already ran while joining — leave immediately and stop
-//         if (cancelled) {
-//           await client.leave();
-//           return;
-//         }
-
-//         const [micTrack, cameraTrack] =
-//           await AgoraRTC.createMicrophoneAndCameraTracks();
-
-//         // ✅ Check again after creating tracks
-//         if (cancelled) {
-//           micTrack.close();
-//           cameraTrack.close();
-//           await client.leave();
-//           return;
-//         }
-
-//         micTrackRef.current = micTrack;
-//         cameraTrackRef.current = cameraTrack;
-
-//         await client.publish([micTrack, cameraTrack]);
-
-//         if (!cancelled) setJoined(true);
-//       } catch (e) {
-//         // ✅ Ignore abort errors caused by cleanup — not a real error
-//         if (cancelled) return;
-//         if (e?.code === "OPERATION_ABORTED") return;
-//         setError(e.message);
-//       }
-//     };
-
-//     join();
-
-//     return () => {
-//       cancelled = true; // ✅ signal that we've cleaned up
-//       micTrackRef.current?.close();
-//       cameraTrackRef.current?.close();
-//       clientRef.current?.leave();
-//     };
-//   }, [connectionDetails]);
-
-//   // ✅ Play local camera AFTER the div is in the DOM
-//   useEffect(() => {
-//     if (joined && localVideoRef.current && cameraTrackRef.current) {
-//       cameraTrackRef.current.play(localVideoRef.current);
-//     }
-//   }, [joined]);
-
-//   const handleUnblockAudio = async () => {
-//     try {
-//       await AgoraRTC.resumeAudioContext();
-//       setAudioBlocked(false);
-//     } catch (e) {
-//       console.error("Failed to resume audio:", e);
-//     }
-//   };
-
-//   const handleLeave = async () => {
-//     micTrackRef.current?.close();
-//     cameraTrackRef.current?.close();
-//     await clientRef.current?.leave();
-//     window.location.href = `/session/${sessionId}/summary`;
-//   };
-
-//   if (error) return <div className="p-8 text-red-500 text-center">{error}</div>;
-
-//   if (!joined)
-//     return (
-//       <div className="flex items-center justify-center h-screen bg-gray-950 gap-3 text-white">
-//         <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-//         <span className="text-sm text-gray-300">Connecting...</span>
-//       </div>
-//     );
-
-//   return (
-//     <div className="relative w-full h-screen bg-black overflow-hidden">
-//       {/* Remote video — full screen */}
-//       <div ref={remoteVideoRef} className="w-full h-full" />
-
-//       {/* Waiting for other person */}
-//       {!remoteJoined && (
-//         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white gap-3">
-//           <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
-//           <p className="text-sm text-gray-300">
-//             Waiting for the other person...
-//           </p>
-//         </div>
-//       )}
-
-//       {/* Local video — picture-in-picture */}
-//       <div
-//         ref={localVideoRef}
-//         className="absolute bottom-24 right-6 w-48 h-36 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl"
-//       />
-
-//       {/* Audio blocked banner */}
-//       {audioBlocked && (
-//         <div className="absolute top-5 left-1/2 -translate-x-1/2 z-50">
-//           <button
-//             onClick={handleUnblockAudio}
-//             className="flex items-center gap-2 px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-full shadow-xl text-sm transition-colors"
-//           >
-//             🔇 Tap to enable audio
-//           </button>
-//         </div>
-//       )}
-
-//       {/* Leave button */}
-//       <button
-//         onClick={handleLeave}
-//         className="absolute bottom-8 left-1/2 -translate-x-1/2 px-7 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-full shadow-lg transition-colors"
-//       >
-//         Leave Session
-//       </button>
-//     </div>
-//   );
-// }
-
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import AgoraRTC from "agora-rtc-sdk-ng";
 import { useParams, useRouter } from "next/navigation";
 import { endSession, joinSession } from "@/services/mentorApi";
 import { useSelector } from "react-redux";
+import {
+  Mic, MicOff, Video, VideoOff, MonitorUp, MonitorStop,
+  PhoneOff, Volume2, VolumeX, Loader2, Users,
+} from "lucide-react";
 
-// ─── Control Button ───────────────────────────────────────
-const ControlBtn = ({
-  onClick,
-  active,
-  activeIcon,
-  inactiveIcon,
-  label,
-  danger,
-}) => (
-  <button
-    onClick={onClick}
-    className="flex flex-col items-center gap-1.5 group"
-  >
-    <div
-      className={`w-12 h-12 rounded-full flex items-center justify-center text-xl transition-all shadow-lg
-      ${
-        danger
-          ? "bg-red-500 hover:bg-red-600 text-white"
-          : active
-            ? "bg-white/20 hover:bg-white/30 text-white"
-            : "bg-red-500/90 hover:bg-red-600 text-white"
-      }`}
-    >
-      {active ? activeIcon : inactiveIcon}
-    </div>
-    <span className="text-[11px] text-white/60 font-medium">{label}</span>
-  </button>
+// ─────────────────────────────────────────────────────────
+// CONTROL BUTTON
+// ─────────────────────────────────────────────────────────
+const ControlBtn = ({ onClick, active = true, icon, inactiveIcon, label, variant = "default", disabled = false }) => {
+  const Icon         = active ? icon : (inactiveIcon ?? icon);
+  const base         = "flex flex-col items-center gap-1.5 group disabled:opacity-40 disabled:cursor-not-allowed";
+  const circleBase   = "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-150 shadow-lg";
+
+  const circleStyle =
+    variant === "danger"   ? "bg-red-500 hover:bg-red-400 text-white" :
+    variant === "active"   ? "bg-blue-500 hover:bg-blue-400 text-white" :
+    active                 ? "bg-white/15 hover:bg-white/25 text-white backdrop-blur-sm" :
+                             "bg-red-500/90 hover:bg-red-500 text-white";
+
+  return (
+    <button onClick={onClick} disabled={disabled} className={base}>
+      <div className={`${circleBase} ${circleStyle}`}>
+        <Icon size={20} strokeWidth={2} />
+      </div>
+      <span className="text-[10px] text-white/50 font-medium tracking-wide">{label}</span>
+    </button>
+  );
+};
+
+// ─────────────────────────────────────────────────────────
+// VIDEO TILE  — renders a named video container
+// ─────────────────────────────────────────────────────────
+const VideoTile = ({ videoRef, label, muted = false, className = "", placeholder = false }) => (
+  <div className={`relative bg-gray-900 rounded-2xl overflow-hidden ${className}`}>
+    {/* video container */}
+    <div ref={videoRef} className="w-full h-full" />
+
+    {/* placeholder avatar when camera off */}
+    {placeholder && (
+      <div className="absolute inset-0 flex items-center justify-center bg-gray-900">
+        <div className="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center">
+          <Users size={28} className="text-gray-400" />
+        </div>
+      </div>
+    )}
+
+    {/* name label */}
+    {label && (
+      <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/50 backdrop-blur-sm rounded-md text-[11px] text-white/80 font-medium">
+        {label}
+      </div>
+    )}
+
+    {/* muted indicator */}
+    {muted && (
+      <div className="absolute top-2 right-2 w-6 h-6 bg-red-500/90 rounded-full flex items-center justify-center">
+        <MicOff size={12} className="text-white" />
+      </div>
+    )}
+  </div>
 );
 
+// ─────────────────────────────────────────────────────────
+// WAITING OVERLAY
+// ─────────────────────────────────────────────────────────
+const WaitingOverlay = ({ message }) => (
+  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 backdrop-blur-sm text-white gap-3 z-10">
+    <Loader2 size={28} className="animate-spin text-white/60" />
+    <p className="text-sm text-gray-300">{message}</p>
+  </div>
+);
+
+// ─────────────────────────────────────────────────────────
+// MAIN VIDEO CALL COMPONENT
+// ─────────────────────────────────────────────────────────
 export default function VideoCall() {
-  const params = useParams();
-  const router = useRouter;
+  const params    = useParams();
+  const router    = useRouter();
   const sessionId = params.id;
-  const [connectionDetails, setConnectionDetails] = useState();
-  const { user } = useSelector((state) => state.auth);
+  const { user }  = useSelector((state) => state.auth);
+  const isMentor  = user?.role === "MENTOR";
 
-  const [joined, setJoined] = useState(false);
-  const [error, setError] = useState(null);
-  const [audioBlocked, setAudioBlocked] = useState(false);
-  const [remoteJoined, setRemoteJoined] = useState(false);
-  const [micOn, setMicOn] = useState(true);
-  const [cameraOn, setCameraOn] = useState(true);
-  const [screenShare, setScreenShare] = useState(false);
+  // ── State ──────────────────────────────────────────────
+  const [connectionDetails, setConnectionDetails] = useState(null);
+  const [joined,            setJoined]            = useState(false);
+  const [connecting,        setConnecting]        = useState(true);
+  const [error,             setError]             = useState(null);
+  const [audioBlocked,      setAudioBlocked]      = useState(false);
+  const [remoteJoined,      setRemoteJoined]      = useState(false);
+  const [micOn,             setMicOn]             = useState(true);
+  const [cameraOn,          setCameraOn]          = useState(true);
+  const [screenShare,       setScreenShare]       = useState(false);
+  const [remoteMicOn,       setRemoteMicOn]       = useState(true);
+  const [displayName,       setDisplayName]       = useState("");
 
-  const clientRef = useRef(null);
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
-  const micTrackRef = useRef(null);
+  // ── Refs ───────────────────────────────────────────────
+  const clientRef      = useRef(null);
+  const localVidRef    = useRef(null);   // my camera
+  const remoteVidRef   = useRef(null);   // other person's camera / screen
+  const pipVidRef      = useRef(null);   // PiP: when screen sharing, shows my camera here
+  const micTrackRef    = useRef(null);
   const cameraTrackRef = useRef(null);
   const screenTrackRef = useRef(null);
+  const remoteUserRef  = useRef(null);   // store remote user object
 
-  const connentToServer = async (sessionId) => {
-    const res = await joinSession(sessionId);
-    if (res.data.success === true) {
-      setConnectionDetails(res.data);
-    }
-  };
-
+  // ── Fetch token ────────────────────────────────────────
   useEffect(() => {
-    connentToServer(sessionId);
-  }, []);
+    const connect = async () => {
+      try {
+        const res = await joinSession(sessionId);
+        if (res.data.success) {
+          setConnectionDetails(res.data);
+          setDisplayName(res.data.displayName ?? "You");
+        }
+      } catch (e) {
+        setError(e.response?.data?.message ?? "Failed to connect to session.");
+        setConnecting(false);
+      }
+    };
+    connect();
+  }, [sessionId]);
 
+  // ── Join Agora ─────────────────────────────────────────
   useEffect(() => {
     if (!connectionDetails) return;
-
     let cancelled = false;
 
     const join = async () => {
@@ -498,53 +140,52 @@ export default function VideoCall() {
 
         client.on("autoplay-fallback", () => setAudioBlocked(true));
 
-        client.on("user-published", async (user, mediaType) => {
-          await client.subscribe(user, mediaType);
+        // ── Remote user published ──────────────────────
+        client.on("user-published", async (remoteUser, mediaType) => {
+          await client.subscribe(remoteUser, mediaType);
+          remoteUserRef.current = remoteUser;
+
           if (mediaType === "video") {
             setRemoteJoined(true);
             setTimeout(() => {
-              if (remoteVideoRef.current)
-                user.videoTrack.play(remoteVideoRef.current);
+              if (remoteVidRef.current) {
+                remoteUser.videoTrack.play(remoteVidRef.current);
+              }
             }, 100);
           }
+
           if (mediaType === "audio") {
-            try {
-              user.audioTrack.play();
-            } catch {
-              setAudioBlocked(true);
-            }
+            try { remoteUser.audioTrack.play(); }
+            catch { setAudioBlocked(true); }
           }
         });
 
-        client.on("user-unpublished", (user, mediaType) => {
+        client.on("user-unpublished", (remoteUser, mediaType) => {
           if (mediaType === "video") setRemoteJoined(false);
+          if (mediaType === "audio") setRemoteMicOn(false);
         });
-        client.on("user-left", () => setRemoteJoined(false));
+
+        client.on("user-left", () => {
+          setRemoteJoined(false);
+          remoteUserRef.current = null;
+        });
 
         await client.join(appId, channelName, token, uid);
-        if (cancelled) {
-          await client.leave();
-          return;
-        }
+        if (cancelled) { await client.leave(); return; }
 
-        const [micTrack, cameraTrack] =
-          await AgoraRTC.createMicrophoneAndCameraTracks();
+        const [micTrack, cameraTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+        if (cancelled) { micTrack.close(); cameraTrack.close(); await client.leave(); return; }
 
-        if (cancelled) {
-          micTrack.close();
-          cameraTrack.close();
-          await client.leave();
-          return;
-        }
-
-        micTrackRef.current = micTrack;
+        micTrackRef.current    = micTrack;
         cameraTrackRef.current = cameraTrack;
 
         await client.publish([micTrack, cameraTrack]);
-        if (!cancelled) setJoined(true);
+        if (!cancelled) { setJoined(true); setConnecting(false); }
+
       } catch (e) {
         if (cancelled || e?.code === "OPERATION_ABORTED") return;
         setError(e.message);
+        setConnecting(false);
       }
     };
 
@@ -558,249 +199,294 @@ export default function VideoCall() {
     };
   }, [connectionDetails]);
 
+  // ── Play local camera after DOM renders ───────────────
   useEffect(() => {
-    if (joined && localVideoRef.current && cameraTrackRef.current) {
-      cameraTrackRef.current.play(localVideoRef.current);
+    if (joined && localVidRef.current && cameraTrackRef.current) {
+      cameraTrackRef.current.play(localVidRef.current);
     }
   }, [joined]);
 
-  // ── Controls ──────────────────────────────────────────
-  const toggleMic = async () => {
+  // ── Re-play camera when cameraOn toggles back ─────────
+  useEffect(() => {
+    if (cameraOn && localVidRef.current && cameraTrackRef.current) {
+      setTimeout(() => cameraTrackRef.current?.play(localVidRef.current), 50);
+    }
+  }, [cameraOn]);
+
+  // ── Re-play screen share into PiP slot ────────────────
+  useEffect(() => {
+    if (screenShare && pipVidRef.current && cameraTrackRef.current) {
+      setTimeout(() => cameraTrackRef.current?.play(pipVidRef.current), 50);
+    }
+  }, [screenShare]);
+
+  // ─────────────────────────────────────────────────────
+  // CONTROLS
+  // ─────────────────────────────────────────────────────
+  const toggleMic = useCallback(async () => {
     const track = micTrackRef.current;
     if (!track) return;
     await track.setEnabled(!micOn);
-    setMicOn((prev) => !prev);
-  };
+    setMicOn(v => !v);
+  }, [micOn]);
 
-  const toggleCamera = async () => {
+  const toggleCamera = useCallback(async () => {
     const track = cameraTrackRef.current;
     if (!track) return;
     await track.setEnabled(!cameraOn);
-    setCameraOn((prev) => !prev);
-    if (cameraOn && localVideoRef.current) {
-      localVideoRef.current.innerHTML = "";
-    } else if (!cameraOn && localVideoRef.current) {
-      track.play(localVideoRef.current);
-    }
-  };
-  // const toggleCamera = async () => {
-  //   const track = cameraTrackRef.current;
-  //   if (!track) return;
-  //   await track.setEnabled(!cameraOn);
-  //   setCameraOn((prev) => !prev);
-  //   // ✅ No manual play here — useEffect handles it
-  // };
+    setCameraOn(v => !v);
+  }, [cameraOn]);
 
-  // useEffect(() => {
-  //   if (cameraOn && localVideoRef.current && cameraTrackRef.current) {
-  //     // ✅ Small delay to ensure div is back in DOM
-  //     setTimeout(() => {
-  //       cameraTrackRef.current?.play(localVideoRef.current);
-  //     }, 50);
-  //   }
-  // }, [cameraOn]);
-
-  // // ─── Add this effect ──────────────────────────────────────
-  // useEffect(() => {
-  //   if (screenShare && localVideoRef.current && screenTrackRef.current) {
-  //     setTimeout(() => {
-  //       screenTrackRef.current?.play(localVideoRef.current);
-  //     }, 50);
-  //   }
-  // }, [screenShare]);
-
-  const toggleScreenShare = async () => {
+  const toggleScreenShare = useCallback(async () => {
     if (!screenShare) {
       try {
-        const screenTrack = await AgoraRTC.createScreenVideoTrack(
-          {},
-          "disable",
-        );
+        const screenTrack = await AgoraRTC.createScreenVideoTrack({}, "disable");
         screenTrackRef.current = screenTrack;
+
         await clientRef.current.unpublish(cameraTrackRef.current);
         await clientRef.current.publish(screenTrack);
-        screenTrack.play(localVideoRef.current);
+
+        // Screen goes to main remote view area (localVidRef)
+        if (localVidRef.current) screenTrack.play(localVidRef.current);
+
         setScreenShare(true);
-        screenTrack.on("track-ended", async () => await stopScreenShare());
+        screenTrack.on("track-ended", stopScreenShare);
       } catch (e) {
-        console.log("Screen share cancelled:", e.message);
+        if (e.message !== "Permission denied") {
+          console.log("Screen share:", e.message);
+        }
       }
     } else {
       await stopScreenShare();
     }
-  };
+  }, [screenShare]);
 
-  // const toggleScreenShare = async () => {
-  //   if (!screenShare) {
-  //     try {
-  //       const screenTrack = await AgoraRTC.createScreenVideoTrack(
-  //         {},
-  //         "disable",
-  //       );
-  //       screenTrackRef.current = screenTrack;
-
-  //       await clientRef.current.unpublish(cameraTrackRef.current);
-  //       await clientRef.current.publish(screenTrack);
-
-  //       // ✅ Remove: screenTrack.play(localVideoRef.current) — effect handles it
-  //       setScreenShare(true); // ← effect fires after this
-
-  //       screenTrack.on("track-ended", async () => await stopScreenShare());
-  //     } catch (e) {
-  //       console.log("Screen share cancelled:", e.message);
-  //     }
-  //   } else {
-  //     await stopScreenShare();
-  //   }
-  // };
-  const stopScreenShare = async () => {
+  const stopScreenShare = useCallback(async () => {
     const screenTrack = screenTrackRef.current;
     if (!screenTrack) return;
+
     await clientRef.current.unpublish(screenTrack);
     screenTrack.close();
     screenTrackRef.current = null;
-    await clientRef.current.publish(cameraTrackRef.current);
-    if (localVideoRef.current)
-      cameraTrackRef.current.play(localVideoRef.current);
-    setScreenShare(false);
-  };
 
-  const handleLeave = async () => {
+    await clientRef.current.publish(cameraTrackRef.current);
+    setScreenShare(false);
+    // camera will re-play via the cameraOn useEffect
+  }, []);
+
+  const handleUnblockAudio = useCallback(async () => {
+    try { await AgoraRTC.resumeAudioContext(); setAudioBlocked(false); }
+    catch (e) { console.error(e); }
+  }, []);
+
+  const cleanup = useCallback(() => {
     micTrackRef.current?.close();
     cameraTrackRef.current?.close();
     screenTrackRef.current?.close();
-    await clientRef.current?.leave();
-    router.push("/mentor/mentorship");
-  };
+    clientRef.current?.leave();
+  }, []);
 
-  const handleEndSession = async () => {
+  const handleLeave = useCallback(async () => {
+    cleanup();
+    router.push("/mentorship");
+  }, [cleanup, router]);
+
+  const handleEndSession = useCallback(async () => {
     try {
-      const res = await endSession(sessionId);
-      micTrackRef.current?.close();
-      cameraTrackRef.current?.close();
-      screenTrackRef.current?.close();
-      await clientRef.current?.leave();
+      await endSession(sessionId);
+      cleanup();
       router.push("/mentor/sessions");
-      // window.location.href = `/session/${sessionId}/summary`;
     } catch (e) {
       console.error("Failed to end session:", e);
     }
-  };
+  }, [sessionId, cleanup, router]);
 
-  const handleUnblockAudio = async () => {
-    try {
-      await AgoraRTC.resumeAudioContext();
-      setAudioBlocked(false);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  if (error) return <div className="p-8 text-red-500 text-center">{error}</div>;
-
-  if (!joined)
+  // ─────────────────────────────────────────────────────
+  // RENDER STATES
+  // ─────────────────────────────────────────────────────
+  if (error) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-950 gap-3 text-white">
-        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-        <span className="text-sm text-gray-300">Connecting...</span>
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-950 gap-4 text-white">
+        <div className="w-14 h-14 rounded-full bg-red-500/20 flex items-center justify-center">
+          <PhoneOff size={24} className="text-red-400" />
+        </div>
+        <p className="text-red-400 text-sm font-medium">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-xl text-sm text-white transition-colors"
+        >
+          Try again
+        </button>
       </div>
     );
+  }
 
+  if (connecting) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-950 gap-3 text-white">
+        <Loader2 size={28} className="animate-spin text-blue-400" />
+        <span className="text-sm text-gray-400">Connecting to session...</span>
+      </div>
+    );
+  }
+
+  // ─────────────────────────────────────────────────────
+  // MAIN LAYOUT
+  //
+  // NORMAL (no screen share):
+  //   ┌─────────────────────────────┐
+  //   │                             │
+  //   │     Remote person (full)    │
+  //   │                             │
+  //   │              ┌──────────┐   │
+  //   │              │  My cam  │   │ ← PiP bottom-right
+  //   │              └──────────┘   │
+  //   └─────────────────────────────┘
+  //
+  // SCREEN SHARE (you sharing):
+  //   ┌────────────────────┬──────┐
+  //   │                    │ My   │
+  //   │   Screen share     │ cam  │
+  //   │   (your screen)    │      │
+  //   │                    │ Rem  │
+  //   │                    │ cam  │
+  //   └────────────────────┴──────┘
+  // ─────────────────────────────────────────────────────
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden">
-      {/* Remote video */}
-      <div ref={remoteVideoRef} className="w-full h-full" />
-      {/* Waiting overlay */}
-      {!remoteJoined && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 text-white gap-3">
-          <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-gray-300">
-            Waiting for the other person...
-          </p>
+    <div className="relative w-full h-[calc(100vh-100.8px)] bg-gray-950 overflow-hidden">
+
+      {screenShare ? (
+        // ── SCREEN SHARE LAYOUT ──────────────────────
+        <div className="flex w-full h-full gap-2 p-2">
+
+          {/* Screen share — main area */}
+          <div className="flex-1 relative bg-black rounded-2xl overflow-hidden">
+            <div ref={localVidRef} className="w-full h-full" />
+            <div className="absolute bottom-2 left-2 px-2 py-0.5 bg-black/50 backdrop-blur-sm rounded-md text-[11px] text-white/80">
+              Your Screen
+            </div>
+          </div>
+
+          {/* Right column — my camera + remote */}
+          <div className="w-52 flex flex-col gap-2">
+
+            {/* My camera PiP */}
+            <VideoTile
+              videoRef={pipVidRef}
+              label="You (cam)"
+              placeholder={!cameraOn}
+              muted={!micOn}
+              className="flex-1"
+            />
+
+            {/* Remote person */}
+            <VideoTile
+              videoRef={remoteVidRef}
+              label={connectionDetails?.displayName ?? "Other"}
+              placeholder={!remoteJoined}
+              muted={!remoteMicOn}
+              className="flex-1"
+            />
+          </div>
         </div>
-      )}
-      {/* Camera off placeholder */}
-      {!cameraOn && !screenShare && (
-        <div className="absolute bottom-24 right-6 w-48 h-36 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl bg-gray-900 flex items-center justify-center">
-          <div className="w-12 h-12 rounded-full bg-gray-700 flex items-center justify-center text-2xl">
-            👤
+
+      ) : (
+        // ── NORMAL LAYOUT ────────────────────────────
+        <div className="relative w-full h-full">
+
+          {/* Remote video — full canvas */}
+          <VideoTile
+            videoRef={remoteVidRef}
+            label={connectionDetails?.displayName ?? "Other"}
+            placeholder={!remoteJoined}
+            muted={!remoteMicOn}
+            className="absolute inset-0 rounded-none"
+          />
+
+          {/* Waiting overlay when remote hasn't joined */}
+          {!remoteJoined && (
+            <WaitingOverlay message="Waiting for the other person to join..." />
+          )}
+
+          {/* My camera — PiP bottom-right */}
+          <div className="absolute bottom-24 right-4 w-44 h-32 z-10">
+            {/* Always keep div in DOM — hide with CSS when camera off */}
+            <VideoTile
+              videoRef={localVidRef}
+              label="You"
+              muted={!micOn}
+              placeholder={!cameraOn}
+              className={`w-full h-full border-2 border-white/20 shadow-2xl ${!cameraOn ? "opacity-100" : ""}`}
+            />
           </div>
         </div>
       )}
-      {/* Local video PiP */}
-      {/* ✅ Always in DOM — just hidden when camera off */}
-      {/* // ❌ This removes the div from DOM when cameraOn is false */}
-      {(cameraOn || screenShare) && (
-        <div
-          ref={localVideoRef}
-          className="absolute bottom-24 right-6 w-48 h-36 ..."
-        />
-      )}
-      {/* <div
-        ref={localVideoRef}
-        className={`absolute bottom-24 right-6 w-48 h-36 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl
-    ${!cameraOn && !screenShare ? "hidden" : ""}`}
-      /> */}
-      {/* Audio blocked */}
+
+      {/* ── Audio blocked banner ─────────────────────── */}
       {audioBlocked && (
-        <div className="absolute top-5 left-1/2 -translate-x-1/2 z-50">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50">
           <button
             onClick={handleUnblockAudio}
             className="flex items-center gap-2 px-5 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-full shadow-xl text-sm transition-colors"
           >
-            🔇 Tap to enable audio
+            <VolumeX size={16} />
+            Tap to enable audio
           </button>
         </div>
       )}
-      {/* ── Controls bar ──────────────────────────────── */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-end gap-4">
-        {/* Mic */}
-        <ControlBtn
-          onClick={toggleMic}
-          active={micOn}
-          activeIcon="🎙️"
-          inactiveIcon="🔇"
-          label={micOn ? "Mute" : "Unmute"}
-        />
 
-        {/* Camera */}
-        <ControlBtn
-          onClick={toggleCamera}
-          active={cameraOn}
-          activeIcon="📷"
-          inactiveIcon="📷"
-          label={cameraOn ? "Stop Video" : "Start Video"}
-        />
+      {/* ── Controls bar ─────────────────────────────── */}
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
+        <div className="flex items-end gap-3 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 shadow-2xl">
 
-        {/* Screen share */}
-        <ControlBtn
-          onClick={toggleScreenShare}
-          active={!screenShare}
-          activeIcon="🖥️"
-          inactiveIcon="⏹️"
-          label={screenShare ? "Stop Share" : "Share Screen"}
-        />
-
-        {/* Leave / End — different per role */}
-        {user?.role === "MENTOR" ? (
+          {/* Mic */}
           <ControlBtn
-            onClick={handleEndSession}
-            active={false}
-            activeIcon="📵"
-            inactiveIcon="📵"
-            label="End Session"
-            danger
+            onClick={toggleMic}
+            active={micOn}
+            icon={Mic}
+            inactiveIcon={MicOff}
+            label={micOn ? "Mute" : "Unmute"}
           />
-        ) : (
+
+          {/* Camera */}
           <ControlBtn
-            onClick={handleLeave}
-            active={false}
-            activeIcon="📵"
-            inactiveIcon="📵"
-            label="Leave"
-            danger
+            onClick={toggleCamera}
+            active={cameraOn}
+            icon={Video}
+            inactiveIcon={VideoOff}
+            label={cameraOn ? "Stop Video" : "Start Video"}
           />
-        )}
+
+          {/* Screen share */}
+          <ControlBtn
+            onClick={toggleScreenShare}
+            active={!screenShare}
+            icon={MonitorUp}
+            inactiveIcon={MonitorStop}
+            label={screenShare ? "Stop Share" : "Share Screen"}
+            variant={screenShare ? "active" : "default"}
+          />
+
+          {/* Divider */}
+          <div className="w-px h-8 bg-white/10 mx-1" />
+
+          {/* Leave / End */}
+          {isMentor ? (
+            <ControlBtn
+              onClick={handleEndSession}
+              icon={PhoneOff}
+              label="End Session"
+              variant="danger"
+            />
+          ) : (
+            <ControlBtn
+              onClick={handleLeave}
+              icon={PhoneOff}
+              label="Leave"
+              variant="danger"
+            />
+          )}
+        </div>
       </div>
     </div>
   );
