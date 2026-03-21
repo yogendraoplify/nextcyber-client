@@ -5,10 +5,12 @@ import {
   mentorAvailabilityCreateApi,
   mentorAvailabilityDeleteApi,
   mentorAvailabilityUpdateApi,
+  updateMentorProfile,
 } from "@/services/mentorApi";
 import { Cross, CrossIcon, PlusIcon, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 // ─── Constants ───────────────────────────────────────────
 const DAYS = [
@@ -21,6 +23,15 @@ const DAYS = [
   { label: "Sunday", value: 0 },
 ];
 
+const TIMEZONES = [
+  { label: "Pacific/Auckland (NZ)", value: "Pacific/Auckland" },
+  { label: "Asia/Kolkata (IST)", value: "Asia/Kolkata" },
+  { label: "America/New_York (EST)", value: "America/New_York" },
+  { label: "Europe/London (GMT)", value: "Europe/London" },
+  { label: "UTC", value: "UTC" },
+  // add more as needed
+];
+
 const TIMESLOTS = Array.from({ length: 48 }, (_, i) => {
   const h = Math.floor(i / 2);
   const m = i % 2 === 0 ? "00" : "30";
@@ -31,27 +42,6 @@ const TIMESLOTS = Array.from({ length: 48 }, (_, i) => {
     value: `${String(h).padStart(2, "0")}:${m}`,
   };
 });
-
-// ─── API helpers ─────────────────────────────────────────
-const api = {
-  getSlots: () => fetch("/api/availability").then((r) => r.json()),
-  updateSlots: (slots) =>
-    fetch("/api/availability", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slots }),
-    }).then((r) => r.json()),
-  addSlot: (slot) =>
-    fetch("/api/availability/slot", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(slot),
-    }).then((r) => r.json()),
-  deleteSlot: (id) =>
-    fetch(`/api/availability/slot/${id}`, { method: "DELETE" }).then((r) =>
-      r.json(),
-    ),
-};
 
 // ─── Toast ───────────────────────────────────────────────
 const Toast = ({ toast }) => {
@@ -333,7 +323,10 @@ export default function AvailabilityManager() {
   const [toast, setToast] = useState(null);
   const [dirtySlots, setDirtySlots] = useState(new Set());
 
-  console.log("All slots:", allSlots);
+  const { user } = useSelector((state) => state.auth);
+  const [timezone, setTimezone] = useState(
+    user?.mentorProfile?.timezone || "Pacific/Auckland",
+  );
 
   // react-hook-form for the Save action
   const {
@@ -394,6 +387,7 @@ export default function AvailabilityManager() {
 
   // react-hook-form onSubmit for Save
   const onSave = async () => {
+    console.log("getting triggered");
     const toUpdate = allSlots.filter((s) => dirtySlots.has(s.id));
     if (!toUpdate.length) {
       showToast("Nothing changed.");
@@ -436,8 +430,19 @@ export default function AvailabilityManager() {
         </div>
         <div className="w-1/2 flex items-center gap-5">
           <SelectField
-            options={["Asia/Kolkata IST (+05:30)"]}
+            options={TIMEZONES}
+            value={timezone}
             placeholder="Select Time Zone"
+            onChange={async (e) => {
+              setTimezone(e);
+              await updateMentorProfile({
+                timezone: e,
+              });
+              // Save timezone to mentor profile
+              // await axios.patch("/api/mentor/profile", {
+              //   timezone: e.target.value,
+              // });
+            }}
           />
           <button
             onClick={handleSubmit(onSave)}
